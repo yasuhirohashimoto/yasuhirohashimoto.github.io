@@ -127,14 +127,12 @@ h2.appdx:before {
 /* MathJax数式のレスポンシブ対応 */
 .MathJax {
 	max-width: 100%;
-	display: block;
 	overflow-x: auto;
 	overflow-y: visible;
 }
 
 mjx-container {
 	max-width: 100% !important;
-	display: block;
 	overflow-x: auto !important;
 	overflow-y: visible !important;
 }
