@@ -128,13 +128,17 @@ h2.appdx:before {
 .MathJax {
 	max-width: 100%;
 	overflow-x: auto;
-	overflow-y: visible;
+	overflow-y: hidden;
 }
 
 mjx-container {
 	max-width: 100% !important;
 	overflow-x: auto !important;
-	overflow-y: visible !important;
+	overflow-y: hidden !important;
+}
+
+mjx-container[display="true"] {
+	padding: 0.2em 0;
 }
 
 @media (max-width: 768px) {
