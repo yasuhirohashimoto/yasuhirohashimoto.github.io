@@ -1,0 +1,159 @@
+body {
+	margin: 0;
+}
+
+html,
+body {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	overflow-x: hidden;
+}
+
+html,
+button,
+input,
+select,
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #3d3f44;
+	font-family: PT Sans, Helvetica Neue, Arial, Hiragino Kaku Gothic ProN, Meiryo, MS PGothic, sans-serif;
+	font-feature-settings: "palt" 1;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+}
+
+h1 {
+	font-weight: normal;
+	text-align: center;
+}
+
+h1.title {
+	font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+}
+
+h1.author {
+	font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+h2 {
+	font-size: clamp(1.3rem, 4vw, 1.5rem);
+	margin: 20px 0 5px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+#appendix {
+	border-bottom: none;
+}
+
+h3 {
+	font-size: clamp(1.1rem, 3.4vw, 1.3rem);
+	margin: 5px 0;
+}
+
+a {
+	color: #5684d7;
+}
+
+a:hover {
+	color: #3067cb;
+}
+
+.content {
+	width: 100%;
+	max-width: 60ch;
+	display: block;
+	box-sizing: border-box;
+	padding: 0 12px;
+	line-height: 1.7;
+	margin: 0 auto;
+	text-align: justify;
+}
+
+div.p {
+	margin-top: 1em;
+	text-indent: 1em;
+}
+
+li {
+	text-indent: 0;
+}
+
+#index ol {
+	padding: 0;
+	margin: 10px 0;
+	list-style-position: inside;
+}
+
+#index ol.appendix {
+	padding: 0;
+	margin: 0;
+}
+
+#index ol.appendix {
+	counter-reset: list;
+}
+
+#index ol.appendix li {
+	list-style: none
+}
+
+#index ol.appendix li:before {
+	counter-increment: list;
+	content: "A" counter(list, decimal) ". ";
+}
+
+/* Numbering section titles. */
+h2:not(.nonum):not(.appdx) {
+	counter-increment: section;
+}
+
+h2:not(.nonum):not(.appdx):before {
+	content: counter(section) ". ";
+}
+
+h2.appdx {
+	counter-increment: apsection;
+}
+
+h2.appdx:before {
+	content: "A" counter(apsection) ". ";
+}
+
+/* MathJax数式のレスポンシブ対応 */
+.MathJax {
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+mjx-container {
+	max-width: 100% !important;
+	overflow-x: auto !important;
+	overflow-y: hidden !important;
+}
+
+@media (max-width: 768px) {
+	.content {
+		max-width: 100%;
+		padding: 0 8px;
+		overflow-x: hidden;
+	}
+
+	div.p {
+		margin-top: 1em;
+		line-height: 1.85;
+	}
+}
+
+@media (min-width: 769px) {
+	.content {
+		width: 100%;
+		max-width: 100ch;
+		padding: 0 24px;
+	}
+}
