@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const contentId = 'fn-content-' + marker;
             const anchorId = 'fn-anchor-' + marker;
             const html = footnote.innerHTML || '';
-            const title = (footnote.innerText || '').trim();
+            const title = (footnote.textContent || '')
+                .replace(/\s+/g, ' ')
+                .trim();
             const entry = makeEntry(marker, contentId, html);
             const wrapper = document.createElement('div');
             wrapper.id = contentId;
