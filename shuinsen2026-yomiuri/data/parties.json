@@ -1,0 +1,19 @@
+[
+      { "party": "自民党", "style": { "color": "#3CA324", "shape": 0 } },
+      { "party": "自民党(維)", "style": { "color": "#3CA324", "shape": 1 } },
+      { "party": "無所属(自)", "style": { "color": "#3CA324", "shape": 2 } },
+      { "party": "中道改革連合(立)", "style": { "color": "#004098", "shape": 0 } },
+      { "party": "中道改革連合(公)", "style": { "color": "#F5588D", "shape": 1 } },
+      { "party": "国民民主党", "style": { "color": "#FABE00", "shape": 2 } },
+      { "party": "維新の会", "style": { "color": "#88C900", "shape": 0 } },
+      { "party": "参政党", "style": { "color": "#FA8808", "shape": 0 } },
+      { "party": "共産党", "style": { "color": "#DB001C", "shape": 0 } },
+      { "party": "社民党", "style": { "color": "#01A8EC", "shape": 1 } },
+      { "party": "れいわ", "style": { "color": "#FF2E8C", "shape": 2 } },
+      { "party": "日本保守党", "style": { "color": "#003366", "shape": 3 } },
+      { "party": "みらい", "style": { "color": "#64d8c6", "shape": 4 } },
+      { "party": "減税・ゆうこく", "style": { "color": "#9467bd", "shape": 0 } },
+      { "party": "安楽会", "style": { "color": "#8c564b", "shape": 1 } },
+      { "party": "諸派", "style": { "color": "#999999", "shape": 2 } },
+      { "party": "無所属", "style": { "color": "#bbbbbb", "shape": 3 } }
+]

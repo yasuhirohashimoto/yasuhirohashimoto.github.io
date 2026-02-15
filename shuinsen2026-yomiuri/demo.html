@@ -1,0 +1,2896 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>衆院選2026 候補者：政策志向マップ (Demo)</title>
+
+  <!-- =========================
+       スタイル
+       ========================= -->
+  <style>
+    /* -------------------------
+       1) デザイントークン
+       ------------------------- */
+    :root {
+      --bg-glass: rgba(255, 255, 255, 0.9);
+      --bg-glass-dark: rgba(0, 0, 0, 0.8);
+      --primary-color: #1f77b4;
+      --border-color: rgba(0, 0, 0, 0.1);
+      --text-main: #333;
+      --text-sub: #666;
+      --accent-blue: #4fc3f7;
+
+      --radius-lg: 16px;
+      --radius-md: 8px;
+      --radius-sm: 4px;
+
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+      --z-ui: 1000;
+      --z-modal: 2000;
+      --z-tooltip: 3000;
+    }
+
+    /* -------------------------
+       2) 基本設定
+       ------------------------- */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: "Noto Sans JP", "Meiryo", sans-serif;
+      background-color: #f8f9fa;
+      color: var(--text-main);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+
+    /* -------------------------
+       3) 共通UIブロック
+       ------------------------- */
+    #legend-panel,
+    #filter-panel {
+      position: absolute;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      z-index: var(--z-ui);
+    }
+
+    .legend-header,
+    .filter-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      font-weight: bold;
+      border-bottom: 2px solid var(--border-color);
+      gap: 10px;
+    }
+
+    .legend-title,
+    .filter-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    /* -------------------------
+       4) 検索UI
+       ------------------------- */
+    #search-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: var(--z-ui);
+      width: 320px;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-glass);
+      backdrop-filter: blur(8px);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+      outline: none;
+      transition: var(--transition);
+      -webkit-appearance: none;
+    }
+
+    #search-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(31, 119, 180, 0.2);
+    }
+
+    #search-results {
+      list-style: none;
+      margin: 8px 0 0 0;
+      padding: 8px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+      border: 1px solid var(--border-color);
+    }
+
+    .search-item {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .search-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    #search-input.search-action-preview {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.25);
+      background: #fff7f7;
+    }
+
+    #search-results.search-action-preview {
+      border-color: rgba(255, 107, 107, 0.45);
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.18), var(--shadow);
+    }
+
+    .search-item.action-preview {
+      background: rgba(255, 107, 107, 0.2);
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25);
+      animation: searchActionPulse 0.7s ease-in-out infinite;
+    }
+
+    @keyframes searchActionPulse {
+      0% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.15);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.35);
+      }
+      100% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.15);
+      }
+    }
+
+    .search-party {
+      font-size: 11px;
+      color: var(--text-sub);
+      background: rgba(0, 0, 0, 0.08);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .ui-pill {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    /* -------------------------
+       5) 凡例UI
+       ------------------------- */
+
+    #legend-panel {
+      bottom: 30px;
+      right: 30px;
+      padding: 16px;
+      min-width: 220px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      cursor: pointer;
+      padding: 6px 10px;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+      border-radius: var(--radius-sm);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .legend-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .legend-item.selected {
+      background-color: rgba(0, 0, 0, 0.08);
+      border-left: 4px solid var(--primary-color);
+      font-weight: bold;
+    }
+
+    .legend-item.action-preview {
+      background: rgba(255, 107, 107, 0.14);
+      border-left: 4px solid #ff6b6b;
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+      animation: legendActionPulse 0.7s ease-in-out infinite;
+    }
+
+    @keyframes legendActionPulse {
+      0% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.15);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.32);
+      }
+      100% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.15);
+      }
+    }
+
+    .legend-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      border-radius: 2px;
+    }
+
+    /* --- 凡例内の当選トグル --- */
+    .elected-legend-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+
+      padding: 6px 8px;
+
+      color: var(--text-sub);
+      font-size: 12px;
+    }
+
+    .elected-legend-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    .elected-legend-switch {
+      width: 34px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.15);
+      position: relative;
+      transition: var(--transition);
+      flex: 0 0 auto;
+    }
+
+    .elected-legend-switch::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    .elected-legend-toggle input:checked+.elected-legend-switch {
+      background: rgba(220, 0, 0, 0.65);
+    }
+
+    .elected-legend-toggle input:checked+.elected-legend-switch::before {
+      transform: translateX(14px);
+    }
+
+    #legend-panel.elected-toggle-preview {
+      box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2), var(--shadow);
+      border-color: rgba(255, 107, 107, 0.45);
+    }
+
+    .elected-legend-toggle.action-preview {
+      background: rgba(255, 107, 107, 0.16);
+      border-color: rgba(255, 107, 107, 0.6);
+      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.22);
+      animation: electedTogglePulse 0.65s ease-in-out infinite;
+    }
+
+    @keyframes electedTogglePulse {
+      0% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.16);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.34);
+      }
+      100% {
+        box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.16);
+      }
+    }
+
+    /* -------------------------
+       6) 説明ボタンとモーダル
+       ------------------------- */
+    #about-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: var(--z-ui);
+      font-size: 20px;
+      color: var(--text-sub);
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+
+    @media (hover: hover) {
+      #about-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.05);
+      }
+    }
+
+    #about-btn:active {
+      transform: scale(0.95);
+    }
+
+    #about-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: var(--z-modal);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #about-content {
+      color: var(--text-main);
+      background: white;
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      line-height: 1.8;
+    }
+
+    #about-content h2 {
+      margin: 0 0 24px 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 24px;
+      text-align: center;
+    }
+
+    #about-content h3 {
+      font-size: 18px;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+
+    #close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #bbb;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #close-modal:hover {
+      color: var(--text-main);
+      transform: rotate(90deg);
+    }
+
+    /* -------------------------
+       7) ツールチップ
+       ------------------------- */
+    #tooltip {
+      position: absolute;
+      display: none;
+      background: var(--bg-glass-dark);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      z-index: var(--z-tooltip);
+      line-height: 1.6;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+      /* PCでは無効。モバイルはメディアクエリで有効化 */
+      min-width: 200px;
+    }
+
+    #tooltip strong {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 4px;
+    }
+
+    .tooltip-party {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #ddd;
+    }
+
+    /* 既存仕様に合わせ「回答一覧全体」を強調表示するスタイルを維持 */
+    .tooltip-answers {
+      font-family: "Roboto Mono", monospace;
+      color: var(--accent-blue);
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    /* -------------------------
+       8) 政策フィルターパネル
+       ------------------------- */
+    #filter-panel {
+      bottom: 30px;
+      left: 30px;
+      width: 300px;
+      padding: 16px;
+      transition: var(--transition);
+    }
+
+    .filter-reset-btn {
+      padding: 6px 10px;
+      cursor: pointer;
+      color: var(--text-sub);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .filter-reset-btn:hover {
+      background: #eee;
+      color: #333;
+    }
+
+    .filter-reset-btn:active {
+      transform: scale(0.98);
+    }
+
+    #issue-select {
+      width: 100%;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #ccc;
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    #filter-panel.policy-select-preview {
+      border-color: rgba(255, 107, 107, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), var(--shadow);
+    }
+
+    #issue-select.policy-select-preview {
+      border-color: #ff6b6b;
+      background: #fff5f5;
+      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.28);
+      animation: policySelectPulse 0.7s ease-in-out infinite;
+    }
+
+    @keyframes policySelectPulse {
+      0% {
+        box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.4);
+      }
+      100% {
+        box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+      }
+    }
+
+    .filter-control.is-disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .range-labels span {
+      max-width: 45%;
+    }
+
+    #value-range {
+      width: 100%;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+
+    /* -------------------------
+       9) モバイル
+       ------------------------- */
+    @media (max-width: 600px) {
+
+      /* レイアウト調整 */
+      #search-container {
+        width: calc(100% - 80px);
+        top: 15px;
+        left: 15px;
+      }
+
+      #about-btn {
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+      }
+
+      #about-content {
+        padding: 30px 20px;
+        width: 95%;
+        font-size: 14px;
+      }
+
+      #legend-panel {
+        left: 15px;
+        width: calc(100% - 30px);
+        bottom: 15px;
+        max-height: 200px;
+        padding: 12px;
+      }
+
+      /* フォールバック: JS実行前の初期位置（JSで上書き） */
+      #filter-panel {
+        left: 15px;
+        width: calc(100% - 30px);
+        bottom: 90px;
+      }
+
+      /* モバイルではツールチップをタップ可能 */
+      #tooltip {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+
+      /* ---------- モバイル: ヘッダーをタップして開閉 ---------- */
+      #legend-panel .legend-header,
+      #filter-panel .filter-header {
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* パネルタイトルの開閉アイコン */
+      #legend-panel .legend-title,
+      #filter-panel .filter-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+    
+      #legend-panel .legend-title::after,
+      #filter-panel .filter-title::after {
+        content: "▾";
+        position: static;
+        transform: none;
+        color: var(--text-sub);
+        font-weight: bold;
+      }
+    
+      #legend-panel.minimized .legend-title::after,
+      #filter-panel.minimized .filter-title::after {
+        content: "▸";
+      }
+
+      /* 最小化: 凡例 */
+      #legend-panel.minimized {
+        /* 最大高さ指定を残す場合はここで有効化 */
+        overflow: hidden;
+        padding: 12px;
+      }
+
+      #legend-panel.minimized .legend-item {
+        display: none;
+      }
+
+      #legend-panel.minimized .legend-header {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      /* 最小化: フィルター */
+      #filter-panel.minimized {
+        padding: 12px;
+      }
+
+      #filter-panel.minimized .filter-row,
+      #filter-panel.minimized .filter-control {
+        display: none;
+      }
+
+      #filter-panel.minimized .filter-header {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+    }
+  </style>
+
+  <!-- =========================
+       ライブラリ
+       ========================= -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+  <!-- 検索 -->
+  <div id="search-container">
+    <input type="text" id="search-input" placeholder="候補者名・政党名で検索" />
+    <ul id="search-results"></ul>
+  </div>
+
+  <!-- ツールチップ -->
+  <div id="tooltip"></div>
+
+  <!-- 説明 -->
+  <button id="about-btn" title="このサイトについて" aria-label="このサイトについて">?</button>
+
+  <div id="about-modal">
+    <div id="about-content">
+      <span id="close-modal" aria-label="閉じる">&times;</span>
+
+      <h2>このマップについて</h2>
+      <p>
+        この3Dマップは、衆議院選挙（2026年）における各候補者の政策志向についてのアンケートデータを分析し、回答傾向が似ている候補者同士が近くになるように配置したものです。
+      </p>
+
+      <h3>データ出典</h3>
+      <p>
+        <a href="https://www.yomiuri.co.jp/election/shugiin/2026candidates/" target="_blank" rel="noopener noreferrer">
+          読売新聞オンライン「衆院選2026　立候補者一覧」
+        </a>
+      </p>
+
+      <h3>使用データと集計方法</h3>
+      <ul>
+        <li><strong>対象設問（Q2～Q23）:</strong></li>
+        <li>
+          <strong>データ処理:</strong><br />
+          各種政策に対する志向を問う数値データ（Q2〜Q23）のみを抽出し、各質問に対する回答を標準化しています。「回答なし」は、全回答者の平均値に置き換えています。<br />
+          ※ 完全に同一な値を持つ候補者の位置をずらして見やすくするために、元ベクトルの各成分に平均0、標準偏差0.05のガウシアンノイズを加えています。
+        </li>
+      </ul>
+
+      <h3>分析手法：主成分分析 (PCA)</h3>
+      <p>27次元（質問数）の回答データを、情報の損失をなるべく抑えつつ3次元空間に圧縮しました。</p>
+      <ul>
+        <li><strong>第1主成分 (PC1):</strong> 寄与率 <strong>35.4%</strong></li>
+        <li><strong>第2主成分 (PC2):</strong> 寄与率 <strong>17.0%</strong></li>
+        <li><strong>第3主成分 (PC3):</strong> 寄与率 <strong>6.6%</strong></li>
+        <li><strong>累積寄与率:</strong> <strong>59.0%</strong>（データの約59%の情報がこの図で説明されています）</li>
+      </ul>
+
+      <h3>操作方法</h3>
+      <ul>
+        <li><strong>回転：</strong> 指一本でドラッグ (PC：左ドラッグ)</li>
+        <li><strong>ズーム：</strong> 二本指でピンチ (PC：ホイール)</li>
+        <li><strong>移動：</strong> 二本指でスワイプ (PC：右ドラッグ)</li>
+        <li><strong>詳細：</strong> 点をタップ (PC：ホバー)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 凡例 -->
+  <div id="legend-panel">
+    <div class="legend-header">
+      <span class="legend-title">政党一覧</span>
+      <label class="elected-legend-toggle ui-pill" title="当選を表示">
+        <span class="elected-legend-label">当選</span>
+        <input type="checkbox" id="elected-toggle" />
+        <span class="elected-legend-switch" aria-hidden="true"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- 政策フィルター -->
+  <div id="filter-panel">
+    <div class="filter-header">
+      <span class="filter-title">政策で絞り込み</span>
+      <button id="filter-reset" class="filter-reset-btn ui-pill" type="button" aria-label="政策フィルターをリセット">
+        ↺ リセット
+      </button>
+    </div>
+
+    <div class="filter-row">
+      <select id="issue-select">
+        <option value="">質問項目を選択...</option>
+      </select>
+    </div>
+
+    <!-- 初期状態は無効（スタイル用クラスで管理） -->
+    <div class="filter-control is-disabled" id="filter-control">
+      <div class="range-labels">
+        <span id="label-low">---</span>
+        <span id="label-high">---</span>
+      </div>
+      <input type="range" id="value-range" min="1" max="5" step="1" value="3" list="value-range-options"/>
+      <datalist id="value-range-options"></datalist>
+    </div>
+  </div>
+
+  <!-- =========================
+       スクリプト
+       ========================= -->
+  <script>
+    window.demoOps = { ready: false };
+    async function loadData() {
+      try {
+        const [candidatesRes, partiesRes, electedRes] = await Promise.all([
+          fetch('./data/candidates.json'),
+          fetch('./data/parties.json'),
+          fetch('./data/elected.json')
+        ]);
+        if (!candidatesRes.ok || !partiesRes.ok || !electedRes.ok) {
+          throw new Error("ファイルの取得に失敗しました");
+        }
+        const candidates = await candidatesRes.json();
+        const parties = await partiesRes.json();
+        const elected = await electedRes.json();
+        return { candidates, parties, elected };
+
+      } catch (error) {
+        console.error("データの読み込みに失敗しました:", error);
+        alert("データを読み込めませんでした。");
+        return null;
+      }
+    }
+
+    async function main() {
+
+      /* ==========================================================
+         準備) 先行レイアウト初期化（データ読込前）
+         ========================================================== */
+      const earlyLegendPanel = document.getElementById("legend-panel");
+      const earlyFilterPanel = document.getElementById("filter-panel");
+      const earlyMobileQuery = window.matchMedia("(max-width: 600px)");
+      if (earlyLegendPanel && earlyFilterPanel && earlyMobileQuery.matches) {
+        const legendBottom = 15; // モバイルCSSの bottom と合わせる
+        const gap = 10;
+        const legendHeight = earlyLegendPanel.getBoundingClientRect().height;
+        earlyFilterPanel.style.bottom = `${legendBottom + legendHeight + gap}px`;
+      }
+
+      /* ==========================================================
+         0) データ
+         ========================================================== */
+      const data = await loadData();
+      if (!data) return;
+
+      const pointsData = data.candidates;
+      const legendData = data.parties;
+      const electedSet = new Set(data.elected);
+
+      const QUESTION_DATA = {
+        "Q2. 社会保障負担": ["給付維持×負担増", "給付減×負担減", 5],
+        "Q3. 高齢者医療費3割": ["賛成", "反対", 5],
+        "Q4. 外国人受入": ["増やす", "減らす", 5],
+        "Q5. 消費税": ["増税", "減税・廃止", 4],
+        "Q6. 経済政策": ["財政出動", "財政再建", 5],
+        "Q7. 経済方針": ["成長重視", "分配重視", 5],
+        "Q8. 原発": ["活用", "廃止", 5],
+        "Q9-a. 公共事業費": ["増額", "削減", 5],
+        "Q9-b. 医療・介護費": ["増額", "削減", 5],
+        "Q9-c. 科学技術費": ["増額", "削減", 5],
+        "Q9-d. 公務員人件費": ["増額", "削減", 5],
+        "Q9-e. 生活保護費": ["増額", "削減", 5],
+        "Q9-f. 子育て支援費": ["増額", "削減", 5],
+        "Q10. 防衛・安全保障費": ["増額", "減額", 3],
+        "Q11. 防衛装備輸出": ["賛成", "反対", 5],
+        "Q12. 対米関係強化": ["賛成", "反対", 5],
+        "Q13. 対中関係強化": ["賛成", "反対", 5],
+        "Q14. 対韓関係強化": ["賛成", "反対", 5],
+        "Q15. 皇位継承": ["男系男子維持", "女系容認・天皇制廃止", 4],
+        "Q16. 憲法改正": ["賛成", "反対", 5],
+        "Q17. 緊急事態条項": ["賛成", "反対", 5],
+        "Q18. 夫婦別姓": ["同姓維持", "別姓導入", 3],
+        "Q19. 企業団体献金": ["存続", "禁止", 5],
+        "Q20. 選挙時のSNS偽情報対策": ["自由尊重", "規制強化", 5],
+        "Q21. 選挙時のSNS収益化": ["自由尊重", "規制強化", 5],
+        "Q22. 定数削減": ["賛成", "反対", 5],
+        "Q23. 政党制": ["二大政党制", "多党制", 5]
+      };
+
+      /* ==========================================================
+        1) 定数・テーマ
+        ========================================================== */
+      const THEME = {
+        colors: {
+          grid: 0xcccccc,
+          axisX: 0xff0000,
+          axisY: 0x00aa00,
+          axisZ: 0x0000ff,
+          text: "#333333"
+        }, opacity: {
+          point: 0.85,
+          label: 0.9,
+          dimmed: 0.15,
+          filteredOutStrong: 0.15,
+          lose: 0.3
+        }, duration: {
+          hover: 0.3,
+          camera: 1.5,
+          filter: 0.3,
+          resetScale: 0.2
+        }
+      };
+
+      const BASE_URL = "https://www.yomiuri.co.jp/election/shugiin/2026/";
+      const UI_SELECTORS = "#about-modal, #legend-panel, #search-container, #about-btn, #search-results, #tooltip, #filter-panel";
+      // インデクシング規約:
+      // - 配列添字は 0 始まり
+      // - 回答スケール値は 1 始まり（UI表示）
+      const POLICY_KEYS = Object.keys(QUESTION_DATA);
+      const Q_ENTRIES = Object.entries(QUESTION_DATA);
+      const QUESTION_INDEX_MAP = new Map(POLICY_KEYS.map((questionKey, questionIndex) => [questionKey, questionIndex]));
+
+      // 中央値（ど真ん中）時の表示文例外
+      const MIDPOINT_LABEL_EXCEPTIONS = {
+        "Q5. 消費税": "限定的に減税すべき",
+        "Q9-a. 公共事業費": "今のままでよい",
+        "Q9-b. 医療・介護費": "今のままでよい",
+        "Q9-c. 科学技術費": "今のままでよい",
+        "Q9-d. 公務員人件費": "今のままでよい",
+        "Q9-e. 生活保護費": "今のままでよい",
+        "Q9-f. 子育て支援費": "今のままでよい",
+        "Q10. 防衛・安全保障費": "GDP比2%程度とすべき",
+        "Q15. 皇位継承": "男系ならば女性天皇を認める",
+        "Q18. 夫婦別姓": "同姓維持で通称使用機会の拡大"
+      };
+
+      /* ==========================================================
+        2) テクスチャ補助処理（重いオブジェクトをキャッシュ）
+        - 図形テクスチャ: CanvasTexture をキャッシュ
+        - 凡例アイコン: dataURL をキャッシュ
+        - マテリアル雛形: 生成ヘルパーを使用
+        ========================================================== */
+      const shapeTextureCache = new Map(); // キー: "shape|#RRGGBB" -> THREE.CanvasTexture
+      const shapeDataUrlCache = new Map(); // キー: "shape|#RRGGBB" -> dataURL
+
+      // 当選（赤バラ花冠）合成テクスチャ用キャッシュ
+      const electedTextureCache = new Map(); // キー: "shape|#RRGGBB" -> THREE.CanvasTexture
+
+      function loadImage(url) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = url;
+        });
+      }
+
+      const roseCrownImg = await loadImage("./assets/rose_crown.png");
+      const BASE_SHAPE_TEXTURE_SIZE = 64;
+      const SHAPE_TEXTURE_SCALE = 6; // 64 * 6 = 384 でさらに高解像度化
+      const SHAPE_TEXTURE_SIZE = BASE_SHAPE_TEXTURE_SIZE * SHAPE_TEXTURE_SCALE;
+      const ROSE_BADGE_BASE_SIZE = 36;
+
+      // 図形と赤バラ花冠を同一キャンバスに合成
+      function drawShapeWithElectedToCanvas(type, color) {
+        const canvas = drawShapeToCanvas(type, color);
+        const ctx = canvas.getContext("2d");
+
+        const BADGE_SIZE = Math.round(ROSE_BADGE_BASE_SIZE * SHAPE_TEXTURE_SCALE);
+        const MARGIN = 0;
+        const x = canvas.width - BADGE_SIZE - MARGIN;
+        const y = MARGIN;
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(roseCrownImg, x, y, BADGE_SIZE, BADGE_SIZE);
+
+        return canvas;
+      }
+
+      // 当選合成テクスチャを返す（キャッシュ）
+      function getElectedShapeTexture(type, color) {
+        const key = `${type}|${color}`;
+        if (!electedTextureCache.has(key)) {
+          const canvas = drawShapeWithElectedToCanvas(type, color);
+          const tex = new THREE.CanvasTexture(canvas);
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          electedTextureCache.set(key, tex);
+        }
+        return electedTextureCache.get(key);
+      }
+      // 当選テクスチャ処理ここまで
+
+      function drawShapeToCanvas(type, color) {
+        const size = SHAPE_TEXTURE_SIZE;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = color;
+
+        const center = size / 2;
+        const radius = size / 2 - 4 * SHAPE_TEXTURE_SCALE;
+        const pad = 6 * SHAPE_TEXTURE_SCALE;
+
+        ctx.beginPath();
+        if (type === 0) {
+          ctx.arc(center, center, radius, 0, Math.PI * 2);
+        } else if (type === 1) {
+          ctx.rect(pad, pad, size - pad * 2, size - pad * 2);
+        } else if (type === 2) {
+          ctx.moveTo(center, pad);
+          ctx.lineTo(size - pad, size - pad);
+          ctx.lineTo(pad, size - pad);
+          ctx.closePath();
+        } else if (type === 3) {
+          ctx.moveTo(center, pad);
+          ctx.lineTo(size - pad, center);
+          ctx.lineTo(center, size - pad);
+          ctx.lineTo(pad, center);
+          ctx.closePath();
+        } else if (type === 4) {
+          const armWidth = 2 * pad;
+          ctx.moveTo(center - armWidth, pad); ctx.lineTo(center + armWidth, pad);
+          ctx.lineTo(center + armWidth, center - armWidth); ctx.lineTo(size - pad, center - armWidth);
+          ctx.lineTo(size - pad, center + armWidth); ctx.lineTo(center + armWidth, center + armWidth);
+          ctx.lineTo(center + armWidth, size - pad); ctx.lineTo(center - armWidth, size - pad);
+          ctx.lineTo(center - armWidth, center + armWidth); ctx.lineTo(pad, center + armWidth);
+          ctx.lineTo(pad, center - armWidth); ctx.lineTo(center - armWidth, center - armWidth);
+          ctx.closePath();
+        } else {
+          ctx.arc(center, center, radius, 0, Math.PI * 2);
+        }
+
+        ctx.fill();
+        return canvas;
+      }
+
+      function getShapeTexture(type, color) {
+        const key = `${type}|${color}`;
+        if (!shapeTextureCache.has(key)) {
+          const canvas = drawShapeToCanvas(type, color);
+          const tex = new THREE.CanvasTexture(canvas);
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          shapeTextureCache.set(key, tex);
+        }
+        return shapeTextureCache.get(key);
+      }
+
+      function getShapeDataUrl(type, color) {
+        const key = `${type}|${color}`;
+        if (!shapeDataUrlCache.has(key)) {
+          const tex = getShapeTexture(type, color);
+          shapeDataUrlCache.set(key, tex.image.toDataURL());
+        }
+        return shapeDataUrlCache.get(key);
+      }
+
+      /**
+      * 候補者ごとに透明度を変えるため、マテリアルは「共有しない」方針。
+      * - テクスチャマップはキャッシュ共有で可
+      * - マテリアル自体は個別生成（複製でも可だが、ここでは明示的に生成）
+      */
+      function createPointMaterial(type, color) {
+        return new THREE.SpriteMaterial({
+          map: getShapeTexture(type, color),
+          transparent: true,
+          opacity: THEME.opacity.point
+        });
+      }
+
+      function createTextTexture(text) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const fontSize = 64;
+        ctx.font = `bold ${fontSize}px 'Noto Sans JP', sans-serif`;
+        const metrics = ctx.measureText(text);
+
+        canvas.width = metrics.width + 20;
+        canvas.height = fontSize + 20;
+
+        // キャンバスのリサイズで描画コンテキストの状態が初期化される
+        ctx.font = `bold ${fontSize}px 'Noto Sans JP', sans-serif`;
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = THEME.colors.text;
+        ctx.fillText(text, 10, canvas.height / 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        return { texture, width: canvas.width, height: canvas.height };
+      }
+
+      /**
+      * 軸ラベル用：複数行を重み(サイズ)付きで描画
+      * 引数形式: 「文字列と重み」の配列。重みは先頭要素を基準に相対サイズ化
+      */
+      function createWeightedTextTexture(dataList) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const textureScale = 2;
+
+        const baseVal = dataList.length > 0 ? dataList[0][1] : 1;
+        const baseFontSize = 64;
+
+        let maxWidth = 0;
+        let totalHeight = 0;
+
+        const lineProps = dataList.map(([text, val]) => {
+          const scale = val / baseVal;
+          const fontSize = Math.floor(baseFontSize * scale);
+          const lineHeight = fontSize * 1.2;
+
+          ctx.font = `bold ${fontSize}px 'Noto Sans JP', sans-serif`;
+          const width = ctx.measureText(text).width;
+
+          maxWidth = Math.max(maxWidth, width);
+          totalHeight += lineHeight;
+          return { text, fontSize, lineHeight, width };
+        });
+
+        const logicalWidth = maxWidth + 20;
+        const logicalHeight = totalHeight + 20;
+        canvas.width = Math.ceil(logicalWidth * textureScale);
+        canvas.height = Math.ceil(logicalHeight * textureScale);
+
+        // 高解像度表示向けに内部解像度だけ上げ、見た目サイズは維持する
+        ctx.scale(textureScale, textureScale);
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.textBaseline = "top";
+
+        let y = 10;
+        for (const prop of lineProps) {
+          ctx.font = `bold ${prop.fontSize}px 'Noto Sans JP', sans-serif`;
+          const x = (logicalWidth - prop.width) / 2;
+          ctx.fillText(prop.text, x, y);
+          y += prop.lineHeight;
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        return { texture, width: logicalWidth, height: logicalHeight };
+      }
+
+      /* ==========================================================
+        3) Three.js 初期設定
+        ========================================================== */
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      const gridHelper = new THREE.GridHelper(100, 20, THEME.colors.grid, THEME.colors.grid);
+      gridHelper.rotation.x = Math.PI / 2;
+
+      // グリッドのチラつき（Zファイティング）軽減
+      gridHelper.material.depthWrite = false;
+      gridHelper.material.polygonOffset = true;
+      gridHelper.material.polygonOffsetFactor = 10;
+      gridHelper.material.polygonOffsetUnits = 10;
+      scene.add(gridHelper);
+
+      // 軸とラベル
+      const origin = new THREE.Vector3(0, 0, 0);
+      const axesDefs = [
+        { dir: new THREE.Vector3(1, 0, 0), color: THEME.colors.axisX, labelData: [["PC1", 1], ["安全保障強化・成長戦略・伝統的価値観", 0.5]] },
+        { dir: new THREE.Vector3(0, 1, 0), color: THEME.colors.axisY, labelData: [["PC2", 1], ["反グローバリズム・右派ポピュリズム", 0.5]] },
+        { dir: new THREE.Vector3(0, 0, 1), color: THEME.colors.axisZ, labelData: [["PC3", 1], ["行財政改革・緊縮財政", 0.5]] }
+      ];
+
+      for (const def of axesDefs) {
+        scene.add(new THREE.ArrowHelper(def.dir, origin, 55, def.color, 2, 1));
+        const labelData = createWeightedTextTexture(def.labelData);
+        const labelSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelData.texture, transparent: true, opacity: 0.8, depthTest: false }));
+        labelSprite.position.copy(def.dir.clone().multiplyScalar(58));
+        labelSprite.scale.set(labelData.width * 0.03, labelData.height * 0.03, 1);
+        labelSprite.renderOrder = 900;
+        scene.add(labelSprite);
+      }
+
+      // カメラ・レンダラー・コントロール
+      const initialCameraPos = { x: 0, y: 0, z: 80 };
+      const initialCameraUp = new THREE.Vector3(0, 1, 0);
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(initialCameraPos.x, initialCameraPos.y, initialCameraPos.z);
+      camera.up.copy(initialCameraUp);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      document.body.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      // 既定（シンプル）動作:
+      // - PC左ドラッグ: OrbitControls既定の回転
+      // - スマホ1本指: OrbitControls既定の回転
+      // controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+      // controls.touches.ONE = THREE.TOUCH.ROTATE;
+      //
+      // 今回はPC左ドラッグとスマホ1本指ドラッグを同一操作感にするため、
+      // 既定回転を無効化して独自の回転処理に切り替える
+      controls.mouseButtons.LEFT = -1;
+      controls.touches.ONE = -1;
+      // 起動時ビューの厳密復元用スナップショット
+      const initialViewState = {
+        cameraPosition: camera.position.clone(),
+        cameraUp: camera.up.clone(),
+        target: controls.target.clone()
+      };
+
+      function getRendererClientCenter() {
+        const rect = renderer.domElement.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+      }
+
+      function zoomTowardClientPoint(zoomFactor, clientX, clientY) {
+        if (!Number.isFinite(zoomFactor) || zoomFactor <= 0) return false;
+
+        const rect = renderer.domElement.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return false;
+
+        const ndcX = ((clientX - rect.left) / rect.width) * 2 - 1;
+        const ndcY = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+        const pointerNdc = new THREE.Vector2(ndcX, ndcY);
+        const pointerRaycaster = new THREE.Raycaster();
+        pointerRaycaster.setFromCamera(pointerNdc, camera);
+
+        const viewDir = new THREE.Vector3();
+        camera.getWorldDirection(viewDir);
+        const zoomPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(viewDir, controls.target);
+        const zoomPivot = new THREE.Vector3();
+        if (!pointerRaycaster.ray.intersectPlane(zoomPlane, zoomPivot)) return false;
+
+        const offsetFromPivot = camera.position.clone().sub(zoomPivot).multiplyScalar(zoomFactor);
+        const targetOffsetFromPivot = controls.target.clone().sub(zoomPivot).multiplyScalar(zoomFactor);
+
+        const nextCameraPos = zoomPivot.clone().add(offsetFromPivot);
+        const nextTargetPos = zoomPivot.clone().add(targetOffsetFromPivot);
+
+        const nextDistance = nextCameraPos.distanceTo(nextTargetPos);
+        if (nextDistance < controls.minDistance || nextDistance > controls.maxDistance) return false;
+
+        camera.position.copy(nextCameraPos);
+        controls.target.copy(nextTargetPos);
+        controls.update();
+        return true;
+      }
+
+      function rotatePitchByDeltaPixels(dy, skipUpdate = false) {
+        if (!Number.isFinite(dy)) return false;
+        if (Math.abs(dy) < 1e-9) return true;
+
+        const verticalRotateSpeed = (2 * Math.PI) / Math.max(renderer.domElement.clientHeight, 1);
+        const screenHorizontalAxis = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion).normalize();
+        const pitchQuat = new THREE.Quaternion().setFromAxisAngle(screenHorizontalAxis, -dy * verticalRotateSpeed);
+        const offset = camera.position.clone().sub(controls.target).applyQuaternion(pitchQuat);
+        camera.position.copy(controls.target).add(offset);
+        camera.up.applyQuaternion(pitchQuat);
+
+        if (!skipUpdate) controls.update();
+        return true;
+      }
+
+      function rotateYawByDeltaPixels(dx, skipUpdate = false) {
+        if (!Number.isFinite(dx)) return false;
+        if (Math.abs(dx) < 1e-9) return true;
+
+        const rollRotateSpeed = (2 * Math.PI) / Math.max(renderer.domElement.clientWidth, 1);
+        const worldZAxis = new THREE.Vector3(0, 0, 1);
+        const yawQuat = new THREE.Quaternion().setFromAxisAngle(worldZAxis, -dx * rollRotateSpeed);
+        const yawOffset = camera.position.clone().sub(controls.target).applyQuaternion(yawQuat);
+        camera.position.copy(controls.target).add(yawOffset);
+        camera.up.applyQuaternion(yawQuat);
+
+        if (!skipUpdate) controls.update();
+        return true;
+      }
+
+      function rotateViewByDeltaPixels(dx, dy) {
+        if (!Number.isFinite(dx) || !Number.isFinite(dy)) return false;
+        rotatePitchByDeltaPixels(dy, true);
+        rotateYawByDeltaPixels(dx, true);
+        controls.update();
+        return true;
+      }
+
+      function panViewByDeltaPixels(dx, dy) {
+        if (!Number.isFinite(dx) || !Number.isFinite(dy)) return false;
+        if (Math.abs(dx) < 1e-9 && Math.abs(dy) < 1e-9) return true;
+
+        const element = renderer.domElement;
+        const offset = camera.position.clone().sub(controls.target);
+        let targetDistance = offset.length();
+        targetDistance *= Math.tan((camera.fov / 2) * Math.PI / 180.0);
+
+        const panX = (2 * dx * targetDistance) / Math.max(element.clientHeight, 1);
+        const panY = (2 * dy * targetDistance) / Math.max(element.clientHeight, 1);
+
+        const cameraRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion).normalize();
+        const cameraUp = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).normalize();
+        const panOffset = new THREE.Vector3();
+        panOffset.addScaledVector(cameraRight, -panX);
+        panOffset.addScaledVector(cameraUp, panY);
+
+        camera.position.add(panOffset);
+        controls.target.add(panOffset);
+        controls.update();
+        return true;
+      }
+
+      // PCホイールズームは、カーソル位置を基準に拡大縮小する
+      function zoomTowardCursor(event) {
+        // タッチパッドのピンチは既存挙動に任せる
+        if (event.ctrlKey) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const zoomFactor = event.deltaY < 0 ? 0.9 : 1.1;
+        zoomTowardClientPoint(zoomFactor, event.clientX, event.clientY);
+      }
+
+      renderer.domElement.addEventListener("wheel", zoomTowardCursor, { passive: false, capture: true });
+
+      // PC左ドラッグ/スマホ1本指ドラッグ:
+      // - 上下移動: 画面の水平軸まわりで回転
+      // - 左右移動: 常にZ軸まわりで回転
+      let isPrimaryDragRotating = false;
+      let primaryDragPointerId = null;
+      let lastPrimaryX = 0;
+      let lastPrimaryY = 0;
+      const activeTouchPointerIds = new Set();
+
+      function stopPrimaryDragRotate() {
+        if (!isPrimaryDragRotating) return;
+        const pointerId = primaryDragPointerId;
+        isPrimaryDragRotating = false;
+        primaryDragPointerId = null;
+        if (pointerId !== null && renderer.domElement.hasPointerCapture(pointerId)) {
+          renderer.domElement.releasePointerCapture(pointerId);
+        }
+      }
+
+      function startPrimaryDragRotate(event) {
+        const isMousePrimary = event.pointerType === "mouse" && event.button === 0;
+        const isTouch = event.pointerType === "touch";
+        if (!isMousePrimary && !isTouch) return;
+
+        if (isTouch) {
+          activeTouchPointerIds.add(event.pointerId);
+          if (activeTouchPointerIds.size > 1) {
+            // 2本指以上は既存のOrbitControls操作に任せる
+            stopPrimaryDragRotate();
+            return;
+          }
+        }
+
+        isPrimaryDragRotating = true;
+        primaryDragPointerId = event.pointerId;
+        lastPrimaryX = event.clientX;
+        lastPrimaryY = event.clientY;
+        mouseDownPos = { x: event.clientX, y: event.clientY };
+
+        renderer.domElement.setPointerCapture(event.pointerId);
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      function movePrimaryDragRotate(event) {
+        if (!isPrimaryDragRotating) return;
+        if (event.pointerId !== primaryDragPointerId) return;
+        if (event.pointerType === "touch" && activeTouchPointerIds.size !== 1) return;
+
+        const dx = event.clientX - lastPrimaryX;
+        const dy = event.clientY - lastPrimaryY;
+        lastPrimaryX = event.clientX;
+        lastPrimaryY = event.clientY;
+
+        rotateViewByDeltaPixels(dx, dy);
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      function endPrimaryDragRotate(event) {
+        if (event.pointerType === "touch") {
+          activeTouchPointerIds.delete(event.pointerId);
+        }
+        if (event.pointerId === primaryDragPointerId) {
+          stopPrimaryDragRotate();
+        }
+      }
+
+      renderer.domElement.addEventListener("pointerdown", startPrimaryDragRotate, true);
+      window.addEventListener("pointermove", movePrimaryDragRotate, true);
+      window.addEventListener("pointerup", endPrimaryDragRotate, true);
+      window.addEventListener("pointercancel", endPrimaryDragRotate, true);
+
+      /* ==========================================================
+        4) 候補者オブジェクト生成（点・ラベル・ツールチップ・回答）
+        ========================================================== */
+      const candidateObjects = [];
+      const targetSprites = [];
+
+      function buildAnswers(rawAnswerArray) {
+        const answers = {};
+        if (!Array.isArray(rawAnswerArray)) {
+          for (const key of POLICY_KEYS) answers[key] = null;
+          return answers;
+        }
+        for (let i = 0; i < POLICY_KEYS.length; i++) {
+          const raw = rawAnswerArray[i];
+          answers[POLICY_KEYS[i]] = raw === "-" || raw === null || raw === undefined || raw === "" ? null : Number(raw);
+        }
+        return answers;
+      }
+
+      function buildTooltipHtml(candidate) { // 27行前後のHTMLになるため、ここは「事前生成」して userData に固定する（ホバーごとの生成を避ける）
+        let html = "";
+        for (const [questionKey, params] of Q_ENTRIES) {
+          const answerIndex = QUESTION_INDEX_MAP.get(questionKey);
+          if (answerIndex === undefined) continue;
+
+          const label = questionKey;
+          const [textLow, textHigh, maxScore] = params;
+          const answerValue = candidate.answer?.[answerIndex];
+          if (answerValue === "-") {
+            html += `${label}: (未回答)<br>`;
+            continue;
+          }
+
+          const threshold = (maxScore + 1) / 2;
+          if (answerValue > threshold) {
+            html += `${label}: ${textHigh} (${answerValue}/${maxScore})<br>`;
+            continue;
+          }
+          if (answerValue < threshold) {
+            html += `${label}: ${textLow} (${answerValue}/${maxScore})<br>`;
+            continue;
+          }
+
+          // ど真ん中のときは質問ごとの例外表示を優先する
+          let content = "どちらともいえない";
+          if (MIDPOINT_LABEL_EXCEPTIONS[label]) content = MIDPOINT_LABEL_EXCEPTIONS[label];
+          html += `${label}: ${content} (${answerValue}/${maxScore})<br>`;
+        }
+
+        return `
+                <strong>${candidate.name}</strong>
+                <div class="tooltip-party">${candidate.party}</div>
+                <div class="tooltip-answers">${html}</div>
+                `;
+      }
+
+      for (const candidate of pointsData) {
+        const sprite = new THREE.Sprite(createPointMaterial(candidate.shape, candidate.color));
+        sprite.position.set(candidate.x, candidate.y, candidate.z);
+
+        // ラベル（候補者名）: 個別テクスチャ（候補者数が多いとメモリ増）
+        const textData = createTextTexture(candidate.name);
+        const label = new THREE.Sprite(
+          new THREE.SpriteMaterial({
+            map: textData.texture,
+            transparent: true,
+            opacity: THEME.opacity.label,
+            depthTest: false
+          })
+        );
+        label.position.set(candidate.x, candidate.y + 0.9, candidate.z);
+        label.scale.set(textData.width * 0.012, textData.height * 0.012, 1);
+        label.renderOrder = 999;
+
+        sprite.userData = {
+          url: candidate.url,
+          html: buildTooltipHtml(candidate)
+        };
+
+        scene.add(sprite);
+        scene.add(label);
+
+        candidateObjects.push({
+          name: candidate.name,
+          party: candidate.party,
+          sprite,
+          label,
+          position: new THREE.Vector3(candidate.x, candidate.y, candidate.z),
+          answers: buildAnswers(candidate.answer),
+
+          // 図形・色・当選フラグを保持して、あとで差し替える
+          shape: candidate.shape,
+          color: candidate.color,
+          elected: electedSet.has(candidate.name)
+        });
+
+        targetSprites.push(sprite);
+      }
+
+      /* ==========================================================
+        5) DOM参照
+        ========================================================== */
+      const legendDiv = document.getElementById("legend-panel");
+      const tooltip = document.getElementById("tooltip");
+      const modal = document.getElementById("about-modal");
+
+      const searchInput = document.getElementById("search-input");
+      const searchResults = document.getElementById("search-results");
+
+      const issueSelect = document.getElementById("issue-select");
+      const valueRange = document.getElementById("value-range");
+      const valueRangeOptions = document.getElementById("value-range-options");
+      const labelLow = document.getElementById("label-low");
+      const labelHigh = document.getElementById("label-high");
+      const filterControl = document.getElementById("filter-control");
+      const filterReset = document.getElementById("filter-reset");
+      const filterPanel = document.getElementById("filter-panel");
+
+      const electedToggle = document.getElementById("elected-toggle");
+      const electedToggleLabel = legendDiv?.querySelector(".elected-legend-toggle");
+
+      /* ==========================================================
+        6) フィルター（政党 AND 政策）
+        - activeParty: 凡例クリック
+        - currentPolicyKey: セレクトで設定
+        ========================================================== */
+      let activeParty = null;
+      let currentPolicyKey = null;
+      // 当選表示の反映
+      let showElected = electedToggle?.checked ?? false;
+
+      function applyElectedDecoration() {
+        for (const obj of candidateObjects) {
+          if (!obj.elected) continue;
+
+          const nextMap = showElected
+            ? getElectedShapeTexture(obj.shape, obj.color)
+            : getShapeTexture(obj.shape, obj.color);
+
+          if (obj.sprite.material.map !== nextMap) {
+            obj.sprite.material.map = nextMap;
+            obj.sprite.material.needsUpdate = true;
+          }
+        }
+      }
+
+      // 当選トグル切替時は「先頭へスクロール + ハイライト + 表示更新」を共通処理へ委譲
+      electedToggle?.addEventListener("change", () => {
+        applyElectedVisibilityState(electedToggle.checked, { syncCheckbox: false });
+      });
+
+      function tweenOpacity(material, targetOpacity) {
+        // 変化がない場合はアニメーション処理を抑制（大量候補者でも軽くなる）
+        if (Math.abs(material.opacity - targetOpacity) < 0.001) {
+          return;
+        }
+        gsap.to(material, {
+          opacity: targetOpacity,
+          duration: THEME.duration.filter,
+          ease: "power2.out"
+        });
+      }
+
+      function applyCombinedFilter() {
+        const hasParty = !!activeParty;
+        const hasPolicy = !!currentPolicyKey;
+        const targetVal = hasPolicy ? Number(valueRange.value) : null;
+        for (const obj of candidateObjects) {
+          const partyMatch = !hasParty || obj.party === activeParty;
+          let policyMatch = true;
+          if (hasPolicy) {
+            const candidateVal = obj.answers[currentPolicyKey];
+            policyMatch = candidateVal !== null && candidateVal === targetVal;
+          }
+          const isMatch = partyMatch && policyMatch; // 表示強度
+          let spriteOpacity, labelOpacity;
+          if (!hasParty && !hasPolicy) {
+            spriteOpacity = THEME.opacity.point;
+            labelOpacity = THEME.opacity.label;
+          } else if (hasPolicy) {
+            spriteOpacity = isMatch ? 1 : THEME.opacity.filteredOutStrong;
+            labelOpacity = isMatch ? 1 : THEME.opacity.filteredOutStrong;
+          } else {
+            spriteOpacity = isMatch ? THEME.opacity.point : THEME.opacity.dimmed;
+            labelOpacity = isMatch ? THEME.opacity.label : THEME.opacity.dimmed;
+          }
+
+          if (showElected && !obj.elected) {
+            spriteOpacity = Math.min(spriteOpacity, THEME.opacity.lose);
+            labelOpacity  = Math.min(labelOpacity, THEME.opacity.lose);
+          }
+          
+          tweenOpacity(obj.sprite.material, spriteOpacity);
+          tweenOpacity(obj.label.material, labelOpacity);
+        }
+      }
+
+      applyElectedDecoration();
+      applyCombinedFilter();
+
+      /* ==========================================================
+        7) 凡例（政党フィルター）-
+        querySelectorAll を毎回実行しないよう、要素配列を保持
+        ========================================================== */
+      const legendItemEls = [];
+      const legendItemByParty = new Map();
+      function setLegendSelected(targetEl) {
+        for (const el of legendItemEls) el.classList.remove("selected");
+        if (targetEl) targetEl.classList.add("selected");
+      }
+
+      function renderLegend() {
+        const frag = document.createDocumentFragment();
+        for (const item of legendData) {
+
+          const legendItemEl = document.createElement("div");
+          legendItemEl.className = "legend-item";
+
+          const iconUrl = getShapeDataUrl(item.style.shape, item.style.color);
+          legendItemEl.innerHTML = `<img src="${iconUrl}" class="legend-icon" alt=""><span>${item.party}</span>`;
+
+          legendItemEl.addEventListener("click", () => {
+            const isSame = activeParty === item.party;
+            activeParty = isSame ? null : item.party;
+
+            setLegendSelected(isSame ? null : legendItemEl);
+            applyCombinedFilter();
+          });
+
+          legendItemEls.push(legendItemEl);
+          legendItemByParty.set(item.party, legendItemEl);
+          frag.appendChild(legendItemEl);
+        }
+
+        legendDiv.appendChild(frag);
+      }
+      renderLegend();
+
+      /* ==========================================================
+        8) ツールチップとポインター操作
+        ========================================================== */
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      let hoveredSprite = null;
+      let currentData = null;
+      let mouseDownPos = { x: 0, y: 0 };
+
+      function pickSprite(clientX, clientY) {
+        mouse.x = (clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(targetSprites, false);
+        return intersects.length ? intersects[0].object : null;
+      }
+
+      function updateTooltipPos(clientX, clientY) {
+        const tooltipWidth = tooltip.getBoundingClientRect().width;
+        const xPos = (clientX + tooltipWidth > window.innerWidth) ? clientX - tooltipWidth : clientX + 15;
+
+        tooltip.style.left = `${xPos}px`;
+        tooltip.style.top = `${clientY - 40}px`;
+      }
+
+      function showTooltip(data) {
+        tooltip.innerHTML = data.html;
+        tooltip.style.display = "block";
+      }
+
+      function hideTooltip() {
+        tooltip.style.display = "none";
+        document.body.style.cursor = "default";
+      }
+
+      function jumpToUrl(data) {
+        if (data?.url) window.open(BASE_URL + data.url, "_blank", "noopener");
+      }
+
+      function resetScale() {
+        if (!hoveredSprite) return;
+        gsap.to(hoveredSprite.scale, { x: 1, y: 1, duration: THEME.duration.resetScale });
+        hoveredSprite = null;
+      }
+
+      window.addEventListener("pointerdown", (e) => {
+        if (e.target.closest(UI_SELECTORS)) return;
+        mouseDownPos = { x: e.clientX, y: e.clientY };
+      });
+
+      // PCホイールクリック（中ボタン）で表示を初期化
+      window.addEventListener("pointerdown", (e) => {
+        const isMiddleMouse = e.pointerType === "mouse" && e.button === 1;
+        if (!isMiddleMouse) return;
+        if (e.target.closest(UI_SELECTORS)) return;
+        if (!(e.target === renderer.domElement || renderer.domElement.contains(e.target))) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        hideTooltip();
+        resetScale();
+        resetView();
+      }, true);
+
+      // PCのホバー処理（タッチ操作ではホバーしない）
+      window.addEventListener("pointermove", (e) => {
+        if (e.pointerType === "touch") return;
+
+        if (e.target.closest(UI_SELECTORS) || e.buttons > 0) {
+          hideTooltip();
+          return;
+        }
+
+        const hit = pickSprite(e.clientX, e.clientY);
+        if (!hit) {
+          hideTooltip();
+          resetScale();
+          return;
+        }
+
+        if (hoveredSprite !== hit) {
+          resetScale();
+          hoveredSprite = hit;
+          gsap.to(hit.scale, { x: 1.5, y: 1.5, duration: THEME.duration.hover, ease: "power3.out" });
+        }
+
+        currentData = hit.userData;
+        showTooltip(currentData);
+        updateTooltipPos(e.clientX, e.clientY);
+        document.body.style.cursor = "pointer";
+      });
+
+      // PCはクリックで詳細を開く。タッチ操作はタップでツールチップ表示
+      window.addEventListener("pointerup", (e) => {
+        if (e.target.closest(UI_SELECTORS)) return;
+
+        const dist = Math.hypot(e.clientX - mouseDownPos.x, e.clientY - mouseDownPos.y);
+        if (dist > 5) return;
+
+        const hit = pickSprite(e.clientX, e.clientY);
+        if (!hit) {
+          if (e.pointerType === "touch") {
+            hideTooltip();
+            resetScale();
+          }
+          return;
+        }
+
+        const data = hit.userData;
+
+        if (e.pointerType === "touch") {
+          // タップ: ツールチップを表示
+          if (hoveredSprite !== hit) {
+            resetScale();
+            hoveredSprite = hit;
+            gsap.to(hit.scale, { x: 1.5, y: 1.5, duration: THEME.duration.hover });
+          }
+          currentData = data;
+          showTooltip(data);
+          updateTooltipPos(e.clientX, e.clientY);
+        } else {
+          // クリック: 詳細ページを開く
+          jumpToUrl(data);
+        }
+      });
+
+      // ツールチップのタップで詳細ページを開く（モバイル）
+      tooltip.addEventListener("pointerup", (e) => {
+        e.stopPropagation();
+        if (currentData) jumpToUrl(currentData);
+      });
+
+      /* ==========================================================
+        9) 描画ループ
+        ========================================================== */
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const time = performance.now() * 0.005;
+        const pulseScale = 1.4 + Math.sin(time) * 0.4;
+
+        for (const obj of candidateObjects) {
+          if (obj.sprite === hoveredSprite) continue;
+
+          const targetScale = (activeParty && obj.party === activeParty) ? pulseScale : 1;
+          if (Math.abs(obj.sprite.scale.x - targetScale) > 0.01) {
+            obj.sprite.scale.set(targetScale, targetScale, 1);
+          }
+        }
+
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      /* ==========================================================
+        10) 説明モーダル
+        ========================================================== */
+      document.getElementById("about-btn").addEventListener("click", () => {
+        modal.style.display = "flex";
+      });
+      document.getElementById("close-modal").addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+      });
+
+      /* ==========================================================
+        11) 検索
+        ========================================================== */
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        searchResults.innerHTML = "";
+
+        if (!query) {
+          searchResults.style.display = "none";
+          return;
+        }
+
+        const matches = candidateObjects.filter((candidateObj) => candidateObj.name.includes(query) || candidateObj.party.includes(query));
+        if (matches.length === 0) {
+          searchResults.style.display = "none";
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        for (const match of matches) {
+          const li = document.createElement("li");
+          li.className = "search-item";
+          li.innerHTML = `<span>${match.name}</span><span class="search-party">${match.party}</span>`;
+
+          li.addEventListener("click", () => {
+            focusCandidate(match);
+            searchResults.style.display = "none";
+            searchInput.value = match.name;
+          });
+
+          frag.appendChild(li);
+        }
+
+        searchResults.appendChild(frag);
+        searchResults.style.display = "block";
+      });
+
+      // エンターキー: 先頭項目へ移動。未入力時は表示リセット
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+
+        const query = searchInput.value.trim();
+        if (!query) {
+          resetView();
+          searchInput.blur();
+          return;
+        }
+
+        const first = searchResults.querySelector(".search-item");
+        if (first) {
+          first.click();
+          searchInput.blur();
+        }
+      });
+
+      function focusCandidate(candidateObj) {
+        const targetPos = candidateObj.position;
+
+        gsap.to(camera.position, {
+          x: targetPos.x,
+          y: targetPos.y,
+          z: targetPos.z + 15,
+          duration: THEME.duration.camera,
+          ease: "power3.inOut",
+          onUpdate: () => controls.update()
+        });
+
+        gsap.to(controls.target, {
+          x: targetPos.x,
+          y: targetPos.y,
+          z: targetPos.z,
+          duration: THEME.duration.camera,
+          ease: "power3.inOut"
+        });
+      }
+
+      function resetView() {
+        // 起動時と同じビューへ戻す（camera.position / camera.up / controls.target）
+        gsap.killTweensOf(camera.position);
+        gsap.killTweensOf(controls.target);
+        gsap.killTweensOf(camera.up);
+
+        const onUpdateView = () => {
+          camera.up.normalize();
+          controls.update();
+        };
+
+        gsap.to(camera.position, {
+          x: initialViewState.cameraPosition.x,
+          y: initialViewState.cameraPosition.y,
+          z: initialViewState.cameraPosition.z,
+          duration: THEME.duration.camera,
+          ease: "power3.inOut",
+          onUpdate: onUpdateView
+        });
+
+        gsap.to(controls.target, {
+          x: initialViewState.target.x,
+          y: initialViewState.target.y,
+          z: initialViewState.target.z,
+          duration: THEME.duration.camera,
+          ease: "power3.inOut",
+          onUpdate: onUpdateView
+        });
+
+        gsap.to(camera.up, {
+          x: initialViewState.cameraUp.x,
+          y: initialViewState.cameraUp.y,
+          z: initialViewState.cameraUp.z,
+          duration: THEME.duration.camera,
+          ease: "power3.inOut",
+          onUpdate: onUpdateView
+        });
+      }
+
+      function resetViewImmediate() {
+        gsap.killTweensOf(camera.position);
+        gsap.killTweensOf(controls.target);
+        gsap.killTweensOf(camera.up);
+        camera.position.copy(initialViewState.cameraPosition);
+        controls.target.copy(initialViewState.target);
+        camera.up.copy(initialViewState.cameraUp).normalize();
+        controls.update();
+      }
+
+      function findCandidateByName(name, exact = true) {
+        if (typeof name !== "string") return null;
+        const trimmed = name.trim();
+        if (!trimmed) return null;
+        if (exact) {
+          return candidateObjects.find((obj) => obj.name === trimmed) ?? null;
+        }
+        return candidateObjects.find((obj) => obj.name.includes(trimmed)) ?? null;
+      }
+
+      function toFiniteNumber(value, fallback) {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : fallback;
+      }
+
+      function normalizeDurationSeconds(seconds) {
+        return Math.max(0, toFiniteNumber(seconds, 0));
+      }
+
+      function normalizeGsapEaseName(ease, fallback = "power2.inOut") {
+        if (typeof ease !== "string") return fallback;
+        const trimmed = ease.trim();
+        return trimmed ? trimmed : fallback;
+      }
+
+      function waitMs(ms) {
+        return new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.floor(toFiniteNumber(ms, 0)))));
+      }
+
+      function normalizeText(text) {
+        return String(text ?? "").trim();
+      }
+
+      function waitSeconds(seconds) {
+        return waitMs(Math.round(Math.max(0, toFiniteNumber(seconds, 0)) * 1000));
+      }
+
+      let continuousHorizontalRotateRafId = null;
+      let continuousHorizontalRotateLastTs = 0;
+
+      function startContinuousHorizontalRotate(options = {}) {
+        stopContinuousHorizontalRotate();
+
+        const opts = options && typeof options === "object" ? options : {};
+        const pixelsPerSecond = toFiniteNumber(opts.pixelsPerSecond, 8);
+        if (Math.abs(pixelsPerSecond) < 1e-9) return false;
+        const initialPixelsPerSecond = toFiniteNumber(opts.initialPixelsPerSecond, 0);
+        const rampSeconds = Math.max(0, toFiniteNumber(opts.rampSeconds, 1.2));
+
+        continuousHorizontalRotateLastTs = performance.now();
+        let elapsedSec = 0;
+        const tick = (now) => {
+          if (continuousHorizontalRotateRafId === null) return;
+          const deltaSec = Math.max(0, (now - continuousHorizontalRotateLastTs) / 1000);
+          continuousHorizontalRotateLastTs = now;
+
+          elapsedSec += deltaSec;
+          let speed = pixelsPerSecond;
+          if (rampSeconds > 1e-9) {
+            const progress = Math.min(1, elapsedSec / rampSeconds);
+            const smooth = progress * progress * (3 - 2 * progress); // smoothstep
+            speed = initialPixelsPerSecond + (pixelsPerSecond - initialPixelsPerSecond) * smooth;
+          }
+
+          const deltaPixels = speed * deltaSec;
+          rotateYawByDeltaPixels(deltaPixels);
+          continuousHorizontalRotateRafId = window.requestAnimationFrame(tick);
+        };
+
+        continuousHorizontalRotateRafId = window.requestAnimationFrame(tick);
+        return true;
+      }
+
+      function stopContinuousHorizontalRotate() {
+        if (continuousHorizontalRotateRafId !== null) {
+          window.cancelAnimationFrame(continuousHorizontalRotateRafId);
+          continuousHorizontalRotateRafId = null;
+        }
+        continuousHorizontalRotateLastTs = 0;
+      }
+
+      function tryOpenIssueDropdown() {
+        if (!issueSelect) return false;
+        issueSelect.focus();
+
+        // ブラウザ制約で「本当に開く」保証はできないが、操作シーケンスは再現する
+        issueSelect.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window }));
+        issueSelect.dispatchEvent(new MouseEvent("mouseup", { bubbles: true, cancelable: true, view: window }));
+        issueSelect.click();
+        return true;
+      }
+
+      function findIssueOptionByText(targetText, exact = false) {
+        const needle = normalizeText(targetText);
+        if (!needle || !issueSelect) return null;
+
+        for (const opt of issueSelect.options) {
+          if (!opt?.value) continue; // placeholder は除外
+          const label = normalizeText(opt.textContent);
+          if (exact ? label === needle : label.includes(needle)) return opt;
+        }
+        return null;
+      }
+
+      function findLegendItemByPartyName(targetParty, exact = true) {
+        const needle = normalizeText(targetParty);
+        if (!needle) return null;
+
+        if (exact) {
+          return legendItemByParty.get(needle) ?? null;
+        }
+
+        for (const [partyName, el] of legendItemByParty.entries()) {
+          const normalizedParty = normalizeText(partyName);
+          if (normalizedParty.includes(needle) || needle.includes(normalizedParty)) return el;
+        }
+        return null;
+      }
+
+      function isElementFullyVisibleInContainer(element, container) {
+        if (!element || !container) return false;
+        const elRect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        return elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom;
+      }
+
+      async function scrollLegendItemIntoViewWorkflow(legendEl, options = {}) {
+        if (!legendEl || !legendDiv) return false;
+        const opts = options && typeof options === "object" ? options : {};
+        const behavior = opts.behavior === "auto" ? "auto" : "smooth";
+        const waitAfterScrollMs = Math.max(0, toFiniteNumber(opts.waitAfterScrollMs, 220));
+
+        if (!isElementFullyVisibleInContainer(legendEl, legendDiv)) {
+          legendEl.scrollIntoView({ block: "nearest", inline: "nearest", behavior });
+          if (waitAfterScrollMs > 0) await waitMs(waitAfterScrollMs);
+        }
+        return true;
+      }
+
+      function setLegendActionPreview(legendEl, active) {
+        if (!legendEl) return;
+        legendEl.classList.toggle("action-preview", !!active);
+      }
+
+      async function selectPartyByNameWorkflow(targetParty, options = {}) {
+        const opts = options && typeof options === "object" ? options : {};
+        const exact = opts.exact !== false;
+        const preview = opts.preview !== false;
+        const holdMs = Math.max(0, toFiniteNumber(opts.holdMs, 1000));
+        const legendEl = findLegendItemByPartyName(targetParty, exact);
+        if (!legendEl) return false;
+        await scrollLegendItemIntoViewWorkflow(legendEl, { waitAfterScrollMs: opts.waitAfterScrollMs });
+
+        if (preview) {
+          setLegendActionPreview(legendEl, true);
+          try {
+            if (holdMs > 0) await waitMs(holdMs);
+          } finally {
+            setLegendActionPreview(legendEl, false);
+          }
+        }
+
+        const partyLabel = normalizeText(legendEl.querySelector("span")?.textContent);
+        if (!partyLabel) return false;
+        activeParty = partyLabel;
+        setLegendSelected(legendEl);
+        applyCombinedFilter();
+        return true;
+      }
+
+      function clearPartySelectionWorkflow() {
+        activeParty = null;
+        setLegendSelected(null);
+        applyCombinedFilter();
+        return true;
+      }
+
+      function setPolicyRangeValueWorkflow(rawValue) {
+        if (!valueRange) return false;
+        const minVal = Number(valueRange.min);
+        const maxVal = Number(valueRange.max);
+        const min = Number.isFinite(minVal) ? minVal : 1;
+        const max = Number.isFinite(maxVal) ? maxVal : 5;
+        const parsed = Math.round(toFiniteNumber(rawValue, min));
+        const clamped = Math.min(max, Math.max(min, parsed));
+        valueRange.value = String(clamped);
+        valueRange.dispatchEvent(new Event("input", { bubbles: true }));
+        return true;
+      }
+
+      async function sweepPolicyRangeWorkflow(startValue, endValue, intervalMs = 1000) {
+        const start = Math.round(toFiniteNumber(startValue, 1));
+        const end = Math.round(toFiniteNumber(endValue, start));
+        const step = end >= start ? 1 : -1;
+
+        if (!setPolicyRangeValueWorkflow(start)) return false;
+        if (start === end) return true;
+
+        for (let value = start + step; step > 0 ? value <= end : value >= end; value += step) {
+          await waitMs(intervalMs);
+          setPolicyRangeValueWorkflow(value);
+        }
+        return true;
+      }
+
+      async function runAutopilot() {
+        const continuousYawPixelsPerSecond = 25;
+        const step1Seconds = 5;
+        const step1RotateX = 3000;
+        const step1ComposeRotateX = step1RotateX - continuousYawPixelsPerSecond * step1Seconds;
+
+        const partySequence = [
+          { name: "自民党", waitSecondsAfterSelect: 1.6 },
+          { name: "自民党(維)", waitSecondsAfterSelect: 1.6 },
+          { name: "無所属(自)", waitSecondsAfterSelect: 1.6 },
+          { name: "中道改革連合(立)", waitSecondsAfterSelect: 1.6 },
+          { name: "中道改革連合(公)", waitSecondsAfterSelect: 1.6 },
+          { name: "国民民主党", waitSecondsAfterSelect: 1.6 },
+          { name: "維新の会", waitSecondsAfterSelect: 1.6 },
+          { name: "参政党", waitSecondsAfterSelect: 1.6 },
+          { name: "共産党", waitSecondsAfterSelect: 1.6 },
+          { name: "社民党", waitSecondsAfterSelect: 1.6 },
+          { name: "れいわ", waitSecondsAfterSelect: 1.6 },
+          { name: "日本保守党", waitSecondsAfterSelect: 1.6 },
+          { name: "みらい", waitSecondsAfterSelect: 1.6 },
+          { name: "減税・ゆうこく", waitSecondsAfterSelect: 1.6 },
+          { name: "安楽会", waitSecondsAfterSelect: 1.6 },
+          { name: "諸派", waitSecondsAfterSelect: 1.6 },
+          { name: "無所属", waitSecondsAfterSelect: 1.6 }
+        ];
+        
+        const maxRange = 5;
+
+        startContinuousHorizontalRotate({
+          pixelsPerSecond: continuousYawPixelsPerSecond,
+          initialPixelsPerSecond: continuousYawPixelsPerSecond,
+          rampSeconds: 0
+        });
+        try {
+          // 1) カメラを回転+ズーム（定常横回転ぶんは差し引いて合成）
+          await controlCameraOperation({
+            rotateX: step1ComposeRotateX,
+            rotateY: -400,
+            seconds: step1Seconds,
+            zoomFactor: 1.2
+          });
+
+          // 2) 政党ハイライト選択デモ（当選OFF）
+          for (const partyStep of partySequence) {
+            const partySelected = await selectPartyByNameWorkflow(partyStep.name, {
+              preview: true,
+              holdMs: 500,
+              exact: true
+            });
+            if (!partySelected) return false;
+            await waitSeconds(partyStep.waitSecondsAfterSelect);
+          }
+          clearPartySelectionWorkflow();
+
+          // 3) 2秒休止
+          await waitSeconds(2);
+
+          // 4) 当選フラグをONにして3秒待機
+          setElectedVisibleFromApi(true);
+          await waitSeconds(2);
+
+          // 5) 政党ハイライト選択デモ（当選ON）
+          for (const partyStep of partySequence) {
+            const partySelected = await selectPartyByNameWorkflow(partyStep.name, {
+              preview: true,
+              holdMs: 500,
+              exact: true
+            });
+            if (!partySelected) return false;
+            await waitSeconds(partyStep.waitSecondsAfterSelect);
+          }
+          setElectedVisibleFromApi(false);
+          clearPartySelectionWorkflow();
+
+          // 6) 待機1秒
+          await waitSeconds(1);
+
+          // 7) 原発を1.5秒ハイライトして選択し、即座にレンジを1へ
+          const policySelected = await selectIssueByTextWorkflow("原発", {
+            preview: true,
+            holdMs: 1500,
+            exact: false
+          });
+          if (!policySelected) return false;
+          setPolicyRangeValueWorkflow(1);
+
+          // 8) 政策レンジ往復（1 -> 5 -> 1）
+          await sweepPolicyRangeWorkflow(1, maxRange, 1000);
+          await sweepPolicyRangeWorkflow(maxRange, 1, 1000);
+
+          // 9) 1秒休止後に当選フラグをON、さらに1秒休止
+          await waitSeconds(1);
+          setElectedVisibleFromApi(true);
+          await waitSeconds(1);
+
+          // 10) 政策レンジを再度往復（1 -> 5 -> 1）
+          await sweepPolicyRangeWorkflow(1, maxRange, 1000);
+          await sweepPolicyRangeWorkflow(maxRange, 1, 1000);
+
+          // 11) 1秒休止
+          await waitSeconds(1);
+
+          // 12) フィルターをリセットして1秒休止
+          resetFilter();
+          await waitSeconds(1);
+
+          // 13) 検索ボックスに「小泉」を1文字ずつ入力
+          const typed = await typeSearchTextWorkflow("小泉", {
+            preview: true,
+            charDelayMs: 320,
+            holdAfterTypingMs: 700,
+            clearFirst: true
+          });
+          if (!typed) return false;
+        } finally {
+          stopContinuousHorizontalRotate();
+        }
+
+        // 14) 検索候補の「小泉 進次郎」をハイライトして選択し、ツールチップを2秒表示
+        const searchSelected = await selectSearchResultByNameWorkflow("小泉 進次郎", {
+          exact: true,
+          preview: true,
+          holdMs: 500,
+          waitAfterClickMs: 1200
+        });
+        if (!searchSelected) return false;
+        await waitSeconds(1);
+
+        const tooltipShown = await showTooltipForCandidateByNameWorkflow("小泉 進次郎", {
+          exact: true,
+          holdMs: 2000
+        });
+        if (!tooltipShown) return false;
+        
+        // 15) 回転中心を初期位置へ戻しつつ、画面中央基準でズームアウトしながら回転
+        await controlCameraOperation({
+          rotateX: 5000,
+          rotateY: -300,
+          seconds: 18,
+          zoomFactor: 6.0,
+          targetPreset: "initial"
+        });
+        return true;
+      }
+
+      function setPolicySelectPreview(active) {
+        issueSelect?.classList.toggle("policy-select-preview", !!active);
+        filterPanel?.classList.toggle("policy-select-preview", !!active);
+      }
+
+      function setSearchPreview(active) {
+        searchInput?.classList.toggle("search-action-preview", !!active);
+        searchResults?.classList.toggle("search-action-preview", !!active);
+      }
+
+      function setSearchInputValueWorkflow(value) {
+        if (!searchInput) return false;
+        searchInput.value = String(value ?? "");
+        searchInput.dispatchEvent(new Event("input", { bubbles: true }));
+        return true;
+      }
+
+      async function typeSearchTextWorkflow(text, options = {}) {
+        if (!searchInput) return false;
+
+        const opts = options && typeof options === "object" ? options : {};
+        const preview = opts.preview !== false;
+        const clearFirst = opts.clearFirst !== false;
+        const charDelayMs = Math.max(0, toFiniteNumber(opts.charDelayMs, 280));
+        const holdAfterTypingMs = Math.max(0, toFiniteNumber(opts.holdAfterTypingMs, 600));
+        const content = String(text ?? "");
+
+        if (clearFirst) setSearchInputValueWorkflow("");
+        if (preview) setSearchPreview(true);
+
+        try {
+          let current = "";
+          for (const ch of content) {
+            current += ch;
+            setSearchInputValueWorkflow(current);
+            if (charDelayMs > 0) await waitMs(charDelayMs);
+          }
+          if (holdAfterTypingMs > 0) await waitMs(holdAfterTypingMs);
+          return true;
+        } finally {
+          if (preview) setSearchPreview(false);
+        }
+      }
+
+      function findSearchResultItemByName(targetName, exact = false) {
+        const needle = normalizeText(targetName);
+        if (!needle || !searchResults) return null;
+        const needleCompact = needle.replace(/\s+/g, "");
+
+        const items = searchResults.querySelectorAll(".search-item");
+        for (const item of items) {
+          const nameEl = item.querySelector("span");
+          const candidateName = normalizeText(nameEl?.textContent);
+          if (!candidateName) continue;
+          const candidateCompact = candidateName.replace(/\s+/g, "");
+          if (exact ? candidateCompact === needleCompact : (candidateName.includes(needle) || candidateCompact.includes(needleCompact))) return item;
+        }
+        return null;
+      }
+
+      async function selectSearchResultByNameWorkflow(targetName, options = {}) {
+        const opts = options && typeof options === "object" ? options : {};
+        const exact = opts.exact !== false;
+        const preview = opts.preview !== false;
+        const holdMs = Math.max(0, toFiniteNumber(opts.holdMs, 1000));
+        const waitAfterClickMs = Math.max(0, toFiniteNumber(opts.waitAfterClickMs, 800));
+
+        const item = findSearchResultItemByName(targetName, exact);
+        if (!item) return false;
+
+        if (preview) item.classList.add("action-preview");
+        try {
+          if (holdMs > 0) await waitMs(holdMs);
+        } finally {
+          if (preview) item.classList.remove("action-preview");
+        }
+
+        item.click();
+        if (waitAfterClickMs > 0) await waitMs(waitAfterClickMs);
+        return true;
+      }
+
+      async function showTooltipForCandidateByNameWorkflow(targetName, options = {}) {
+        const opts = options && typeof options === "object" ? options : {};
+        const exact = opts.exact !== false;
+        const holdMs = Math.max(0, toFiniteNumber(opts.holdMs, 1000));
+
+        const targetCompact = normalizeText(targetName).replace(/\s+/g, "");
+        let candidateObj = findCandidateByName(targetName, exact) ?? findCandidateByName(targetName, false);
+        if (!candidateObj && targetCompact) {
+          candidateObj = candidateObjects.find((obj) => normalizeText(obj.name).replace(/\s+/g, "") === targetCompact) ?? null;
+        }
+        if (!candidateObj?.sprite?.userData) return false;
+
+        const projected = candidateObj.position.clone().project(camera);
+        const clientX = ((projected.x + 1) / 2) * window.innerWidth;
+        const clientY = ((-projected.y + 1) / 2) * window.innerHeight;
+
+        currentData = candidateObj.sprite.userData;
+        showTooltip(currentData);
+        updateTooltipPos(clientX, clientY);
+
+        if (hoveredSprite !== candidateObj.sprite) {
+          resetScale();
+          hoveredSprite = candidateObj.sprite;
+          gsap.to(candidateObj.sprite.scale, { x: 1.5, y: 1.5, duration: THEME.duration.hover, ease: "power3.out" });
+        }
+
+        document.body.style.cursor = "pointer";
+        if (holdMs > 0) await waitMs(holdMs);
+
+        hideTooltip();
+        resetScale();
+        return true;
+      }
+
+      async function selectIssueByTextWorkflow(targetText, options = {}) {
+        if (!issueSelect) return false;
+
+        const opts = options && typeof options === "object" ? options : {};
+        const openDropdown = opts.openDropdown !== false;
+        const exact = !!opts.exact;
+        const delayMs = Math.max(0, toFiniteNumber(opts.delayMs, 80));
+        const preview = opts.preview !== false;
+        const holdMs = Math.max(0, toFiniteNumber(opts.holdMs, 700));
+
+        if (openDropdown) {
+          tryOpenIssueDropdown();
+          if (delayMs > 0) await waitMs(delayMs);
+        }
+
+        const option = findIssueOptionByText(targetText, exact);
+        if (!option) return false;
+
+        issueSelect.value = option.value;
+        if (preview) {
+          setPolicySelectPreview(true);
+          try {
+            if (holdMs > 0) await waitMs(holdMs);
+          } finally {
+            setPolicySelectPreview(false);
+          }
+        }
+        issueSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        return true;
+      }
+
+      function controlCameraOperation(params = {}) {
+        const opts = params && typeof params === "object" ? params : {};
+        const rotateX = toFiniteNumber(opts.rotateX, 0);
+        const rotateY = toFiniteNumber(opts.rotateY, 0);
+        const panX = toFiniteNumber(opts.panX, 0);
+        const panY = toFiniteNumber(opts.panY, 0);
+        const zoomFactor = Math.max(0.01, toFiniteNumber(opts.zoomFactor, 1));
+        const duration = normalizeDurationSeconds(opts.seconds);
+        const ease = normalizeGsapEaseName(opts.ease, "power2.inOut");
+        const useInitialTarget = opts.targetPreset === "initial";
+        const keepCameraOffsetOnTargetShift = opts.keepCameraOffsetOnTargetShift !== false;
+
+        const center = getRendererClientCenter();
+        const clientX = toFiniteNumber(opts.clientX, center.x);
+        const clientY = toFiniteNumber(opts.clientY, center.y);
+
+        const nextTargetX = toFiniteNumber(opts.targetX, useInitialTarget ? initialViewState.target.x : controls.target.x);
+        const nextTargetY = toFiniteNumber(opts.targetY, useInitialTarget ? initialViewState.target.y : controls.target.y);
+        const nextTargetZ = toFiniteNumber(opts.targetZ, useInitialTarget ? initialViewState.target.z : controls.target.z);
+        const targetShift = new THREE.Vector3(nextTargetX, nextTargetY, nextTargetZ).sub(controls.target);
+        const hasTargetShift = targetShift.lengthSq() > 1e-12;
+
+        const hasRotate = Math.abs(rotateX) > 1e-9 || Math.abs(rotateY) > 1e-9;
+        const hasPan = Math.abs(panX) > 1e-9 || Math.abs(panY) > 1e-9;
+        const hasZoom = Math.abs(zoomFactor - 1) > 1e-9;
+
+        if (!hasRotate && !hasPan && !hasZoom && !hasTargetShift) {
+          return Promise.resolve(true);
+        }
+
+        if (duration <= 0) {
+          let ok = true;
+          if (hasTargetShift) {
+            controls.target.add(targetShift);
+            if (keepCameraOffsetOnTargetShift) {
+              camera.position.add(targetShift);
+            }
+            controls.update();
+          }
+          if (hasRotate) ok = rotateViewByDeltaPixels(rotateX, rotateY) && ok;
+          if (hasPan) ok = panViewByDeltaPixels(panX, panY) && ok;
+          if (hasZoom) ok = zoomTowardClientPoint(zoomFactor, clientX, clientY) && ok;
+          return Promise.resolve(ok);
+        }
+
+        return new Promise((resolve) => {
+          const state = {
+            progress: 0,
+            lastTargetShiftProgress: 0,
+            lastRotateX: 0,
+            lastRotateY: 0,
+            lastPanX: 0,
+            lastPanY: 0,
+            lastZoom: 1
+          };
+          gsap.to(state, {
+            progress: 1,
+            duration,
+            ease,
+            onUpdate: () => {
+              if (hasTargetShift) {
+                const nextTargetShiftProgress = state.progress;
+                const stepShiftProgress = nextTargetShiftProgress - state.lastTargetShiftProgress;
+                state.lastTargetShiftProgress = nextTargetShiftProgress;
+
+                controls.target.addScaledVector(targetShift, stepShiftProgress);
+                if (keepCameraOffsetOnTargetShift) {
+                  camera.position.addScaledVector(targetShift, stepShiftProgress);
+                }
+                controls.update();
+              }
+
+              if (hasRotate) {
+                const nextRotateX = rotateX * state.progress;
+                const nextRotateY = rotateY * state.progress;
+                const stepRotateX = nextRotateX - state.lastRotateX;
+                const stepRotateY = nextRotateY - state.lastRotateY;
+                state.lastRotateX = nextRotateX;
+                state.lastRotateY = nextRotateY;
+                rotateViewByDeltaPixels(stepRotateX, stepRotateY);
+              }
+
+              if (hasPan) {
+                const nextPanX = panX * state.progress;
+                const nextPanY = panY * state.progress;
+                const stepPanX = nextPanX - state.lastPanX;
+                const stepPanY = nextPanY - state.lastPanY;
+                state.lastPanX = nextPanX;
+                state.lastPanY = nextPanY;
+                panViewByDeltaPixels(stepPanX, stepPanY);
+              }
+
+              if (hasZoom) {
+                const cumulativeZoom = Math.pow(zoomFactor, state.progress);
+                const stepZoom = cumulativeZoom / state.lastZoom;
+                state.lastZoom = cumulativeZoom;
+                zoomTowardClientPoint(stepZoom, clientX, clientY);
+              }
+            },
+            onComplete: () => resolve(true)
+          });
+        });
+      }
+
+      let electedTogglePreviewTimerId = null;
+
+      // 当選スイッチの切替が視認できるよう、凡例パネル全体とトグルを一時強調する
+      function highlightElectedToggleForAction(holdMs = 1100) {
+        if (!legendDiv || !electedToggleLabel) return;
+
+        if (electedTogglePreviewTimerId !== null) {
+          clearTimeout(electedTogglePreviewTimerId);
+          electedTogglePreviewTimerId = null;
+        }
+
+        legendDiv.classList.add("elected-toggle-preview");
+        electedToggleLabel.classList.add("action-preview");
+
+        const durationMs = Math.max(0, toFiniteNumber(holdMs, 1100));
+        electedTogglePreviewTimerId = window.setTimeout(() => {
+          legendDiv.classList.remove("elected-toggle-preview");
+          electedToggleLabel.classList.remove("action-preview");
+          electedTogglePreviewTimerId = null;
+        }, durationMs);
+      }
+
+      // 共産党以降を見ている状態でも当選スイッチを見失わないよう、凡例先頭へ戻す
+      function scrollLegendToTopForElectedToggle(options = {}) {
+        if (!legendDiv) return;
+        const opts = options && typeof options === "object" ? options : {};
+        const behavior = opts.behavior === "auto" ? "auto" : "smooth";
+        legendDiv.scrollTo({ top: 0, behavior });
+      }
+
+      // 手動操作/API操作のどちらでも同じ「切替演出 + 状態反映」を行う
+      function applyElectedVisibilityState(visible, options = {}) {
+        if (!electedToggle) return false;
+        const opts = options && typeof options === "object" ? options : {};
+        const syncCheckbox = opts.syncCheckbox !== false;
+        const scrollToTop = opts.scrollToTop !== false;
+        const highlight = opts.highlight !== false;
+
+        if (scrollToTop) {
+          scrollLegendToTopForElectedToggle({ behavior: opts.scrollBehavior });
+        }
+
+        if (syncCheckbox) {
+          electedToggle.checked = !!visible;
+        }
+
+        showElected = !!visible;
+        applyElectedDecoration();
+        applyCombinedFilter();
+
+        if (highlight) {
+          highlightElectedToggleForAction(opts.highlightMs);
+        }
+        return true;
+      }
+
+      function setElectedVisibleFromApi(visible) {
+        return applyElectedVisibilityState(visible, { syncCheckbox: true, scrollToTop: true, highlight: true });
+      }
+
+      window.demoOps = {
+        ready: true,
+        rotateBy(dx = 0, dy = 0) {
+          return rotateViewByDeltaPixels(toFiniteNumber(dx, 0), toFiniteNumber(dy, 0));
+        },
+        rotateVerticalBy(dy = 0) {
+          return rotatePitchByDeltaPixels(toFiniteNumber(dy, 0));
+        },
+        rotateHorizontalBy(dx = 0) {
+          return rotateYawByDeltaPixels(toFiniteNumber(dx, 0));
+        },
+        panBy(dx = 0, dy = 0) {
+          return panViewByDeltaPixels(toFiniteNumber(dx, 0), toFiniteNumber(dy, 0));
+        },
+        openPolicyDropdown() {
+          return tryOpenIssueDropdown();
+        },
+        selectPartyByName(targetParty, options = {}) {
+          return selectPartyByNameWorkflow(targetParty, options);
+        },
+        clearPartySelection() {
+          return clearPartySelectionWorkflow();
+        },
+        selectPolicyByText(targetText, options = {}) {
+          return selectIssueByTextWorkflow(targetText, options);
+        },
+        selectNuclearPolicy(options = {}) {
+          return selectIssueByTextWorkflow("原発", options);
+        },
+        setPolicyRangeValue(value) {
+          return setPolicyRangeValueWorkflow(value);
+        },
+        sweepPolicyRange(startValue, endValue, intervalMs = 1000) {
+          return sweepPolicyRangeWorkflow(startValue, endValue, intervalMs);
+        },
+        runJiminNuclearFlow() {
+          return runJiminNuclearDemoFlow();
+        },
+        controlCamera(options = {}) {
+          return controlCameraOperation(options);
+        },
+        zoomByFactor(factor = 1.1, options = {}) {
+          const opts = options && typeof options === "object" ? options : {};
+          const center = getRendererClientCenter();
+          const clientX = toFiniteNumber(opts.clientX, center.x);
+          const clientY = toFiniteNumber(opts.clientY, center.y);
+          return zoomTowardClientPoint(toFiniteNumber(factor, 1), clientX, clientY);
+        },
+        zoomIn(step = 0.1, options = {}) {
+          const safeStep = Math.max(0, Math.abs(toFiniteNumber(step, 0.1)));
+          const factor = Math.max(0.01, 1 - safeStep);
+          return this.zoomByFactor(factor, options);
+        },
+        zoomOut(step = 0.1, options = {}) {
+          const safeStep = Math.max(0, Math.abs(toFiniteNumber(step, 0.1)));
+          return this.zoomByFactor(1 + safeStep, options);
+        },
+        resetView(animated = true) {
+          if (animated) {
+            resetView();
+            return true;
+          }
+          resetViewImmediate();
+          return true;
+        },
+        resetCameraView(animated = true) {
+          return this.resetView(animated);
+        },
+        focusCandidateByName(name, options = {}) {
+          const exact = !(options && options.exact === false);
+          const candidateObj = findCandidateByName(name, exact);
+          if (!candidateObj) return false;
+          focusCandidate(candidateObj);
+          return true;
+        },
+        dragLeft(startX = 0, startY = 0, endX = 0, endY = 0, seconds = 0) {
+          const dx = toFiniteNumber(endX, 0) - toFiniteNumber(startX, 0);
+          const dy = toFiniteNumber(endY, 0) - toFiniteNumber(startY, 0);
+          return controlCameraOperation({ rotateX: dx, rotateY: dy, seconds });
+        },
+        dragLeftVertical(startY = 0, endY = 0, seconds = 0) {
+          const dy = toFiniteNumber(endY, 0) - toFiniteNumber(startY, 0);
+          return controlCameraOperation({ rotateY: dy, seconds });
+        },
+        dragLeftHorizontal(startX = 0, endX = 0, seconds = 0) {
+          const dx = toFiniteNumber(endX, 0) - toFiniteNumber(startX, 0);
+          return controlCameraOperation({ rotateX: dx, seconds });
+        },
+        dragLeftVerticalAndHorizontal(startX = 0, endX = 0, startY = 0, endY = 0, seconds = 0) {
+          const dx = toFiniteNumber(endX, 0) - toFiniteNumber(startX, 0);
+          const dy = toFiniteNumber(endY, 0) - toFiniteNumber(startY, 0);
+          return controlCameraOperation({ rotateX: dx, rotateY: dy, seconds });
+        },
+        dragRight(startX = 0, startY = 0, endX = 0, endY = 0, seconds = 0) {
+          const dx = toFiniteNumber(endX, 0) - toFiniteNumber(startX, 0);
+          const dy = toFiniteNumber(endY, 0) - toFiniteNumber(startY, 0);
+          return controlCameraOperation({ panX: dx, panY: dy, seconds });
+        },
+        setElectedVisible(visible) {
+          return setElectedVisibleFromApi(visible);
+        },
+        getViewState() {
+          return {
+            camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
+            target: { x: controls.target.x, y: controls.target.y, z: controls.target.z },
+            up: { x: camera.up.x, y: camera.up.y, z: camera.up.z }
+          };
+        },
+        setView(viewState = {}) {
+          if (!viewState || typeof viewState !== "object") return false;
+
+          gsap.killTweensOf(camera.position);
+          gsap.killTweensOf(controls.target);
+          gsap.killTweensOf(camera.up);
+
+          let changed = false;
+          if (viewState.camera && typeof viewState.camera === "object") {
+            const x = toFiniteNumber(viewState.camera.x, camera.position.x);
+            const y = toFiniteNumber(viewState.camera.y, camera.position.y);
+            const z = toFiniteNumber(viewState.camera.z, camera.position.z);
+            camera.position.set(x, y, z);
+            changed = true;
+          }
+
+          if (viewState.target && typeof viewState.target === "object") {
+            const x = toFiniteNumber(viewState.target.x, controls.target.x);
+            const y = toFiniteNumber(viewState.target.y, controls.target.y);
+            const z = toFiniteNumber(viewState.target.z, controls.target.z);
+            controls.target.set(x, y, z);
+            changed = true;
+          }
+
+          if (viewState.up && typeof viewState.up === "object") {
+            const x = toFiniteNumber(viewState.up.x, camera.up.x);
+            const y = toFiniteNumber(viewState.up.y, camera.up.y);
+            const z = toFiniteNumber(viewState.up.z, camera.up.z);
+            camera.up.set(x, y, z);
+            changed = true;
+          }
+
+          if (!changed) return false;
+          camera.up.normalize();
+          controls.update();
+          return true;
+        }
+      };
+
+      window.dragLeftVertical = (startY = 0, endY = 0, seconds = 0) =>
+        window.demoOps.dragLeftVertical(startY, endY, seconds);
+      window.dragLeftHorizontal = (startX = 0, endX = 0, seconds = 0) =>
+        window.demoOps.dragLeftHorizontal(startX, endX, seconds);
+      window.dragLeftVerticalAndHorizontal = (startX = 0, endX = 0, startY = 0, endY = 0, seconds = 0) =>
+        window.demoOps.dragLeftVerticalAndHorizontal(startX, endX, startY, endY, seconds);
+      window.dragRightPan = (startX = 0, startY = 0, endX = 0, endY = 0, seconds = 0) =>
+        window.demoOps.dragRight(startX, startY, endX, endY, seconds);
+      window.resetCameraView = (animated = true) => window.demoOps.resetCameraView(animated);
+      window.controlCamera = (options = {}) => window.demoOps.controlCamera(options);
+      window.openPolicyDropdown = () => window.demoOps.openPolicyDropdown();
+      window.selectPartyByName = (targetParty, options = {}) => window.demoOps.selectPartyByName(targetParty, options);
+      window.clearPartySelection = () => window.demoOps.clearPartySelection();
+      window.selectPolicyByText = (targetText, options = {}) => window.demoOps.selectPolicyByText(targetText, options);
+      window.selectNuclearPolicy = (options = {}) => window.demoOps.selectNuclearPolicy(options);
+      window.setPolicyRangeValue = (value) => window.demoOps.setPolicyRangeValue(value);
+      window.runJiminNuclearFlow = () => window.demoOps.runJiminNuclearFlow();
+
+      /* ==========================================================
+        12) 政策フィルターUI
+        ========================================================== */
+      function setFilterControlEnabled(enabled) {
+        filterControl.classList.toggle("is-disabled", !enabled);
+      }
+
+      function resetFilter() {
+        issueSelect.value = "";
+        currentPolicyKey = null;
+
+        setFilterControlEnabled(false);
+        labelLow.textContent = "---";
+        labelHigh.textContent = "---";
+        valueRangeOptions.replaceChildren();
+
+        applyCombinedFilter();
+      }
+
+      function onIssueChange() {
+        const selectedPolicyKey = issueSelect.value;
+        if (!selectedPolicyKey || !QUESTION_DATA[selectedPolicyKey]) {
+          resetFilter();
+          return;
+        }
+
+        const [low, high, scale] = QUESTION_DATA[selectedPolicyKey];
+        currentPolicyKey = selectedPolicyKey;
+
+        setFilterControlEnabled(true);
+
+        labelLow.textContent = `1: ${low}`;
+        labelHigh.textContent = `${scale}: ${high}`;
+
+        valueRange.max = String(scale);
+        valueRange.value = String(Math.ceil(scale / 2));
+        const optionFrag = document.createDocumentFragment();
+        for (let i = 1; i <= scale; i += 1) {
+          const option = document.createElement("option");
+          option.value = String(i);
+          option.label = String(i);
+          optionFrag.appendChild(option);
+        }
+        valueRangeOptions.replaceChildren(optionFrag);
+
+        applyCombinedFilter();
+      }
+
+      function onValueChange() {
+        applyCombinedFilter();
+      }
+
+      function initFilterUI() {
+        // セレクトの選択肢はまとめて追加（再レイアウト抑制）
+        const frag = document.createDocumentFragment();
+        for (const key of POLICY_KEYS) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = key;
+          frag.appendChild(opt);
+        }
+        const placeholder = issueSelect.querySelector('option[value=""]')?.cloneNode(true)
+          ?? new Option("質問項目を選択...", "");
+        issueSelect.replaceChildren(placeholder, frag);
+
+        issueSelect.addEventListener("change", onIssueChange);
+        valueRange.addEventListener("input", onValueChange);
+        filterReset.addEventListener("click", resetFilter);
+      }
+      initFilterUI();
+
+      /* ==========================================================
+        13) モバイル: ヘッダータップで開閉 + 動的な積み上げ配置
+        ========================================================== */
+      const mqMobile = window.matchMedia("(max-width: 600px)");
+      const legendHeaderEl = legendDiv.querySelector(".legend-header");
+      const filterHeaderEl = filterPanel.querySelector(".filter-header");
+
+      function updateMobileLayout() {
+        if (!mqMobile.matches) {
+          filterPanel.style.bottom = "";
+          return;
+        }
+
+        // 下側の凡例パネル高さに応じて、フィルターパネルを上へ積む
+        const legendBottom = 15; // CSSのmobile bottomに合わせる
+        const gap = 10;
+        const legendH = legendDiv.getBoundingClientRect().height;
+
+        filterPanel.style.bottom = `${legendBottom + legendH + gap}px`;
+      }
+
+      function setMinimized(panel, minimized) {
+        panel.classList.toggle("minimized", minimized);
+        updateMobileLayout();
+      }
+
+      function toggleMinimized(panel) {
+        setMinimized(panel, !panel.classList.contains("minimized"));
+      }
+
+      // 凡例: タイトルをタップして開閉
+      legendHeaderEl?.addEventListener("click", (e) => {
+        if (!mqMobile.matches) return;
+        e.stopPropagation();
+        toggleMinimized(legendDiv);
+      });
+
+      // フィルター: ヘッダーをタップして開閉（リセットボタンは除外）
+      filterHeaderEl?.addEventListener("click", (e) => {
+        if (!mqMobile.matches) return;
+        if (e.target.closest("#filter-reset")) return;
+        toggleMinimized(filterPanel);
+      });
+
+      function applyResponsivePanels() {
+        if (mqMobile.matches) {
+          setMinimized(legendDiv, true);
+          setMinimized(filterPanel, true);
+        } else {
+          setMinimized(legendDiv, false);
+          setMinimized(filterPanel, false);
+          filterPanel.style.bottom = "";
+        }
+      }
+
+      applyResponsivePanels();
+
+      // 旧方式向けの互換対応
+      if (mqMobile.addEventListener) mqMobile.addEventListener("change", applyResponsivePanels);
+      else mqMobile.addListener(applyResponsivePanels);
+
+      window.addEventListener("resize", updateMobileLayout);
+    }
+
+    main();
+  </script>
+</body>
+
+</html>
