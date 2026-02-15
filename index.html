@@ -65,18 +65,7 @@
 		</ul>
 	</div>
 
-	<script>
-	window.addEventListener('load', function() {
-		var scriptUrl = "https://script.google.com/macros/s/AKfycbxZiiU4tkBagDnnCHeK3IqoTuvVXd7w4wR2bCvsSAITqX2Tno1Yrhhnarjosht1oVHJfw/exec";
-
-		var data = "?url=" + encodeURIComponent(window.location.href) +
-				"&ref=" + encodeURIComponent(document.referrer) +
-				"&ua=" + encodeURIComponent(navigator.userAgent);
-
-		fetch(scriptUrl + data, { mode: 'no-cors' })
-		.then(() => console.log("Log sent"))
-		.catch(err => console.error("Log error:", err));
-	});
-	</script>
+	<script src="logger.js"></script>
+	
 </body>
 </html>
