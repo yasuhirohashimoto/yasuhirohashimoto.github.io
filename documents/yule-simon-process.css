@@ -127,21 +127,23 @@ h2.appdx:before {
 /* MathJax数式のレスポンシブ対応 */
 .MathJax {
 	max-width: 100%;
+	display: block;
 	overflow-x: auto;
-	overflow-y: hidden;
+	overflow-y: visible;
 }
 
 mjx-container {
 	max-width: 100% !important;
+	display: block;
 	overflow-x: auto !important;
-	overflow-y: hidden !important;
+	overflow-y: visible !important;
 }
 
 @media (max-width: 768px) {
 	.content {
 		max-width: 100%;
 		padding: 0 8px;
-		overflow-x: hidden;
+		overflow-x: visible;
 	}
 
 	div.p {

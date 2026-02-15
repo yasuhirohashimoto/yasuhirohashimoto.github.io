@@ -146,7 +146,9 @@
 			N_s\) より \(\alpha\ge\alpha'\) である．つまり，Simonのnovelty rateの観点から見れば，Yule過程に対応する(pseudo) novelty
 			rateはSimon過程よりも小さな値になる．式(\ref{eq:novelty_rate_in_yule_process})の詳しい解は<a
 				href="#appendix-novelty_rate_in_yule_process">Appendix</a>を参照．</div>
-		<div class="p">もう一つの重要な違いは，Simon過程ではクラス \(n\) の語彙が選択されたとしても，その中から具体的にどの単語が選択されるかについては任意性が残されている点である<span data-footnote>つまり，Simon過程のみでは個々の単語の成長を計算アルゴリズムとして実装することができない．</span>．Yule過程では種数が等しい属のspecific mutationの発生レートが互いに等しかったことを思い出そう．これをSimon過程の枠組みで捉えるならば，それは出現数が等しい単語の成長レートが互いに等しいことを意味する．そのような単語の選択は，クラス \(n\) の語彙が次に出現する単語の母集団として選ばれたとき，その中からたとえば一様乱数で単語を一つ選び出すことで実現できる<span data-footnote>厳密にはクラス \(n\) に属するすべての単語が等しく選び出される必要があるが，状態（出現数）は離散的なのでそれは不可能である．</span>．比較のため，Simon過程とnovelty rateの扱いが等価な修正Yule過程について，Simon過程の枠組みを用いて単語の成長過程で起こっていることを眺めてみよう．この枠組みを<a id="Yule–Simon_process"></a><strong>Yule–Simon過程</strong>と呼ぶ．いま，単語の系列の長さ \(N\) のときの単語 \(i\) の出現数を \(n_i\) とおくと，修正Yule過程では単語 \(i\) が次に選び出される確率 \(P_i(N)\) は
+		<div class="p">もう一つの重要な違いは，Simon過程ではクラス \(n\) の語彙が選択されたとしても，その中から具体的にどの単語が選択されるかについては任意性が残されている点である<span data-footnote>つまり，Simon過程のみでは個々の単語の成長を計算アルゴリズムとして実装することができない．</span>．Yule過程では種数が等しい属のspecific mutationの発生レートが互いに等しかったことを思い出そう．これをSimon過程の枠組みで捉えるならば，それは出現数が等しい単語の成長レートが互いに等しいことを意味する．そのような単語の選択は，クラス \(n\) の語彙が次に出現する単語の母集団として選ばれたとき，その中からたとえば一様乱数で単語を一つ選び出すことで実現できる<span data-footnote>厳密にはクラス \(n\) に属するすべての単語が等しく選び出される必要があるが，状態（出現数）は離散的なのでそれは不可能である．</span>．比較のため，Simon過程とnovelty rateの扱いが等価な修正Yule過程について，Simon過程の枠組みを用いて，単語の成長過程で起こっていることを眺めてみよう．この枠組みを<a id="Yule–Simon_process"></a><strong>Yule–Simon過程</strong>と呼ぶ．
+		</div>
+		<div class="p">いま，単語の系列の長さ \(N\) のときの単語 \(i\) の出現数を \(n_i\) とおくと，修正Yule過程では単語 \(i\) が次に選び出される確率 \(P_i(N)\) は
 
 			\begin{equation}
 			P_i(N)=(1-\alpha)\cdot\frac{n_ik(n_i,N)}{N}\cdot\frac{n_i}{n_ik(n_i,N)}\quad\biggl[=(1-\alpha)\frac{n_i}{N}\biggr]
