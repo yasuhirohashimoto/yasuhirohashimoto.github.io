@@ -390,12 +390,11 @@
 
   <!-- Coordinate selector -->
   <div id="coord-selector">
-    <label for="coord-select">座標系</label>
     <select id="coord-select" aria-label="座標系を選択">
-      <option value="pc">PC</option>
-      <option value="pcn">PC（L2補正）</option>
-      <option value="um">UM（X/Y/Z）</option>
-      <option value="ic">IC</option>
+      <option value="pc">PCA</option>
+      <option value="pcn">PCA（L2正則化）</option>
+      <option value="um">UMAP</option>
+      <option value="ic">ICA</option>
     </select>
   </div>
 
@@ -428,13 +427,13 @@
         </li>
       </ul>
 
-      <h3>分析手法：主成分分析 (PCA)</h3>
-      <p>10次元（党首の数）の回答データを、情報の損失をなるべく抑えつつ3次元空間に圧縮しました。</p>
+      <h3>分析手法</h3>
+      <p>10次元（党首10名）で集計した回答データを、目的に応じて4種類の3次元座標系で可視化しています。</p>
       <ul>
-        <li><strong>第1主成分 (PC1):</strong> 寄与率 <strong>44.9%</strong></li>
-        <li><strong>第2主成分 (PC2):</strong> 寄与率 <strong>20.9%</strong></li>
-        <li><strong>第3主成分 (PC3):</strong> 寄与率 <strong>11.4%</strong></li>
-        <li><strong>累積寄与率:</strong> <strong>77.1%</strong>（データの約77%の情報がこの図で説明されています）</li>
+        <li><strong>PCA:</strong> 分散を基準に3軸へ圧縮する線形写像です。</li>
+        <li><strong>PCA（L2正則化）:</strong> PCAの座標をL2ノルムの補正条件で安定化した表現です。</li>
+        <li><strong>UMAP:</strong> 高次元データの近傍構造を保ちながら低次元へ写像する非線形手法です。</li>
+        <li><strong>ICA:</strong> 相互に独立な成分を抽出する手法で、独立性の高い軸を3次元で可視化します。</li>
       </ul>
 
       <h3>操作方法</h3>
@@ -531,7 +530,8 @@
           hover: 0.3,
           camera: 1.5,
           filter: 0.5,
-          resetScale: 0.2
+          resetScale: 0.2,
+          coordinate: 0.8
         }
       };
   
@@ -949,9 +949,31 @@
 
         for (const obj of candidateObjects) {
           const pos = getPointCoordinates(obj.sourceData, key);
-          obj.position.set(pos.x, pos.y, pos.z);
-          obj.sprite.position.set(pos.x, pos.y, pos.z);
-          obj.label.position.set(pos.x, pos.y + LABEL_Y_OFFSET, pos.z);
+          gsap.killTweensOf([obj.position, obj.sprite.position, obj.label.position]);
+
+          gsap.to(obj.position, {
+            x: pos.x,
+            y: pos.y,
+            z: pos.z,
+            duration: THEME.duration.coordinate,
+            ease: "power2.inOut"
+          });
+
+          gsap.to(obj.sprite.position, {
+            x: pos.x,
+            y: pos.y,
+            z: pos.z,
+            duration: THEME.duration.coordinate,
+            ease: "power2.inOut"
+          });
+
+          gsap.to(obj.label.position, {
+            x: pos.x,
+            y: pos.y + LABEL_Y_OFFSET,
+            z: pos.z,
+            duration: THEME.duration.coordinate,
+            ease: "power2.inOut"
+          });
         }
 
         applyAxisLabels(key);
