@@ -389,10 +389,10 @@
   <!-- Coordinate selector -->
   <div id="coord-selector">
     <select id="coord-select" aria-label="座標系を選択">
-      <option value="pc">主成分分析（PCA）</option>
-      <option value="pcn">主成分分析（PCA - L2正則化付き）</option>
-      <option value="ic">独立成分分析（ICA）</option>
-      <option value="um">一様多様体近似と射影（UMAP）</option>
+      <option value="pc">PCA</option>
+      <option value="pcn">PCA（L2正則化）</option>
+      <option value="ic">ICA</option>
+      <option value="um">UMAP</option>
     </select>
   </div>
 
@@ -485,10 +485,10 @@
       const legendData = data.parties;
 
       const COORDINATE_SETS = {
-        pc:  { x: "pc1",  y: "pc2",  z: "pc3",  labels: ["PC1", "PC2", "PC3"] },
-        pcn: { x: "pcn1", y: "pcn2", z: "pcn3", labels: ["PC1", "PC2", "PC3"] },
-        um:  { x: "um1",  y: "um2",  z: "um3",  labels: ["X", "Y", "Z"] },
-        ic:  { x: "ic3",  y: "ic2",  z: "ic1",  labels: ["IC3", "IC2", "IC1"] }
+        pc:  { x: "pc1",  y: "pc2",  z: "pc3",  labels: ["pc1", "pc2", "pc3"] },
+        pcn: { x: "pcn1", y: "pcn2", z: "pcn3", labels: ["pcn1", "pcn2", "pcn3"] },
+        um:  { x: "um1",  y: "um2",  z: "um3",  labels: ["x", "y", "z"] },
+        ic:  { x: "ic1",  y: "ic2",  z: "ic3",  labels: ["ic1", "ic2", "ic3"] }
       };
 
       let activeCoordKey = "pc";
@@ -680,6 +680,14 @@
             x: raw.x * 1.1,
             y: raw.y * 1.1,
             z: raw.z * 1.1
+          };
+        }
+
+        if (coordKey === "ic") {
+          return {
+            x: raw.x,
+            y: -raw.y,
+            z: raw.z
           };
         }
 
