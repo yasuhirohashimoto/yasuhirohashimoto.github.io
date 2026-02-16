@@ -391,10 +391,10 @@
   <!-- Coordinate selector -->
   <div id="coord-selector">
     <select id="coord-select" aria-label="座標系を選択">
-      <option value="pc">PCA</option>
-      <option value="pcn">PCA（L2正則化）</option>
-      <option value="um">UMAP</option>
-      <option value="ic">ICA</option>
+      <option value="pc">主成分分析（PCA）</option>
+      <option value="pcn">主成分分析（PCA - L2正則化付き）</option>
+      <option value="ic">独立成分分析（ICA）</option>
+      <option value="um">一様多様体近似と射影（UMAP）</option>
     </select>
   </div>
 
@@ -430,10 +430,10 @@
       <h3>分析手法</h3>
       <p>10次元（党首10名）で集計した回答データを、目的に応じて4種類の3次元座標系で可視化しています。</p>
       <ul>
-        <li><strong>PCA:</strong> 分散を基準に3軸へ圧縮する線形写像です。</li>
-        <li><strong>PCA（L2正則化）:</strong> PCAの座標をL2ノルムの補正条件で安定化した表現です。</li>
-        <li><strong>UMAP:</strong> 高次元データの近傍構造を保ちながら低次元へ写像する非線形手法です。</li>
-        <li><strong>ICA:</strong> 相互に独立な成分を抽出する手法で、独立性の高い軸を3次元で可視化します。</li>
+        <li><strong>主成分分析（PCA）:</strong> 分散を基準に3軸へ圧縮する線形写像です。</li>
+        <li><strong>主成分分析（PCA - L2正則化付き）:</strong> PCAの座標をL2ノルムの補正条件で安定化した表現です。</li>
+        <li><strong>独立成分分析（ICA）:</strong> 相互に独立な成分を抽出し、独立性の高い軸を3次元で可視化します。</li>
+        <li><strong>一様多様体近似と射影（UMAP）:</strong> 高次元データの近傍構造を保ちながら低次元へ写像する非線形手法です。</li>
       </ul>
 
       <h3>操作方法</h3>
@@ -677,11 +677,11 @@
           z: toNumericPoint(point[set.z], point.z)
         };
 
-        if (coordKey === "ic") {
+        if (coordKey === "pc") {
           return {
-            x: raw.x * 0.9,
-            y: -raw.y * 0.9,
-            z: raw.z * 0.9
+            x: raw.x * 1.1,
+            y: raw.y * 1.1,
+            z: raw.z * 1.1
           };
         }
 
