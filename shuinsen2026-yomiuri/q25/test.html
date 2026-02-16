@@ -119,35 +119,33 @@
     /* -------------------------
        4) Coordinate selector
        ------------------------- */
-    #coord-selector {
-      position: absolute;
-      left: 20px;
-      bottom: 30px;
-      z-index: var(--z-ui);
-      background: var(--bg-glass);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 8px 12px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 196px;
-      font-size: 12px;
+      #coord-selector {
+        position: absolute;
+        left: 20px;
+        bottom: 30px;
+        z-index: var(--z-ui);
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 196px;
+        font-size: 12px;
       color: var(--text-main);
     }
 
-    #coord-select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-      background: white;
-      font-size: 14px;
-      outline: none;
-      cursor: pointer;
-    }
+      #coord-select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 20px;
+        background: white;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+      }
 
     /* -------------------------
        4) Legend panel
@@ -488,7 +486,7 @@
 
       const COORDINATE_SETS = {
         pc:  { x: "pc1",  y: "pc2",  z: "pc3",  labels: ["PC1", "PC2", "PC3"] },
-        pcn: { x: "pcn1", y: "pcn2", z: "pcn3", labels: ["PC1-L2", "PC2-L2", "PC3-L2"] },
+        pcn: { x: "pcn1", y: "pcn2", z: "pcn3", labels: ["PC1", "PC2", "PC3"] },
         um:  { x: "um1",  y: "um2",  z: "um3",  labels: ["X", "Y", "Z"] },
         ic:  { x: "ic3",  y: "ic2",  z: "ic1",  labels: ["IC3", "IC2", "IC1"] }
       };
