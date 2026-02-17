@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title></title>
 
 	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
@@ -26,11 +27,17 @@
 		}
 
 		.content {
-			width: 80%;
+			width: min(82%, 720px);
+			padding: 0 12px;
 			max-width: 720px;
 			line-height: 1.7;
 			margin: auto;
 			text-align: justify;
+		}
+
+		body {
+			margin: 0;
+			padding: 16px 0;
 		}
 
 		div.p {
@@ -48,6 +55,19 @@
 
 		a:hover {
 			color: #3067cb;
+		}
+
+		@media (max-width: 600px) {
+			.content {
+				width: calc(100% - 24px);
+				padding: 0 4px;
+				line-height: 1.8;
+				text-align: left;
+			}
+
+			ul {
+				padding-left: 1.2em;
+			}
 		}
 	</style>
 </head>
