@@ -1,0 +1,1203 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>世界の人口密度分布と緯度・経度ヒストグラム</title>
+  <style>
+    :root{
+      --bg:#08101a;
+      --panel:#0d1724;
+      --panel-2:#0f1b2b;
+      --ink:#e5edf7;
+      --muted:#96a6ba;
+      --line:rgba(148,163,184,.24);
+      --accent:#38bdf8;
+      --accent-2:#fb923c;
+      --accent-3:#34d399;
+      --shadow:0 18px 48px rgba(0,0,0,.36);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+      background:
+        radial-gradient(1200px 720px at 15% 10%, rgba(56,189,248,.08), transparent 42%),
+        radial-gradient(1000px 700px at 85% 90%, rgba(251,146,60,.08), transparent 40%),
+        linear-gradient(180deg, #09111c 0%, #07101a 100%);
+      color:var(--ink);
+      min-height:100vh;
+      padding:24px;
+    }
+    .app{
+      max-width:1920px;
+      margin:0 auto;
+      background:linear-gradient(180deg, rgba(13,23,36,.94), rgba(9,16,26,.95));
+      border:1px solid rgba(148,163,184,.14);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .header{
+      padding:24px 28px 10px 28px;
+      border-bottom:1px solid rgba(148,163,184,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    }
+    .title-row{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:clamp(24px, 3vw, 34px);
+      line-height:1.15;
+      letter-spacing:.01em;
+    }
+    .source{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .source a{color:var(--accent)}
+    .meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:999px;
+      color:#d5dfeb;
+      font-size:13px;
+      background:rgba(255,255,255,.03);
+    }
+    .toast-warning{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:9999;
+      max-width:min(calc(100vw - 40px), 420px);
+      padding:12px 16px;
+      border-radius:10px;
+      border:1px solid rgba(251,146,60,.34);
+      background:rgba(13,23,36,.95);
+      color:#ffd7aa;
+      font-size:13px;
+      line-height:1.5;
+      box-shadow:0 8px 24px rgba(0,0,0,.5);
+      backdrop-filter:blur(8px);
+      animation:toast-in .3s ease-out;
+    }
+    @keyframes toast-in{
+      from{opacity:0;transform:translateY(12px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    .slider-wrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:9px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(148,163,184,.14);
+      color:var(--muted);
+      font-size:13px;
+    }
+    select{
+      appearance:none;
+      background:#152335 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2396a6ba'/%3E%3C/svg%3E") no-repeat right 10px center;
+      border:1px solid rgba(148,163,184,.2);
+      border-radius:8px;
+      color:var(--ink);
+      font-size:13px;
+      font-weight:700;
+      padding:6px 28px 6px 10px;
+      cursor:pointer;
+    }
+    select:hover{background-color:#1a2b42}
+    .stage{
+      position:relative;
+      padding:12px 20px 16px 20px;
+    }
+    canvas{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(8,14,22,.96), rgba(6,11,18,.96));
+      border:1px solid rgba(148,163,184,.14);
+    }
+    .tooltip{
+      position:absolute;
+      z-index:10;
+      pointer-events:none;
+      min-width:180px;
+      max-width:320px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(8,14,22,.94);
+      box-shadow:0 8px 28px rgba(0,0,0,.34);
+      backdrop-filter:blur(8px);
+      color:var(--ink);
+      font-size:12px;
+      line-height:1.5;
+      display:none;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    @media (max-width: 820px){
+      body{padding:14px}
+      .header{padding-left:16px;padding-right:16px}
+      .stage{padding-left:12px;padding-right:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title-row">
+        <div>
+          <h1>世界の人口密度分布と緯度・経度ヒストグラム</h1>
+          <p class="source">
+            人口データ: WorldPop, Global 1km Population 2020
+            (<a href="https://hub.worldpop.org/geodata/listing?id=64">ppp_2020_1km_Aggregated</a>).
+            海岸線: Natural Earth 50m Coastline
+            (<a href="https://www.naturalearthdata.com/">naturalearthdata.com</a>).
+          </p>
+          <div class="meta">
+            <span class="chip" id="chipMesh">読込中…</span>
+            <span class="chip">上: 経度帯ごとの推定人口</span>
+            <span class="chip">右: 緯度帯ごとの推定人口</span>
+            <div class="slider-wrap" style="margin-left:auto">
+              <span>解像度</span>
+              <select id="resSelect">
+                <option value="pop_data_5km.bin">5 km</option>
+                <option value="pop_data_10km.bin" selected>10 km</option>
+                <option value="pop_data_20km.bin">20 km</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="viz" width="1840" height="1140" aria-label="人口密度ヒートマップとヒストグラム"></canvas>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+  </div>
+
+  <script>
+(async function () {
+  'use strict';
+
+  const chipMesh = document.getElementById('chipMesh');
+  const resSelect = document.getElementById('resSelect');
+  const canvas = document.getElementById('viz');
+  const ctx = canvas.getContext('2d');
+  const stage = document.getElementById('stage');
+  const tooltip = document.getElementById('tooltip');
+
+  const validDataFiles = Array.from(resSelect.options).map(function (opt) { return opt.value; });
+  const params = new URLSearchParams(location.search);
+  const requestedDataFile = params.get('data');
+  const defaultDataFile = resSelect.value;
+  const initialDataFile = validDataFiles.includes(requestedDataFile) ? requestedDataFile : defaultDataFile;
+  resSelect.value = initialDataFile;
+  if (requestedDataFile && requestedDataFile !== initialDataFile) {
+    const normalizedUrl = new URL(location.href);
+    normalizedUrl.searchParams.set('data', initialDataFile);
+    history.replaceState(null, '', normalizedUrl.toString());
+  }
+
+  const layout = {
+    mapX: 105,
+    mapY: 255,
+    mapW: 1500,
+    mapH: 750,
+    topH: 210,
+    rightW: 204,
+  };
+  layout.topY = layout.mapY - layout.topH;
+  layout.bottomY = layout.mapY + layout.mapH;
+  layout.rightX = layout.mapX + layout.mapW + 21;
+  layout.topBaseY = layout.mapY - 12;
+  layout.rightBaseX = layout.rightX;
+  layout.histMaxH = layout.topH - 33;
+  layout.histMaxW = layout.rightW - 27;
+
+  const COLOR_STOPS = [
+    { t: 0.0, c: [0, 132, 255, 0.1] },
+    { t: 0.18, c: [0, 198, 255, 0.4] },
+    { t: 0.42, c: [83, 255, 191, 0.56] },
+    { t: 0.64, c: [255, 231, 92, 0.75] },
+    { t: 0.82, c: [255, 147, 61, 0.9] },
+    { t: 1.0, c: [255, 59, 48, 0.98] },
+  ];
+
+  const state = {
+    app: null,
+    coastData: null,
+    coastPromise: null,
+    coastWarning: null,
+    lastTooltipKey: '',
+    lastTooltipHtml: '',
+    loadVersion: 0,
+    loadController: null,
+    activeWorker: null,
+    rectsDirty: true,
+    stageRect: null,
+    canvasRect: null,
+    canvasScaleX: 1,
+    canvasScaleY: 1,
+    pointerFrame: 0,
+    pendingPointer: null,
+    tooltipMeasureDirty: true,
+    tooltipWidth: 0,
+    tooltipHeight: 0,
+  };
+
+  function clamp(v, lo, hi) {
+    return Math.max(lo, Math.min(hi, v));
+  }
+
+  function formatLon(lon) {
+    return lon === 0 ? '0°' : Math.abs(lon) + '°' + (lon < 0 ? 'W' : 'E');
+  }
+
+  function lonOrLatZero(v) {
+    return Math.abs(v) < 1e-9;
+  }
+
+  function formatLat(lat) {
+    return lonOrLatZero(lat) ? '0°' : Math.abs(lat) + '°' + (lat < 0 ? 'S' : 'N');
+  }
+
+  function lonToX(lon) {
+    return layout.mapX + ((lon + 180) / 360) * layout.mapW;
+  }
+
+  function latToY(lat) {
+    return layout.mapY + ((90 - lat) / 180) * layout.mapH;
+  }
+
+  function formatErrorMessage(err) {
+    if (!err) return '不明なエラーが発生しました。';
+    if (err.name === 'AbortError') return '読込を中止しました。';
+    return err.message ? err.message : String(err);
+  }
+
+  function formatPopulationShort(v) {
+    const value = Math.abs(v);
+    if (value >= 1e12) return (v / 1e12).toFixed(value >= 1e13 ? 0 : 1) + '兆';
+    if (value >= 1e8) return (v / 1e8).toFixed(value >= 1e9 ? 1 : 2) + '億';
+    if (value >= 1e4) return (v / 1e4).toFixed(value >= 1e5 ? 1 : 2) + '万';
+    return Math.round(v).toLocaleString('ja-JP');
+  }
+
+  function formatPopulationFull(v) {
+    return Math.round(v).toLocaleString('ja-JP');
+  }
+
+  function niceStep(maxVal) {
+    if (!(maxVal > 0)) return 1;
+    const rough = maxVal / 4;
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / mag;
+    if (norm <= 1) return mag;
+    if (norm <= 2) return 2 * mag;
+    if (norm <= 5) return 5 * mag;
+    return 10 * mag;
+  }
+
+  function createCanvasBuffer(width, height) {
+    const c = document.createElement('canvas');
+    c.width = width || canvas.width;
+    c.height = height || canvas.height;
+    return c;
+  }
+
+  function drawPanelFrame(t, x, y, w, h, fill) {
+    t.fillStyle = fill;
+    t.fillRect(x, y, w, h);
+    t.strokeStyle = 'rgba(148,163,184,.20)';
+    t.lineWidth = 1;
+    t.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+  }
+
+  function drawGraticule(t) {
+    t.save();
+    for (let lon = -180; lon <= 180; lon += 30) {
+      const x = lonToX(lon);
+      t.beginPath();
+      t.moveTo(x, layout.mapY);
+      t.lineTo(x, layout.bottomY);
+      const strong = lon === 0 || lon % 60 === 0;
+      t.strokeStyle = strong ? 'rgba(148,163,184,.18)' : 'rgba(148,163,184,.08)';
+      t.lineWidth = strong ? 1 : 0.8;
+      t.stroke();
+    }
+    for (let lat = -90; lat <= 90; lat += 30) {
+      const y = latToY(lat);
+      t.beginPath();
+      t.moveTo(layout.mapX, y);
+      t.lineTo(layout.mapX + layout.mapW, y);
+      if (lat === 0) {
+        t.strokeStyle = 'rgba(148,163,184,.30)';
+        t.lineWidth = 1.4;
+      } else {
+        t.strokeStyle = 'rgba(148,163,184,.10)';
+        t.lineWidth = 0.8;
+      }
+      t.stroke();
+    }
+    t.restore();
+
+    t.save();
+    t.font = '14px system-ui,sans-serif';
+    t.fillStyle = 'rgba(150,166,186,.92)';
+    t.textAlign = 'center';
+    for (const lon of [-180, -120, -60, 0, 60, 120, 180]) {
+      t.fillText(formatLon(lon), lonToX(lon), layout.bottomY + 28);
+    }
+    t.textAlign = 'right';
+    t.textBaseline = 'middle';
+    for (const lat of [-90, -60, -30, 0, 30, 60, 90]) {
+      t.fillText(formatLat(lat), layout.mapX - 14, latToY(lat));
+    }
+    t.restore();
+  }
+
+  function drawCoastlines(t, coastData) {
+    if (!Array.isArray(coastData) || !coastData.length) return;
+    t.save();
+    t.strokeStyle = 'rgba(241,245,249,.70)';
+    t.lineWidth = 1.1;
+    for (const line of coastData) {
+      t.beginPath();
+      let prevX = null;
+      for (let i = 0; i < line.length; i += 1) {
+        const x = lonToX(line[i][0]);
+        const y = latToY(line[i][1]);
+        if (i === 0 || (prevX !== null && Math.abs(x - prevX) > layout.mapW * 0.45)) {
+          t.moveTo(x, y);
+        } else {
+          t.lineTo(x, y);
+        }
+        prevX = x;
+      }
+      t.stroke();
+    }
+    t.restore();
+  }
+
+  function drawAxisDecorations(t) {
+    t.save();
+    t.strokeStyle = 'rgba(148,163,184,.24)';
+    t.lineWidth = 1;
+    t.beginPath();
+    t.moveTo(layout.mapX, layout.topBaseY + 0.5);
+    t.lineTo(layout.mapX + layout.mapW, layout.topBaseY + 0.5);
+    t.moveTo(layout.rightBaseX + 0.5, layout.mapY);
+    t.lineTo(layout.rightBaseX + 0.5, layout.bottomY);
+    t.stroke();
+
+    t.font = '14px system-ui,sans-serif';
+    t.fillStyle = 'rgba(150,166,186,.92)';
+    t.textAlign = 'center';
+    t.fillText('経度', layout.mapX + layout.mapW / 2, layout.bottomY + 56);
+    t.save();
+    t.translate(layout.mapX - 72, layout.mapY + layout.mapH / 2);
+    t.rotate(-Math.PI / 2);
+    t.textAlign = 'center';
+    t.fillText('緯度', 0, 0);
+    t.restore();
+    t.restore();
+  }
+
+  function drawSectionLabels(t) {
+    t.save();
+    t.font = '600 14px system-ui,sans-serif';
+    t.fillStyle = 'rgba(214,225,238,.95)';
+    t.fillText('経度帯ごとの推定人口', layout.mapX + 10, layout.topY + 22);
+    t.fillText('緯度帯ごとの推定人口', layout.rightX + 10, layout.mapY + 22);
+    t.restore();
+  }
+
+  function drawHistogramGuides(t, app) {
+    t.save();
+    t.font = '11px system-ui,sans-serif';
+    t.fillStyle = 'rgba(150,166,186,.55)';
+    t.strokeStyle = 'rgba(148,163,184,.12)';
+    t.lineWidth = 1;
+
+    const stepLon = niceStep(app.maxLon);
+    t.textAlign = 'right';
+    if (app.maxLon > 0) {
+      for (let v = stepLon; v < app.maxLon; v += stepLon) {
+        const h = (v / app.maxLon) * layout.histMaxH;
+        const y = layout.topBaseY - h;
+        t.beginPath();
+        t.moveTo(layout.mapX, y + 0.5);
+        t.lineTo(layout.mapX + layout.mapW, y + 0.5);
+        t.stroke();
+        t.fillText(formatPopulationShort(v), layout.mapX - 6, y + 4);
+      }
+    }
+
+    const stepLat = niceStep(app.maxLat);
+    t.textAlign = 'center';
+    if (app.maxLat > 0) {
+      for (let v = stepLat; v < app.maxLat; v += stepLat) {
+        const w = (v / app.maxLat) * layout.histMaxW;
+        const x = layout.rightBaseX + w;
+        t.beginPath();
+        t.moveTo(x + 0.5, layout.mapY);
+        t.lineTo(x + 0.5, layout.bottomY);
+        t.stroke();
+        t.fillText(formatPopulationShort(v), x, layout.bottomY + 18);
+      }
+    }
+    t.restore();
+  }
+
+  function drawHistogramBars(t, app) {
+    t.fillStyle = 'rgba(56,189,248,1)';
+    for (let i = 0; i < app.histBinCols; i += 1) {
+      const h = app.maxLon > 0 ? (app.finalLonBins[i] / app.maxLon) * layout.histMaxH : 0;
+      if (!(h > 0)) continue;
+      t.fillRect(app.lonBinX0[i], layout.topBaseY - h, app.lonBinW[i], h);
+    }
+
+    t.fillStyle = 'rgba(251,146,60,1)';
+    for (let i = 0; i < app.histBinRows; i += 1) {
+      const w = app.maxLat > 0 ? (app.finalLatBins[i] / app.maxLat) * layout.histMaxW : 0;
+      if (!(w > 0)) continue;
+      t.fillRect(layout.rightBaseX, app.latBinY0[i], w, app.latBinH[i]);
+    }
+  }
+
+  function drawLegend(t, app) {
+    const lx = layout.mapX + 36;
+    const ly = layout.bottomY - 56;
+    const barW = 180;
+    const barH = 10;
+    const pad = 10;
+
+    t.fillStyle = 'rgba(8,14,22,.85)';
+    const bx = lx - pad;
+    const by = ly - pad;
+    const bw = barW + pad * 2;
+    const bh = barH + 32 + pad;
+    t.beginPath();
+    t.roundRect(bx, by, bw, bh, 8);
+    t.fill();
+
+    const grad = t.createLinearGradient(lx, 0, lx + barW, 0);
+    grad.addColorStop(0, '#060d16');
+    for (let i = 0; i < COLOR_STOPS.length; i += 1) {
+      const s = COLOR_STOPS[i];
+      grad.addColorStop(s.t, 'rgba(' + s.c[0] + ',' + s.c[1] + ',' + s.c[2] + ',' + s.c[3] + ')');
+    }
+    t.fillStyle = grad;
+    t.fillRect(lx, ly, barW, barH);
+    t.strokeStyle = 'rgba(148,163,184,.25)';
+    t.lineWidth = 1;
+    t.strokeRect(lx + 0.5, ly + 0.5, barW - 1, barH - 1);
+
+    t.save();
+    t.font = '11px system-ui,sans-serif';
+    t.fillStyle = 'rgba(150,166,186,.85)';
+    t.textAlign = 'left';
+    t.fillText('0', lx, ly + barH + 14);
+    t.textAlign = 'right';
+    t.fillText(Math.round(app.DENSITY_CLIP) + ' 人/km²', lx + barW, ly + barH + 14);
+    t.textAlign = 'center';
+    t.fillStyle = 'rgba(150,166,186,.55)';
+    t.fillText('人口密度（対数スケール）', lx + barW / 2, ly + barH + 27);
+    t.restore();
+  }
+
+  function buildEvenPartitionRanges(count, binCount) {
+    const start = new Int32Array(binCount);
+    const end = new Int32Array(binCount);
+    start[0] = 0;
+    for (let i = 0; i < binCount; i += 1) {
+      if (i > 0) start[i] = end[i - 1] + 1;
+      let last = count - 1;
+      if (i + 1 < binCount) {
+        let nextFirst = count;
+        for (let s = start[i]; s < count; s += 1) {
+          if (Math.floor(s * binCount / count) > i) { nextFirst = s; break; }
+        }
+        last = nextFirst - 1;
+      }
+      end[i] = clamp(Math.max(start[i], last), 0, count - 1);
+    }
+    return { start, end };
+  }
+
+  function buildTopPartitionRowRanges(rowCount, binCount) {
+    const low = new Int32Array(binCount);
+    const high = new Int32Array(binCount);
+    for (let i = 0; i < binCount; i += 1) {
+      let topStart = Math.ceil((i * rowCount) / binCount);
+      let topEnd = Math.ceil(((i + 1) * rowCount) / binCount) - 1;
+      topStart = clamp(topStart, 0, rowCount - 1);
+      topEnd = clamp(Math.max(topStart, topEnd), 0, rowCount - 1);
+      high[i] = rowCount - 1 - topStart;
+      low[i] = rowCount - 1 - topEnd;
+    }
+    return { low, high };
+  }
+
+  function buildDisplaySegments(startPx, sizePx, count) {
+    const start = new Float32Array(count);
+    const size = new Float32Array(count);
+    for (let i = 0; i < count; i += 1) {
+      const left = startPx + Math.floor((i * sizePx) / count);
+      const right = startPx + Math.ceil(((i + 1) * sizePx) / count);
+      start[i] = left;
+      size[i] = Math.max(1, right - left);
+    }
+    return { start, size };
+  }
+
+  function createHeatmapCanvas(prepared) {
+    const heatmapCanvas = createCanvasBuffer(prepared.hmW, prepared.hmH);
+    const hctx = heatmapCanvas.getContext('2d');
+    const img = new ImageData(prepared.heatmapPixels, prepared.hmW, prepared.hmH);
+    hctx.putImageData(img, 0, 0);
+    return heatmapCanvas;
+  }
+
+  function buildCompositeLayer(app, prepared, coastData) {
+    const layer = createCanvasBuffer();
+    const t = layer.getContext('2d');
+
+    const bg = t.createLinearGradient(0, 0, 0, canvas.height);
+    bg.addColorStop(0, '#08111b');
+    bg.addColorStop(1, '#060d16');
+    t.fillStyle = bg;
+    t.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawPanelFrame(t, layout.mapX, layout.topY, layout.mapW, layout.topH, 'rgba(15,27,43,.95)');
+    drawPanelFrame(t, layout.mapX, layout.mapY, layout.mapW, layout.mapH, 'rgba(7,17,27,.98)');
+    drawPanelFrame(t, layout.rightX, layout.mapY, layout.rightW, layout.mapH, 'rgba(15,27,43,.95)');
+    drawGraticule(t);
+    drawHistogramGuides(t, app);
+    drawAxisDecorations(t);
+    drawSectionLabels(t);
+
+    const heatmapCanvas = createHeatmapCanvas(prepared);
+    t.save();
+    t.globalAlpha = 1.0;
+    t.imageSmoothingEnabled = false;
+    t.drawImage(
+      heatmapCanvas, 0, 0, app.hmW, app.hmH,
+      app.hmPixelX, app.hmPixelY, app.hmPixelW, app.hmPixelH
+    );
+    t.imageSmoothingEnabled = true;
+    t.restore();
+
+    drawCoastlines(t, coastData);
+    drawHistogramBars(t, app);
+    drawLegend(t, app);
+    return layer;
+  }
+
+  function createPreparedApp(prepared, coastData, file) {
+    const app = {
+      file,
+      COLS: prepared.COLS,
+      ROWS: prepared.ROWS,
+      STEP: prepared.STEP,
+      DENSITY_CLIP: prepared.DENSITY_CLIP,
+      LON_MIN: prepared.LON_MIN,
+      LAT_MIN: prepared.LAT_MIN,
+      LON_MAX: prepared.LON_MAX,
+      LAT_MAX: prepared.LAT_MAX,
+      finalLonBins: prepared.finalLonBins,
+      finalLatBins: prepared.finalLatBins,
+      maxLon: prepared.maxLon,
+      maxLat: prepared.maxLat,
+      histBinCols: prepared.histBinCols,
+      histBinRows: prepared.histBinRows,
+      hmW: prepared.hmW,
+      hmH: prepared.hmH,
+      heatmapMaxDensity: prepared.heatmapMaxDensity,
+      heatmapPopSums: prepared.heatmapPopSums,
+    };
+
+    app.meshKm = (app.STEP * 111.32).toFixed(1);
+    app.hmPixelX = layout.mapX + ((app.LON_MIN + 180) / 360) * layout.mapW;
+    app.hmPixelY = layout.mapY + ((90 - app.LAT_MAX) / 180) * layout.mapH;
+    app.hmPixelW = ((app.LON_MAX - app.LON_MIN) / 360) * layout.mapW;
+    app.hmPixelH = ((app.LAT_MAX - app.LAT_MIN) / 180) * layout.mapH;
+
+    const lonHistRanges = buildEvenPartitionRanges(app.COLS, app.histBinCols);
+    app.lonBinStartCol = lonHistRanges.start;
+    app.lonBinEndCol = lonHistRanges.end;
+
+    const latHistRanges = buildTopPartitionRowRanges(app.ROWS, app.histBinRows);
+    app.latBinLowRow = latHistRanges.low;
+    app.latBinHighRow = latHistRanges.high;
+
+    const heatColRanges = buildEvenPartitionRanges(app.COLS, app.hmW);
+    app.heatStartCol = heatColRanges.start;
+    app.heatEndCol = heatColRanges.end;
+
+    const heatRowRanges = buildTopPartitionRowRanges(app.ROWS, app.hmH);
+    app.heatLowRow = heatRowRanges.low;
+    app.heatHighRow = heatRowRanges.high;
+
+    const lonDisplay = buildDisplaySegments(app.hmPixelX, app.hmPixelW, app.histBinCols);
+    app.lonBinX0 = lonDisplay.start;
+    app.lonBinW = lonDisplay.size;
+
+    const latDisplay = buildDisplaySegments(app.hmPixelY, app.hmPixelH, app.histBinRows);
+    app.latBinY0 = latDisplay.start;
+    app.latBinH = latDisplay.size;
+
+    app.compositeLayer = buildCompositeLayer(app, prepared, coastData);
+    return app;
+  }
+
+  function drawEmptyState(title, message) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bg.addColorStop(0, '#08111b');
+    bg.addColorStop(1, '#060d16');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(214,225,238,.96)';
+    ctx.font = '600 28px system-ui,sans-serif';
+    ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 16);
+    if (message) {
+      ctx.fillStyle = 'rgba(150,166,186,.92)';
+      ctx.font = '16px system-ui,sans-serif';
+      ctx.fillText(message, canvas.width / 2, canvas.height / 2 + 20);
+    }
+    ctx.restore();
+  }
+
+  function draw() {
+    if (!state.app) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(state.app.compositeLayer, 0, 0);
+  }
+
+  function updateMeta(app) {
+    chipMesh.textContent = app.COLS + '×' + app.ROWS + ' (≈' + app.meshKm + ' km)';
+  }
+
+  function setWarning(message) {
+    var existing = document.getElementById('toastWarning');
+    if (!message) {
+      if (existing) existing.remove();
+      return;
+    }
+    if (!existing) {
+      existing = document.createElement('div');
+      existing.id = 'toastWarning';
+      existing.className = 'toast-warning';
+      document.body.appendChild(existing);
+    }
+    existing.textContent = message;
+  }
+
+  async function loadCoastSafe() {
+    if (state.coastData) {
+      return { data: state.coastData, warning: null };
+    }
+    if (state.coastPromise) return state.coastPromise;
+
+    state.coastPromise = (async function () {
+      try {
+        const res = await fetch('coast.json');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        state.coastData = data;
+        state.coastWarning = null;
+        return { data, warning: null };
+      } catch (err) {
+        const warning = '海岸線データの読込に失敗したため、海岸線なしで表示しています。次回の再読込時に再試行します。';
+        state.coastWarning = warning;
+        return { data: [], warning };
+      } finally {
+        state.coastPromise = null;
+      }
+    }());
+
+    return state.coastPromise;
+  }
+
+  const workerSource = `
+self.onmessage = function (event) {
+  var buffer = event.data.buffer;
+  var layout = event.data.layout;
+  var colorStops = event.data.colorStops;
+  try {
+    var hdr = new DataView(buffer, 0, 36);
+    var COLS = hdr.getUint32(0, true);
+    var ROWS = hdr.getUint32(4, true);
+    var STEP = hdr.getFloat32(8, true);
+    var DENSITY_CLIP = hdr.getFloat32(12, true);
+    var cellCount = hdr.getUint32(16, true);
+    var LON_MIN = hdr.getFloat32(20, true);
+    var LAT_MIN = hdr.getFloat32(24, true);
+    var LON_MAX = hdr.getFloat32(28, true);
+    var LAT_MAX = hdr.getFloat32(32, true);
+
+    var hmPixelW = ((LON_MAX - LON_MIN) / 360) * layout.mapW;
+    var hmPixelH = ((LAT_MAX - LAT_MIN) / 180) * layout.mapH;
+    var hmW = Math.max(1, Math.min(COLS, Math.round(hmPixelW)));
+    var hmH = Math.max(1, Math.min(ROWS, Math.round(hmPixelH)));
+    // ヒストグラムのビン数はデータ列・行数と1:1にする。
+    // ピクセル数で制限すると COLS % binCount != 0 の場合にビンあたりの
+    // カラム数が不均一になり、低解像度(20km等)で目に見える段差が生じる。
+    // サブピクセル幅のバーは Canvas が自然にアンチエイリアスするため問題ない。
+    var histBinCols = COLS;
+    var histBinRows = ROWS;
+
+    var rowAreaKm2 = new Float32Array(ROWS);
+    var finalLonBins = new Float64Array(histBinCols);
+    var finalLatBins = new Float64Array(histBinRows);
+    var heatmapMaxDensity = new Float32Array(hmW * hmH);
+    var heatmapPopSums = new Float64Array(hmW * hmH);
+    var heatmapPixels = new Uint8ClampedArray(hmW * hmH * 4);
+    var stepKm = STEP * 111.32;
+    var logClip = Math.log1p(Math.max(DENSITY_CLIP, 1e-6));
+
+    for (var r = 0; r < ROWS; r += 1) {
+      var latCenter = LAT_MIN + (r + 0.5) * STEP;
+      var cosLat = Math.cos(latCenter * Math.PI / 180);
+      rowAreaKm2[r] = stepKm * stepKm * Math.max(0, cosLat);
+    }
+
+    function interpColorRGBA(t) {
+      var i = 0;
+      while (i < colorStops.length - 1 && t > colorStops[i + 1].t) i += 1;
+      var a = colorStops[i];
+      var b = colorStops[Math.min(i + 1, colorStops.length - 1)];
+      var lt = (t - a.t) / Math.max(1e-6, b.t - a.t);
+      return [
+        Math.round(a.c[0] + (b.c[0] - a.c[0]) * lt),
+        Math.round(a.c[1] + (b.c[1] - a.c[1]) * lt),
+        Math.round(a.c[2] + (b.c[2] - a.c[2]) * lt),
+        a.c[3] + (b.c[3] - a.c[3]) * lt
+      ];
+    }
+
+    var body = new DataView(buffer, 36);
+    for (var i = 0; i < cellCount; i += 1) {
+      var off = i * 8;
+      var x = body.getUint16(off, true);
+      var y = body.getUint16(off + 2, true);
+      var d = body.getFloat32(off + 4, true);
+      if (!(d > 0)) continue;
+
+      var pop = d * rowAreaKm2[y];
+
+      var lonBin = Math.floor(x * histBinCols / COLS);
+      if (lonBin >= histBinCols) lonBin = histBinCols - 1;
+      finalLonBins[lonBin] += pop;
+
+      var latBin = Math.floor((ROWS - 1 - y) * histBinRows / ROWS);
+      if (latBin >= histBinRows) latBin = histBinRows - 1;
+      finalLatBins[latBin] += pop;
+
+      var hx = Math.floor(x * hmW / COLS);
+      if (hx >= hmW) hx = hmW - 1;
+      var hy = Math.floor((ROWS - 1 - y) * hmH / ROWS);
+      if (hy >= hmH) hy = hmH - 1;
+      var hIdx = hy * hmW + hx;
+      heatmapPopSums[hIdx] += pop;
+      if (d > heatmapMaxDensity[hIdx]) heatmapMaxDensity[hIdx] = d;
+    }
+
+    var maxLon = 0;
+    for (var l = 0; l < histBinCols; l += 1) {
+      if (finalLonBins[l] > maxLon) maxLon = finalLonBins[l];
+    }
+
+    var maxLat = 0;
+    for (var rr = 0; rr < histBinRows; rr += 1) {
+      if (finalLatBins[rr] > maxLat) maxLat = finalLatBins[rr];
+    }
+
+    for (var p = 0; p < heatmapMaxDensity.length; p += 1) {
+      var density = heatmapMaxDensity[p];
+      if (!(density > 0)) continue;
+      var rgba = interpColorRGBA(Math.log1p(Math.min(density, DENSITY_CLIP)) / logClip);
+      var px = p * 4;
+      heatmapPixels[px] = rgba[0];
+      heatmapPixels[px + 1] = rgba[1];
+      heatmapPixels[px + 2] = rgba[2];
+      heatmapPixels[px + 3] = Math.round(rgba[3] * 255);
+    }
+
+    self.postMessage({
+      COLS: COLS,
+      ROWS: ROWS,
+      STEP: STEP,
+      DENSITY_CLIP: DENSITY_CLIP,
+      LON_MIN: LON_MIN,
+      LAT_MIN: LAT_MIN,
+      LON_MAX: LON_MAX,
+      LAT_MAX: LAT_MAX,
+      hmW: hmW,
+      hmH: hmH,
+      histBinCols: histBinCols,
+      histBinRows: histBinRows,
+      maxLon: maxLon,
+      maxLat: maxLat,
+      finalLonBins: finalLonBins,
+      finalLatBins: finalLatBins,
+      heatmapMaxDensity: heatmapMaxDensity,
+      heatmapPopSums: heatmapPopSums,
+      heatmapPixels: heatmapPixels
+    }, [
+      finalLonBins.buffer,
+      finalLatBins.buffer,
+      heatmapMaxDensity.buffer,
+      heatmapPopSums.buffer,
+      heatmapPixels.buffer
+    ]);
+  } catch (error) {
+    self.postMessage({ error: error && error.message ? error.message : String(error) });
+  }
+};`;
+
+  const workerUrl = URL.createObjectURL(new Blob([workerSource], { type: 'text/javascript' }));
+
+  function makeAbortError() {
+    try {
+      return new DOMException('読込を中止しました。', 'AbortError');
+    } catch (err) {
+      const fallback = new Error('読込を中止しました。');
+      fallback.name = 'AbortError';
+      return fallback;
+    }
+  }
+
+  function terminateActiveWorker() {
+    if (state.activeWorker) {
+      state.activeWorker.terminate();
+      state.activeWorker = null;
+    }
+  }
+
+  function prepareData(buffer, signal) {
+    return new Promise(function (resolve, reject) {
+      if (signal && signal.aborted) {
+        reject(makeAbortError());
+        return;
+      }
+
+      const worker = new Worker(workerUrl);
+      state.activeWorker = worker;
+      let settled = false;
+
+      function cleanup() {
+        if (signal) signal.removeEventListener('abort', onAbort);
+        if (state.activeWorker === worker) state.activeWorker = null;
+      }
+
+      function finishResolve(data) {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        worker.terminate();
+        resolve(data);
+      }
+
+      function finishReject(err) {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        worker.terminate();
+        reject(err);
+      }
+
+      function onAbort() {
+        finishReject(makeAbortError());
+      }
+
+      if (signal) signal.addEventListener('abort', onAbort, { once: true });
+
+      worker.onmessage = function (event) {
+        const data = event.data;
+        if (data && data.error) {
+          finishReject(new Error(data.error));
+          return;
+        }
+        finishResolve(data);
+      };
+
+      worker.onerror = function (event) {
+        finishReject(new Error(event.message || 'データ処理中にエラーが発生しました。'));
+      };
+
+      worker.postMessage({
+        buffer,
+        layout,
+        colorStops: COLOR_STOPS,
+      }, [buffer]);
+    });
+  }
+
+  function markGeometryDirty() {
+    state.rectsDirty = true;
+  }
+
+  function refreshGeometry() {
+    state.canvasRect = canvas.getBoundingClientRect();
+    state.stageRect = stage.getBoundingClientRect();
+    state.canvasScaleX = state.canvasRect.width ? canvas.width / state.canvasRect.width : 1;
+    state.canvasScaleY = state.canvasRect.height ? canvas.height / state.canvasRect.height : 1;
+    state.rectsDirty = false;
+    state.tooltipMeasureDirty = true;
+  }
+
+  function pointerToCanvas(clientX, clientY) {
+    if (state.rectsDirty || !state.canvasRect || !state.stageRect) refreshGeometry();
+    return {
+      x: (clientX - state.canvasRect.left) * state.canvasScaleX,
+      y: (clientY - state.canvasRect.top) * state.canvasScaleY,
+    };
+  }
+
+  function showTooltipAt(key, html, clientX, clientY) {
+    if (state.rectsDirty || !state.stageRect) refreshGeometry();
+
+    if (state.lastTooltipKey !== key || state.lastTooltipHtml !== html) {
+      tooltip.innerHTML = html;
+      state.lastTooltipKey = key;
+      state.lastTooltipHtml = html;
+      state.tooltipMeasureDirty = true;
+    }
+
+    const stageRect = state.stageRect;
+    const margin = 12;
+    const maxWidth = Math.max(180, Math.min(320, stageRect.width - margin * 2));
+    const maxWidthCss = maxWidth + 'px';
+    if (tooltip.style.maxWidth !== maxWidthCss) {
+      tooltip.style.maxWidth = maxWidthCss;
+      state.tooltipMeasureDirty = true;
+    }
+
+    tooltip.style.display = 'block';
+    tooltip.style.visibility = 'hidden';
+
+    if (state.tooltipMeasureDirty) {
+      state.tooltipWidth = tooltip.offsetWidth;
+      state.tooltipHeight = tooltip.offsetHeight;
+      state.tooltipMeasureDirty = false;
+    }
+
+    let left = clientX - stageRect.left + 14;
+    let top = clientY - stageRect.top + 14;
+    if (left + state.tooltipWidth + margin > stageRect.width) {
+      left = stageRect.width - state.tooltipWidth - margin;
+    }
+    if (top + state.tooltipHeight + margin > stageRect.height) {
+      top = stageRect.height - state.tooltipHeight - margin;
+    }
+    if (left < margin) left = margin;
+    if (top < margin) top = margin;
+
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.visibility = 'visible';
+  }
+
+  function hideTooltip() {
+    tooltip.style.display = 'none';
+    tooltip.style.visibility = 'hidden';
+    state.lastTooltipKey = '';
+    state.lastTooltipHtml = '';
+  }
+
+  function stopPointerTracking() {
+    state.pendingPointer = null;
+    if (state.pointerFrame) {
+      cancelAnimationFrame(state.pointerFrame);
+      state.pointerFrame = 0;
+    }
+  }
+
+  function processPointer() {
+    state.pointerFrame = 0;
+    const app = state.app;
+    const pointer = state.pendingPointer;
+    if (!app || !pointer) {
+      hideTooltip();
+      return;
+    }
+
+    const pos = pointerToCanvas(pointer.clientX, pointer.clientY);
+    const x = pos.x;
+    const y = pos.y;
+    const insideMap = x >= layout.mapX && x < layout.mapX + layout.mapW && y >= layout.mapY && y < layout.mapY + layout.mapH;
+    const insideTop = x >= layout.mapX && x < layout.mapX + layout.mapW && y >= layout.topY && y < layout.mapY;
+    const insideRight = x >= layout.rightX && x < layout.rightX + layout.rightW && y >= layout.mapY && y < layout.mapY + layout.mapH;
+
+    if (insideMap && x >= app.hmPixelX && x < app.hmPixelX + app.hmPixelW && y >= app.hmPixelY && y < app.hmPixelY + app.hmPixelH) {
+      const hx = clamp(Math.floor(((x - app.hmPixelX) / app.hmPixelW) * app.hmW), 0, app.hmW - 1);
+      const hyTop = clamp(Math.floor(((y - app.hmPixelY) / app.hmPixelH) * app.hmH), 0, app.hmH - 1);
+      const hIdx = hyTop * app.hmW + hx;
+      const density = app.heatmapMaxDensity[hIdx];
+      const approxPop = app.heatmapPopSums[hIdx];
+      const startCol = app.heatStartCol[hx];
+      const endCol = app.heatEndCol[hx];
+      const lowRow = app.heatLowRow[hyTop];
+      const highRow = app.heatHighRow[hyTop];
+      const lon0 = (app.LON_MIN + startCol * app.STEP).toFixed(2);
+      const lon1 = (app.LON_MIN + (endCol + 1) * app.STEP).toFixed(2);
+      const lat0 = (app.LAT_MIN + lowRow * app.STEP).toFixed(2);
+      const lat1 = (app.LAT_MIN + (highRow + 1) * app.STEP).toFixed(2);
+      const key = 'map-' + hx + '-' + hyTop;
+      const html = density > 0 || approxPop > 0
+        ? '<strong>表示セル</strong><br>経度: ' + lon0 + '° ～ ' + lon1 + '°<br>緯度: ' + lat0 + '° ～ ' + lat1 + '°<br>最大人口密度: <strong>' + density.toFixed(1) + '</strong> 人/km²<br>推定人口合計: 約<strong>' + formatPopulationFull(approxPop) + '</strong> 人'
+        : '<strong>表示セル</strong><br>経度: ' + lon0 + '° ～ ' + lon1 + '°<br>緯度: ' + lat0 + '° ～ ' + lat1 + '°<br>海域または極低密度';
+      showTooltipAt(key, html, pointer.clientX, pointer.clientY);
+      return;
+    }
+
+    if (insideTop && x >= app.hmPixelX && x < app.hmPixelX + app.hmPixelW) {
+      const bin = clamp(Math.floor(((x - app.hmPixelX) / app.hmPixelW) * app.histBinCols), 0, app.histBinCols - 1);
+      const startCol = app.lonBinStartCol[bin];
+      const endCol = app.lonBinEndCol[bin];
+      const lon0 = (app.LON_MIN + startCol * app.STEP).toFixed(2);
+      const lon1 = (app.LON_MIN + (endCol + 1) * app.STEP).toFixed(2);
+      const value = app.finalLonBins[bin];
+      const key = 'top-' + bin;
+      const html = '<strong>経度帯ごとの推定人口</strong><br>経度帯: ' + lon0 + '° ～ ' + lon1 + '°<br>推定人口: 約<strong>' + formatPopulationFull(value) + '</strong> 人';
+      showTooltipAt(key, html, pointer.clientX, pointer.clientY);
+      return;
+    }
+
+    if (insideRight && y >= app.hmPixelY && y < app.hmPixelY + app.hmPixelH) {
+      const bin = clamp(Math.floor(((y - app.hmPixelY) / app.hmPixelH) * app.histBinRows), 0, app.histBinRows - 1);
+      const lowRow = app.latBinLowRow[bin];
+      const highRow = app.latBinHighRow[bin];
+      const lat0 = (app.LAT_MIN + lowRow * app.STEP).toFixed(2);
+      const lat1 = (app.LAT_MIN + (highRow + 1) * app.STEP).toFixed(2);
+      const value = app.finalLatBins[bin];
+      const key = 'right-' + bin;
+      const html = '<strong>緯度帯ごとの推定人口</strong><br>緯度帯: ' + lat0 + '° ～ ' + lat1 + '°<br>推定人口: 約<strong>' + formatPopulationFull(value) + '</strong> 人';
+      showTooltipAt(key, html, pointer.clientX, pointer.clientY);
+      return;
+    }
+
+    hideTooltip();
+  }
+
+  async function loadData(file) {
+    const version = ++state.loadVersion;
+    if (state.loadController) state.loadController.abort();
+    terminateActiveWorker();
+    stopPointerTracking();
+    hideTooltip();
+    state.app = null;
+    setWarning(null);
+    drawEmptyState('データを読み込んでいます…');
+    chipMesh.textContent = '読込中…';
+    resSelect.disabled = true;
+
+    const controller = new AbortController();
+    state.loadController = controller;
+
+    try {
+      const coastPromise = loadCoastSafe();
+      const binRes = await fetch(file, { signal: controller.signal });
+      if (!binRes.ok) throw new Error('人口データの取得に失敗しました (HTTP ' + binRes.status + ')');
+      const buffer = await binRes.arrayBuffer();
+      if (version !== state.loadVersion) return;
+
+      const prepared = await prepareData(buffer, controller.signal);
+      if (version !== state.loadVersion) return;
+
+      const coastResult = await coastPromise;
+      if (version !== state.loadVersion) return;
+
+      const app = createPreparedApp(prepared, coastResult.data, file);
+      state.app = app;
+      updateMeta(app);
+      setWarning(coastResult.warning);
+      draw();
+    } catch (err) {
+      if (version !== state.loadVersion) return;
+      if (err && err.name === 'AbortError') return;
+      state.app = null;
+      chipMesh.textContent = 'データ未読込';
+      setWarning(state.coastWarning);
+      drawEmptyState('データを表示できません', formatErrorMessage(err));
+    } finally {
+      if (version === state.loadVersion) {
+        if (state.loadController === controller) state.loadController = null;
+        resSelect.disabled = false;
+      }
+    }
+  }
+
+  canvas.addEventListener('mousemove', function (e) {
+    state.pendingPointer = { clientX: e.clientX, clientY: e.clientY };
+    if (!state.pointerFrame) {
+      state.pointerFrame = requestAnimationFrame(processPointer);
+    }
+  });
+
+  canvas.addEventListener('mouseleave', function () {
+    stopPointerTracking();
+    hideTooltip();
+  });
+
+  window.addEventListener('resize', function () {
+    markGeometryDirty();
+    if (state.pendingPointer && !state.pointerFrame) {
+      state.pointerFrame = requestAnimationFrame(processPointer);
+    }
+  }, { passive: true });
+
+  window.addEventListener('scroll', function () {
+    markGeometryDirty();
+    if (state.pendingPointer && !state.pointerFrame) {
+      state.pointerFrame = requestAnimationFrame(processPointer);
+    }
+  }, { passive: true });
+
+  resSelect.addEventListener('change', function () {
+    const url = new URL(location.href);
+    url.searchParams.set('data', resSelect.value);
+    history.replaceState(null, '', url.toString());
+    loadData(resSelect.value);
+  });
+
+  addEventListener('unload', function () {
+    if (state.loadController) state.loadController.abort();
+    terminateActiveWorker();
+    stopPointerTracking();
+    URL.revokeObjectURL(workerUrl);
+  });
+
+  await loadData(initialDataFile);
+}());
+
+  </script>
+</body>
+</html>
