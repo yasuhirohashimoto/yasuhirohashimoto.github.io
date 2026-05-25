@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>標本空間，事象，確率の初歩 — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="venn-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="venn-demo.js" defer></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<span></span>
+		<a href="../../">↑ 目次</a>
+		<a href="../02-bayes-theorem/">次へ：ベイズの定理 →</a>
+	</nav>
+
+	<main>
+		<h1>標本空間，事象，確率の初歩</h1>
+
+		<h2>標本空間と事象</h2>
+
+		<p>
+			確率を考える出発点は，<strong>標本空間</strong> (sample space) と呼ばれる「実験や観察で起こりうるすべての結果の集まり」を最初に決めることだ．\(\Omega\)（オメガ）で表すのが慣例で，サイコロを 1 回振る実験なら \(\Omega = \{1,2,3,4,5,6\}\)，コインを 1 回投げる実験なら \(\Omega = \{\text{表},\text{裏}\}\) となる．<code>{ }</code> は <strong>集合</strong> (set) を意味する数学の記法である．標本空間の個々の要素を <strong>標本点</strong> (sample point) と呼ぶ．サイコロでいえば 1 から 6 のそれぞれの目，コインでいえば表と裏のひとつひとつが標本点であり，標本空間とはこれら標本点をすべて集めた集合に他ならない．
+		</p>
+
+		<p>
+			以降の話を具体的に進めるため，本ノートでは次のように標本空間 \(\Omega\) とその <strong>部分集合</strong> (subset) である <strong>事象</strong> (event) \(A, B, C\) を定義しておく．
+		</p>
+
+		\[
+		\begin{aligned}
+		\Omega &= \{1,2,3,4,5,6\}\\
+		A &= \{2,3\}\\
+		B &= \{1,3,5\}\\
+		C &= \{2,4,6\}
+		\end{aligned}
+		\]
+
+		<p>
+			サイコロの例を想像しよう．集合 \(B\) は「奇数の目」，集合 \(C\) は「偶数の目」という事象と解釈できる．\(A\) には特に直感的な名前を与えていないが，「\(2\) または \(3\) の目」と読めばよい．
+		</p>
+
+		<h2>確率は面積比</h2>
+
+		<p>
+			ここで <strong>確率</strong> (probability) とは何かを押さえておこう．素朴にいえば，<strong>標本空間の中で事象がどれだけの「広さ」を占めているか</strong>の比だ．サイコロでいえば全 6 面（\(\Omega\)）のうち事象 \(B\)（奇数の目 \(= \{1,3,5\}\)）は 3 面分なので \(|B|/|\Omega| = 3/6 = 1/2\)．コインなら表が \(1/2\)．要するに <strong>確率 \(\approx\) 面積比</strong>（全体を 1 としたときの面積<sup>※</sup>） と思っておけばよい．
+		</p>
+
+		<p>
+			以降，事象 \(A\) の確率を \(P(A)\) のように記す．\(P\) は事象（＝標本空間の部分集合）を受け取って確率（＝標本空間全体に対する面積比）を返す関数のようなもの，と思えばよい．今回のケースでは
+		</p>
+
+		\[
+		P(A) = \frac{|A|}{|\Omega|} = \frac{2}{6} = \frac{1}{3}, \quad
+		P(B) = \frac{|B|}{|\Omega|} = \frac{3}{6} = \frac{1}{2}, \quad
+		P(C) = \frac{|C|}{|\Omega|} = \frac{3}{6} = \frac{1}{2}
+		\]
+
+		<p>
+			である．
+		</p>
+
+		<ul>
+			<li>全体は 1：\(P(\Omega) = 1\)</li>
+			<li>負にはならない：\(P(A) \ge 0\)</li>
+			<li>互いに重ならない事象どうしの確率は単純に足してよい：\(P(A \cup B) = P(A) + P(B)\) （ただし \(A \cap B = \varnothing\)）</li>
+		</ul>
+
+		<p>
+		このあたりが直感的に納得できる性質で，これを公理として整理したのがコルモゴロフの 3 公理である．ただし本ノートでは，この「確率＝面積比」の感覚さえあれば困らない．
+		</p>
+
+		<div class="note-side">
+		ここで「面積」と呼んでいるものは，専門的には <strong>確率測度</strong> (probability measure)と呼ぶ概念である．
+		</div>
+
+		<h2>集合演算の小さな復習</h2>
+
+		<p>
+			事象（＝集合）どうしの演算をいくつか思い出しておこう．以降の問題で繰り返し使うものだ．
+		</p>
+
+		<ul class="set-ops">
+			<li>
+				<span><strong>和事象</strong> (union)</span>
+				<span>\(A \cup B\)</span>
+				<span>\(A\) または \(B\) のどちらかに入る標本点の集合．例：\(A \cup B = \{1,2,3,5\}\)</span>
+			</li>
+			<li>
+				<span><strong>積事象</strong> (intersection)</span>
+				<span>\(A \cap B\)</span>
+				<span>\(A\) にも \(B\) にも入る標本点の集合．例：\(A \cap B = \{3\}\)</span>
+			</li>
+			<li>
+				<span><strong>差事象</strong> (difference)</span>
+				<span>\(A \setminus B\)</span>
+				<span>\(A\) には入るが \(B\) には入らない標本点の集合．例：\(A \setminus B = \{2\}\)</span>
+			</li>
+			<li>
+				<span><strong>補事象</strong> (complement)</span>
+				<span>\(A^c\)</span>
+				<span>\(\Omega\) のうち \(A\) に入らない標本点の集合．例：\(A^c = \{1,4,5,6\}\)</span>
+			</li>
+		</ul>
+
+		<p>
+			実世界に置き換えると分かりやすい．\(A\) を「コーヒーを飲む人」，\(B\) を「紅茶を飲む人」とすれば，\(A^c\) は「コーヒーを飲まない人」，\(A \setminus B\) は「コーヒーは飲むが紅茶は飲まない人」，\(A \cap B\) は「両方飲む人」だ．
+		</p>
+
+		<p>
+			積事象の確率を <strong>同時確率</strong> (joint probability) と呼ぶ．サイコロの例に戻ると，\(P(A \cap B)\) は \(A\) と \(B\) が同時に起こる確率，すなわち「\(2\) または \(3\) の目」と「奇数の目」が同時に起こる確率だ．この場合は \(P(A \cap B) = |\{3\}|/|\Omega| = 1/6\) となる．
+		</p>
+
+		<p>
+			そして <strong>ド・モルガンの法則</strong> (De Morgan's laws)．否定を分配したいときに役立つ：
+		</p>
+
+		\[
+		(A \cup B)^c = A^c \cap B^c,\qquad (A \cap B)^c = A^c \cup B^c.
+		\]
+
+		<p>
+			要するに「\(A\) も \(B\) も起こらない」と「\(A \cup B\) が起こらない」は同じ，ということ．日本語の「雨でも雪でもない」を「雨ではない<strong>かつ</strong>雪ではない」と言い換える，あの感覚だ．サイコロの例で右辺と左辺を計算してみると：
+		</p>
+
+		\[
+		(A \cup B)^c = \{1,2,3,5\}^c = \{4,6\},\qquad A^c \cap B^c = \{1,4,5,6\} \cap \{2,4,6\} = \{4,6\}.
+		\]
+
+		<p>確かに一致する．</p>
+
+		<p>
+			最後に <strong>空集合</strong> (empty set) ── 要素を 1 つも持たない集合 ── にも触れておく．\(\varnothing\)（あるいは \(\emptyset\)）と書く．たとえば \(A \cap A^c\) は「\(A\) に属しかつ \(A\) には属さない」標本点の集まりだが，そんなものは存在しえない．よって \(A \cap A^c = \varnothing\) であり，\(P(\varnothing) = 0\) である．
+		</p>
+
+		<h2>条件付き確率：「面積比」のもう一歩</h2>
+
+		<p>
+			「確率＝面積比」の見方をもう一歩だけ広げると，<strong>条件付き確率</strong> (conditional probability) が自然に出てくる．
+		</p>
+
+		<p>
+			「事象 \(A\) が起きた」とすでに分かっている状況を考えよう．このとき，私たちにとっての世界（標本空間）はもはや \(\Omega\) 全部ではなく，\(A\) の内側にぐっと縮んでいる．その縮んだ世界の中で，さらに \(B\) が占める面積比，これが「\(A\) が起きたという条件のもとでの \(B\) の確率」，すなわち条件付き確率 \(P(B\mid A)\) だ：
+		</p>
+
+		\[
+		P(B\mid A) \;=\; \frac{|A\cap B|}{|A|} \;=\; \frac{P(A\cap B)}{P(A)}.
+		\]
+
+		<p>
+			縦棒の右が「条件となる事象」，左が「着目する事象」だ．分母の「全体」が \(\Omega\) から \(A\) に置き換わっただけ．
+		</p>
+
+		<p>
+			先ほどのコーヒー・紅茶の例でいえば，\(P(B\mid A)\) は「コーヒー好き（\(A\)）のうち，紅茶も飲む人（\(B\)）の割合」だ．我々がふだんこういう言い方をするとき，無意識に分母を「コーヒー好き全員」にすり替えている．条件付き確率は，その「すり替え」を式で書いてみせたもの，ともいえる．
+		</p>
+
+		<div class="note-side">
+		単に \(P(A)\) と書くとき，それは「何の条件もない」状態であり，すなわち標本空間全体が対象である．つまり，標本空間全体を条件とする条件付き確率 \(P(A)=P(A\mid\Omega)\) と解釈できる．
+		</div>
+
+		<h2>ベン図でながめる</h2>
+
+		<p>
+			\(\Omega\) と事象 \(A, B, C\) の関係を <strong>ベン図</strong> (Venn diagram) にすると次のようになる．「条件」と「着目事象」をそれぞれ選ぶと，条件の外側にある点はぼやけて世界が縮み，その中で着目事象に該当する標本点がオレンジでハイライトされる．下に条件付き確率 \(P(\text{着目}\mid \text{条件})\) が表示される．
+		</p>
+
+		<p>
+			条件を \(\Omega\) にすれば通常の確率 \(P(\text{着目})\) と同じになる．集合演算の練習や条件付き確率の感触をつかむために使ってほしい．
+		</p>
+
+		<div class="venn">
+			<div class="venn-controls">
+				<label>条件：<select id="venn-cond-select"></select></label>
+				<label style="margin-left:1.2em;">着目事象：<select id="venn-target-select"></select></label>
+			</div>
+			<svg id="venn-svg" viewBox="0 0 500 300" role="img" aria-label="標本空間Ωと事象A, B, Cのベン図"></svg>
+			<div id="venn-result" class="venn-result"></div>
+		</div>
+
+		<h2>排反（互いに素）</h2>
+
+		<p>
+			上のベン図で「条件 \(B\)，着目 \(C\)」（あるいは逆）を選んでみると，結果は空集合 \(\varnothing\) になる．\(B = \{1,3,5\}\)（奇数の目）と \(C = \{2,4,6\}\)（偶数の目）は，共通する標本点をひとつも持たないからだ．
+		</p>
+
+		<p>
+			このように 2 つの事象 \(A, B\) が \(A \cap B = \varnothing\) を満たすとき，\(A\) と \(B\) は <strong>排反</strong> (disjoint, あるいは mutually exclusive) であるという．直感的には「同時には起こりえない 2 つの事象」のこと．サイコロの目が「奇数」かつ「偶数」になることはありえない，というわけだ．
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<span></span>
+			<a href="../../">↑ 目次</a>
+			<a href="../02-bayes-theorem/">次へ：ベイズの定理 →</a>
+		</nav>
+	</main>
+</body>
+</html>

@@ -1,0 +1,7 @@
+.index-intro { font-size: .88rem; color: #666; margin: .4em 0 1em; }
+.term-index h3 { font-size: 1rem; margin: 1em 0 .3em; color: #444; }
+.term-index ul { list-style: none; padding-left: 1em; margin: 0; columns: 2; column-gap: 1.6em; }
+.term-index li { break-inside: avoid; margin: .15em 0; font-size: .92rem; line-height: 1.5; }
+.term-index a { text-decoration: none; }
+.term-index a + a { margin-left: .2em; }
+@media (max-width: 600px) { .term-index ul { columns: 1; } }

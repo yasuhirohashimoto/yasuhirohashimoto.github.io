@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>確率変数の和が従う確率分布と畳み込み — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>確率変数の和が従う確率分布と畳み込み</h1>
+
+		<p>
+			\(2\) つの確率変数 \(X_1, X_2\) の演算結果もまた確率変数である．ここでは \(X_1, X_2\) を互いに独立とし，その和 \(Y = X_1 + X_2\) が従う確率分布を求めてみよう．
+		</p>
+
+		<h2>ポアソン分布の場合</h2>
+
+		<p>
+			\(2\) つの確率変数 \(X_1, X_2\) を以下で定義する：
+		</p>
+
+		\[
+		X_1 \sim \mathrm{Po}(\lambda_1), \qquad X_2 \sim \mathrm{Po}(\lambda_2).
+		\]
+
+		<p>
+			レートパラメータの値はそれぞれ異なってよい．\(X_1 = k_1\) となる確率，および \(X_2 = k_2\) となる確率は，それぞれ
+		</p>
+
+		\[
+		\begin{aligned}
+		P(X_1 = k_1; \lambda_1) &= \frac{\lambda_1^{k_1}}{k_1!} e^{-\lambda_1} \quad (k_1 \geq 0), \\[6pt]
+		P(X_2 = k_2; \lambda_2) &= \frac{\lambda_2^{k_2}}{k_2!} e^{-\lambda_2} \quad (k_2 \geq 0).
+		\end{aligned}
+		\]
+
+		<p>
+			単純に考えるならば，両者が同時に発生して和が \(Y = k\ (= k_1 + k_2)\) になる確率は，独立であることを利用して
+		</p>
+
+		\[
+		P(X_1 = k_1, X_2 = k_2) = P(X_1 = k_1) \cdot P(X_2 = k_2) \qquad \cdots \text{①}
+		\]
+
+		<p>
+			のように \(2\) つの確率の掛け算で表せそうである．
+		</p>
+
+		<p>
+			しかし，たとえば \(k = 2\) の場合，可能な \((k_1, k_2)\) の組み合わせは \((0, 2), (1, 1), (2, 0)\) の \(3\) 通り存在する．それぞれについて①を全部足し合わせた確率が，実際に \(Y = 2\) になる確率となる．これを式で表すと
+		</p>
+
+		\[
+		P(Y = 2) = \sum_{k_1 = 0}^{2} P(X_1 = k_1) \cdot P(X_2 = 2 - k_1).
+		\]
+
+		<p>
+			一般的な \(k\) について考えると，
+		</p>
+
+		\[
+		P(Y = k) = \sum_{k_1 = 0}^{k} P(X_1 = k_1) \cdot P(X_2 = k - k_1).
+		\]
+
+		<p>
+			このように，\(2\) つの関数の積をずらしながら足し合わせる（あるいは積分する）形を <strong>畳み込み</strong> (convolution) と呼ぶ．
+		</p>
+
+		<p>
+			具体的な形を求めてみよう．まず①を書き下すと
+		</p>
+
+		\[
+		\begin{aligned}
+		P(X_1 = k_1) \cdot P(X_2 = k_2)
+		&= \frac{\lambda_1^{k_1}}{k_1!} e^{-\lambda_1} \cdot \frac{\lambda_2^{k_2}}{k_2!} e^{-\lambda_2} \\[6pt]
+		&= \frac{\lambda_1^{k_1} \lambda_2^{k_2}}{k_1! k_2!} e^{-(\lambda_1 + \lambda_2)} \\[6pt]
+		&= \frac{\lambda_1^{k_1} \lambda_2^{k - k_1}}{k_1! (k - k_1)!} e^{-(\lambda_1 + \lambda_2)}.
+		\end{aligned}
+		\]
+
+		<p>
+			これを畳み込むと
+		</p>
+
+		\[
+		\begin{aligned}
+		P(Y = k)
+		&= \sum_{k_1 = 0}^{k} \frac{\lambda_1^{k_1} \lambda_2^{k - k_1}}{k_1! (k - k_1)!} e^{-(\lambda_1 + \lambda_2)} \\[6pt]
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \frac{k!}{k_1! (k - k_1)!} \lambda_1^{k_1} \lambda_2^{k - k_1} \\[6pt]
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \binom{k}{k_1} \lambda_1^{k_1} \lambda_2^{k - k_1} && \text{※二項定理} \\[6pt]
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} (\lambda_1 + \lambda_2)^k \\[6pt]
+		&= \frac{\lambda^k}{k!} e^{-\lambda} && (\lambda := \lambda_1 + \lambda_2).
+		\end{aligned}
+		\]
+
+		<p>
+			得られた形は，レートパラメータが \(\lambda = \lambda_1 + \lambda_2\) のポアソン分布である：
+		</p>
+
+		\[
+		Y = X_1 + X_2 \sim \mathrm{Po}(\lambda_1 + \lambda_2).
+		\]
+
+		<p>
+			このように，確率変数の和が再び元と同じ形の確率分布に従うような確率分布を <strong>再生的</strong> (reproductive) な確率分布と呼ぶ．
+		</p>
+
+		<h2>指数分布の場合</h2>
+
+		<p>
+			次に，同じレートパラメータ \(\lambda\) を持つ指数分布に従う \(2\) つの独立な確率変数 \(X_1, X_2\) について，その和が従う確率分布を考えてみよう．
+		</p>
+
+		\[
+		X_1 \sim \mathrm{Exp}(\lambda), \qquad X_2 \sim \mathrm{Exp}(\lambda),
+		\]
+
+		<p>
+			であり，確率密度関数は
+		</p>
+
+		\[
+		f_X(x; \lambda) = \lambda e^{-\lambda x} \qquad (x \geq 0).
+		\]
+
+		<p>
+			ポアソン分布の場合と同様に，確率変数 \(T_2 = X_1 + X_2\) について，2 つの確率密度をかけて畳み込みを行うと，
+		</p>
+
+		\[
+		\begin{aligned}
+		f_{T_2}(t)
+		&= \int_0^t f_X(x_1) \cdot f_X(t - x_1)\, dx_1 \\[6pt]
+		&= \int_0^t \lambda e^{-\lambda x_1} \cdot \lambda e^{-\lambda (t - x_1)}\, dx_1 \\[6pt]
+		&= \lambda^2 e^{-\lambda t} \int_0^t dx_1 \\[6pt]
+		&= \lambda^2 t\, e^{-\lambda t}. \qquad \cdots \text{②}
+		\end{aligned}
+		\]
+
+		<p>
+			指数分布が待ち時間の確率分布だったことを思い出すと，この分布の意味は「事象の発生間隔 \(2\) 個分」の待ち時間である．同様に \(T_3=X_1+X_2+X_3\) として 3 個分の待ち時間を考えると
+		</p>
+
+		\[
+		f_{T_3}(t) = \frac{\lambda^3}{2!} t^2 e^{-\lambda t}.
+		\]
+
+		<p>
+			一般に \(r\) 個に拡張すると，
+		</p>
+
+		\[
+		f_{T_r}(t) = \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t}.
+		\]
+
+		<p>
+			これは <strong>ガンマ分布</strong> (gamma distribution) と呼ばれる確率密度関数である：
+		</p>
+
+		\[
+		T_r \sim \mathrm{Gamma}(r, \lambda), \qquad f(t; r, \lambda) = \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t}.
+		\]
+
+		<h2>発展：ガンマ分布の再生性</h2>
+
+		<p>
+			直感的に，同じ \(\lambda\) を持つ \(2\) つの独立なガンマ分布
+		</p>
+
+		\[
+		T_{r_1} \sim \mathrm{Gamma}(r_1, \lambda), \qquad T_{r_2} \sim \mathrm{Gamma}(r_2, \lambda)
+		\]
+
+		<p>
+			が与えられたとき，これらの和 \(T_r = T_{r_1} + T_{r_2}\) は \(\mathrm{Gamma}(r_1 + r_2, \lambda)\) に従いそうである．確認してみよう．
+		</p>
+
+		\[
+		\begin{aligned}
+		f_{T_r}(t)
+		&= \int_0^t f(t_1; r_1, \lambda) \cdot f(t - t_1; r_2, \lambda)\, dt_1 \\[6pt]
+		&= \int_0^t \frac{\lambda^{r_1}}{(r_1-1)!} t_1^{r_1-1} e^{-\lambda t_1} \cdot \frac{\lambda^{r_2}}{(r_2-1)!} (t - t_1)^{r_2-1} e^{-\lambda (t - t_1)}\, dt_1 \\[6pt]
+		&= \frac{\lambda^{r_1 + r_2}}{(r_1-1)!(r_2-1)!} e^{-\lambda t} \int_0^t t_1^{r_1-1} (t - t_1)^{r_2-1}\, dt_1 \\[6pt]
+		&= \frac{\lambda^{r_1 + r_2}}{(r_1-1)!(r_2-1)!} e^{-\lambda t} \cdot \frac{(r_1-1)!(r_2-1)!}{(r_1 + r_2 - 1)!} t^{r_1 + r_2 - 1} \\[6pt]
+		&= \frac{\lambda^{r_1 + r_2}}{(r_1 + r_2 - 1)!} t^{r_1 + r_2 - 1} e^{-\lambda t} \\[6pt]
+		&= \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t} && (r := r_1 + r_2).
+		\end{aligned}
+		\]
+
+		<p>
+			3 行目から 4 行目への積分の計算は面食らうかもしれないが，この積分はベータ関数<sup>※</sup>としてよく知られた形である．たしかに再びガンマ分布
+		</p>
+
+		\[
+		T_r \sim \mathrm{Gamma}(r_1 + r_2, \lambda)
+		\]
+
+		<p>
+			が得られた．つまり，ガンマ分布もまた再生的である．
+		</p>
+
+		<div class="note-side">
+			\(B(r_1, r_2) = \int_0^1 t^{r_1 - 1}(1-t)^{r_2-1}\, dt = \frac{(r_1-1)!(r_2-1)!}{(r_1 + r_2 - 1)!}\)
+		</div>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

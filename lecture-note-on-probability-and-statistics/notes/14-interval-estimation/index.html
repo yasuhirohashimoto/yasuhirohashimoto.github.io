@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>区間推定 — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../13-linear-regression/">← 前へ：線形回帰</a>
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>区間推定</h1>
+
+		<p>
+			<a href="../09-maximum-likelihood-estimation/">最尤法</a>や<a href="../13-linear-regression/">線形回帰</a>では，尤度や二乗誤差のような基準を最大化・最小化することで，母数の「もっともよさそうな値」を求めた．これを <strong>点推定</strong> (point estimation) と呼ぶ．
+		</p>
+
+		<p>
+			ただし点推定で得た値が真の母数とぴったり一致する保証はない ── 標本のばらつきがあるぶん，多少はずれていると考えるのが自然だ．そこで「真の値はおそらくこの範囲に入っているだろう」と幅をつけて推定する方法 ── <strong>区間推定</strong> (interval estimation) を考えよう．
+		</p>
+
+		<h2>信頼区間と信頼係数</h2>
+
+		<p>
+			区間推定では，まず標準化された統計量 \(T\)（具体的な形はあとで決める）が「高い確率で入る範囲」を考える．あらかじめ決めた小さい確率 \(\alpha\) に対して，
+		</p>
+
+		\[
+		P(c_L \leq T \leq c_U) \geq 1 - \alpha
+		\]
+
+		<p>
+			となる境界値 \(c_L, c_U\) を選ぶ．この時点で得られているのは，まだ \(T\) の範囲であって，母数そのものの範囲ではない．この不等式を未知の母数について解き直して得られる区間が <strong>信頼区間</strong> (confidence interval; <strong>CI</strong>) である．
+		</p>
+
+		<p>
+			それぞれの量には次のような呼び方がある：
+		</p>
+
+		<ul>
+			<li>確率 \(1 - \alpha\) を <strong>信頼係数</strong> (confidence coefficient) と呼ぶ．<strong>ユーザーが設定する値</strong>で，慣習的には \(0.95\) や \(0.99\) を使う．</li>
+			<li>母数について解き直して得られる区間を <strong>信頼区間</strong> (confidence interval; <strong>CI</strong>) と呼ぶ．\(\alpha\) に基づいて <strong>データから推定される値</strong>である．</li>
+			<li>信頼区間の下端を <strong>下側信頼限界</strong> (lower confidence limit)，上端を <strong>上側信頼限界</strong> (upper confidence limit) と呼ぶ．</li>
+		</ul>
+
+
+		<div class="note-side">
+			信頼区間の解釈には注意がいる．「真の値が信頼区間に \(95\%\) の確率で入る」と言いたくなるが，厳密にはこれは誤り．真の値は固定された定数で「入っている／入っていない」のどちらかであり，それは確率の話ではない．正しい言い方は「同じ手続きで信頼区間を作る作業を独立に何度も繰り返したとき，得られる区間のうち \(95\%\) は真の値を含む」というもので，区間の方が確率変数 ── という捉え方をする．
+		</div>
+
+		<h2>使い方</h2>
+
+		<h3>例 1：母平均の区間推定（母分散が既知）</h3>
+
+		<p>
+			確率変数 \(X\) が母平均 \(\mu\)（未知），母分散 \(\sigma^2\)（既知）の分布に従うとする．\(n\) 個の独立な標本 \(X_1, \ldots, X_n\) の標本平均 \(\bar{X}\) は，<a href="../11-central-limit-theorem/">中心極限定理</a>により近似的に \(\mathcal{N}(\mu, \sigma^2/n)\) に従う．これを標準化すれば，
+		</p>
+
+		\[
+		z = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}}
+		\]
+
+		<p>
+			は標準正規分布 \(\mathcal{N}(0, 1)\) に従う．標準正規分布の右側に残る確率が \(\alpha/2\) となる点を \(z_{\alpha/2}\) とすると，つまり \(P(Z > z_{\alpha/2}) = \alpha/2\) とすると（たとえば \(\alpha = 0.05\) なら \(z_{0.025} \approx 1.96\)），
+		</p>
+
+		\[
+		P\left( -z_{\alpha/2} \leq \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} \leq z_{\alpha/2} \right) = 1 - \alpha
+		\]
+
+		<p>
+			となる．かっこ内を \(\mu\) について解くと，
+		</p>
+
+		\[
+		\bar{X} - z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}
+		\;\leq\; \mu \;\leq\;
+		\bar{X} + z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}
+		\]
+
+		<p>
+			これが信頼係数 \(1 - \alpha\) の母平均 \(\mu\) の信頼区間である．真の値 \(\mu\) は未知でも，観測データ \(\bar{X}\) と既知の \(\sigma\) と確率分布から「だいたいこの幅」に入ると評価する ── 同じ手続きを何度も繰り返すと，得られる区間のうち \(1 - \alpha\) の割合は真の値を含むことになる．
+		</p>
+
+		<h3>例 2：母平均の区間推定（母分散が未知）</h3>
+
+		<p>
+			実用上は，「母平均が未知なのに母分散は既知」というのはおかしな話だ．母分散 \(\sigma^2\) も未知と考えると，そのときは標本から推定した分散 ── <a href="../12-unbiased-variance/">不偏分散</a> を用いる：
+		</p>
+
+		\[
+		s^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar{X})^2.
+		\]
+
+		<p>
+			\(\sigma\) のかわりに \(s\) を入れた標準化された統計量は
+		</p>
+
+		\[
+		t = \frac{\bar{X} - \mu}{s / \sqrt{n}}
+		\]
+
+		<p>
+			となり，これは <strong>t 統計量</strong> (t statistic) と呼ばれる．母集団が正規分布に従うとき，この \(t\) は <strong>自由度</strong> (degree of freedom) <strong>\(n - 1\) の t 分布</strong> (Student's t distribution) と呼ばれる分布に従う．\(\sigma\) を推定値 \(s\) で置き換えたぶんの「追加の不確実性」を吸収する形で，t 分布は標準正規分布よりも裾が厚い（外れた値が出やすい）．サンプルサイズ \(n\) が大きくなると \(s\) による推定の不確実性が小さくなり，t 分布は標準正規分布へと近づいていく．
+		</p>
+
+		<div class="note-side">
+			t 分布は，ギネスビール社で品質管理を担当していた William Sealy Gosset が 1908 年に発表した分布で，会社の方針で本名を出せず "Student" のペンネームで論文を出した．そのため今でも「Student の t 分布」という愛称が残っている．小さな標本での推定を実用化したことが大きな功績だ．
+		</div>
+
+		<p>
+			自由度 \(n - 1\) の t 分布の両側 \(\alpha/2\) パーセント点を \(t_{\alpha/2, n-1}\) とすると，例 1 と同じ手順で
+		</p>
+
+		\[
+		\bar{X} - t_{\alpha/2, n-1} \cdot \frac{s}{\sqrt{n}}
+		\;\leq\; \mu \;\leq\;
+		\bar{X} + t_{\alpha/2, n-1} \cdot \frac{s}{\sqrt{n}}
+		\]
+
+		<p>
+			が得られる．例 1 と形は同じで，\(z\) を \(t\)，\(\sigma\) を \(s\) に置き換えただけ．
+		</p>
+
+		<h3>例 3：二項分布の母比率の区間推定</h3>
+
+		<p>
+			上の 2 つとは少し毛色の違う例として，確率変数 \(X\) が二項分布 \(\mathrm{Bin}(n, p)\) に従うときの母比率 \(p\) の区間推定を考えよう<sup>※</sup>．ここで \(X\) は発生回数（整数），\(p\) は発生確率（割合）という単位の違いに注意してほしい．
+		</p>
+
+		<div class="note-side">
+			二項分布の母数 \(p\) は「成功確率」と呼ぶことも多いが，集団の中の賛成／反対（政党支持率など）や，ある条件に当てはまる／当てはまらない（製品の不良品率，試験の合格率，感染率など）の割合を表す母数として「母比率」と呼ばれることがある．
+		</div>
+
+		<p>
+			二項分布の母平均と母分散は \(\mu = np\)，\(\sigma^2 = np(1 - p)\) なので（ノート「<a href="../08-distribution-digest/">発生回数と待ち時間の確率分布</a>」），標準化された統計量は
+		</p>
+
+		\[
+		z = \frac{X - np}{\sqrt{np(1 - p)}}
+		\]
+
+		<p>
+			となる．\(n\) が大きいとき，中心極限定理によりこの \(z\) は近似的に標準正規分布に従うとみなすことができる<sup>※</sup>．
+		</p>
+
+		<div class="note-side">
+			発生回数 \(X\) はベルヌーイ試行の確率変数の和なので，中心極限定理により \(X\) の分布は正規分布に近づくと考える．
+		</div>
+
+		<p>
+			これを \(p\) について解けば信頼区間が得られる ── が，ここで実用上の近似を用いる．分母の \(\sqrt{np(1-p)}\) には未知の母比率 \(p\) が含まれているため，そのままでは計算が煩雑になる．そこで，真の \(p\) の代わりに，その推定値である <strong>標本比率</strong> (sample proportion)
+		</p>
+
+		\[
+		\hat{p}=\frac{X}{n}
+		\]
+
+		<p>
+			を用いる．つまり，分母の \(p\) を \(\hat{p}\) に置き換えることで，次の近似的な信頼区間が得られる．これは <strong>Wald 信頼区間</strong> と呼ばれる：
+		</p>
+
+		\[
+		\hat{p} - z_{\alpha/2} \sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}
+		\;\leq\; p \;\leq\;
+		\hat{p} + z_{\alpha/2} \sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}
+		\]
+
+		<h2>まとめ</h2>
+
+		<p>
+			区間推定は点推定では見えなかった「推定の不確実性」を信頼区間という幅で明示する手法だ．基本の流れをまとめると
+		</p>
+
+		<ol>
+			<li>ユーザーが信頼係数 \(1 - \alpha\) を決める．</li>
+			<li>標準化された統計量とその確率分布（正規分布 / t 分布 / etc.）を選ぶ．</li>
+			<li>\(P(\cdots)\) の中の不等式を母数について解いて信頼区間を得る．</li>
+		</ol>
+
+		<p>
+			統計量と分布の対応は本ノートで挙げた 3 例だけにとどまらず，分散の区間推定（\(\chi^2\) 分布），分散比の区間推定（F 分布）など，様々な場面で同じ枠組みが使われる．いずれの場合も「標準化された統計量が既知の分布に従う」ことが鍵となる ── そして多くの場面でその武器を提供してくれるのが <strong>中心極限定理</strong> なのだ．
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../13-linear-regression/">← 前へ：線形回帰</a>
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

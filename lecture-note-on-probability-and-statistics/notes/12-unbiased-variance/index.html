@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>母分散，標本分散，不偏分散 — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../11-central-limit-theorem/">← 前へ：中心極限定理</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../13-linear-regression/">次へ：線形回帰 →</a>
+	</nav>
+
+	<main>
+		<h1>母分散，標本分散，不偏分散</h1>
+
+		<p>
+			ノート「<a href="../10-law-of-large-numbers/">大数の法則</a>」で，サンプルサイズ \(n\) の標本平均 \(\bar{X}_n\) は母平均 \(\mu_X\) の <strong>一致推定量</strong> ── \(n\) を大きくすればいくらでも真の値に近づけられる推定量 ── であることを見た．またノート「<a href="../11-central-limit-theorem/">中心極限定理</a>」では，その標本平均が母平均のまわりでどのように揺れるかを見た．本ノートではもう一度，推定量としての標本平均と分散に目を向ける．実は標本平均にはもうひとつ嬉しい性質がある．有限の \(n\) のままでも，「期待値」の意味でぴったり \(\mu_X\) と一致するのだ：
+		</p>
+
+		\[
+			\begin{aligned}
+			E[\bar{X}_n] &= E\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[4pt]
+			&= \frac{1}{n} \left\{E[X_1] + E[X_2] + \cdots + E[X_n]\right\} \\[4pt]
+			&= \frac{1}{n} \left\{\mu_X + \mu_X + \cdots + \mu_X\right\}^{\text{※}} \\[4pt]
+			&= \mu_X.
+			\end{aligned}
+		\]
+
+		<div class="note-side">
+			\(X_1,\ldots,X_n\) はそれぞれが同じ分布に従う確率変数なので，それぞれの期待値 \(E[X_1],\ldots,E[X_n]\) はすべて同じ値 \(\mu_X\) になる．
+		</div>
+
+		<p>
+			「推定量の期待値」が推定したい母数とぴったり一致するとき，その推定量を <strong>不偏推定量</strong> (unbiased estimator) と呼ぶ．一致推定量が \(n \to \infty\) での漸近的な性質だったのに対し，不偏推定量は <strong>有限の \(n\) でも平均的には正しい</strong> ことを保証する性質だ．つまり標本平均は，一致推定量であると同時に不偏推定量でもある，二重にありがたい推定量だったわけだ．
+		</p>
+
+		<p>
+			では，分散についてはどうだろうか．標本分散 \(S_{X,n}^2\) は，サンプルサイズを大きくすれば母分散 \(\sigma_X^2\) に確かに収束する ── つまり一致推定量である：
+		</p>
+
+		\[
+		\begin{aligned}
+		S_{X,n}^2
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\bar{X}_n)^2 \\[4pt]
+		&= \frac{1}{n}\sum_{i=1}^n \{(X_i-\mu_X)-(\bar{X}_n-\mu_X)\}^2 \\[4pt]
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)^2
+		-2(\bar{X}_n-\mu_X)\frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)
+		+(\bar{X}_n-\mu_X)^2 \\[4pt]
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)^2
+		-(\bar{X}_n-\mu_X)^2 \\[4pt]
+		&\xrightarrow[n\to\infty]{}
+		\sigma_X^2 - 0
+		= \sigma_X^2.\qquad\text{（2 つの項にそれぞれ大数の法則を適用）}
+		\end{aligned}
+		\]
+
+		<p>
+			しかし「有限の \(n\) で平均的に正しい」かどうか，つまり不偏推定量であるかどうかは別問題だ．本ノートでは結論として <strong>標本分散は不偏推定量にはなっていない</strong> こと，すなわち \(E[S_{X,n}^2] \neq \sigma_X^2\) を示す．そのうえで，補正を施した <strong>不偏分散</strong> (unbiased variance) を導入する．
+		</p>
+
+		<h2>標本分散の期待値の計算</h2>
+
+		<p>
+			以下では添字を省略して，母平均を \(\mu\)，母分散を \(\sigma^2\)，サンプルサイズ \(n\) の標本平均を \(\bar{X}\)，標本分散を \(S^2\) と表記する．上で用いた式変形をそのまま用いて
+		</p>
+
+		\[
+		\begin{aligned}
+		E[S^2]
+		&= E\left[\frac{1}{n} \sum_{i=1}^n X_i^2 - \bar{X}^2\right] \\[4pt]
+		&= E\left[\frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2 - (\bar{X} - \mu)^2\right] \\[4pt]
+		&= \frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] - E\left[(\bar{X} - \mu)^2\right] \\[4pt]
+		&= \frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] - V[\bar{X}].
+		\end{aligned}
+		\]
+
+		<p>
+			右辺第一項を展開すると，
+		</p>
+
+		\[
+		\begin{aligned}
+		\frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right]
+		&= \frac{1}{n} \left\{E[(X_1 - \mu)^2] + E[(X_2 - \mu)^2] + \cdots + E[(X_n - \mu)^2]\right\} \\[4pt]
+		&= \frac{1}{n} \left\{V[X_1] + V[X_2] + \cdots + V[X_n]\right\} \\[4pt]
+		&= \frac{1}{n} \cdot n \sigma^2 = \sigma^2.
+		\end{aligned}
+		\]
+
+		<p>
+			右辺第二項は，標本平均の分散として
+		</p>
+
+		\[
+		\begin{aligned}
+		V[\bar{X}]
+		&= V\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[4pt]
+		&= \frac{1}{n^2} \left\{V[X_1] + V[X_2] + \cdots + V[X_n]\right\} \\[4pt]
+		&= \frac{1}{n^2} \cdot n \sigma^2 = \frac{\sigma^2}{n}.
+		\end{aligned}
+		\]
+
+		<p>
+			以上から，
+		</p>
+
+		\[
+		E[S^2] = \sigma^2 - \frac{\sigma^2}{n} = \frac{n - 1}{n} \sigma^2.
+		\]
+
+		<p>
+			つまり <strong>標本分散の期待値は母分散に一致せず，不偏推定量になっていない</strong>．具体的には \(\frac{n-1}{n}\) 倍だけ系統的に小さく出てしまう．
+		</p>
+
+		<h2>不偏分散</h2>
+
+		<p>
+			この「標本分散は平均的に母分散の \(\frac{n-1}{n}\) 倍になる」という結果を逆手にとると，標本分散を \(\frac{n}{n-1}\) 倍した値 ── つまり分散を計算する際に \(n\) ではなく \(n - 1\) で割った値
+		</p>
+
+		\[
+		s^2 = \frac{n}{n-1} S^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar{X})^2
+		\]
+
+		<p>
+			を使えば，期待値を母分散に一致させることができる．これが <strong>不偏分散</strong> (unbiased variance) である<sup>※</sup>．
+		</p>
+
+		<div class="note-side">
+			大文字 \(S^2\) を標本分散，小文字 \(s^2\) を不偏分散と使い分けている点に注意．文献によっては記号や呼び方が違うこともあるので，前後の文脈で判別してほしい．
+		</div>
+
+		<h2>直感的な説明</h2>
+
+		<p>
+			標本分散を求めるときに引き算する標本平均 \(\bar{X}\) は，真の平均値 \(\mu\) そのものではない．真の平均値 \(\mu\) まわりの二乗偏差の期待値として定義される母分散が，目の前にある標本 \(X_i\) の中心点である \(\bar{X}\) を用いて \((X_i - \bar{X})^2\) と計算される結果，\(\mu\) を使う場合に比べて差が相対的に小さく評価されてしまう．これが <strong>標本分散の期待値が母分散よりも小さくなる</strong> 理由である．
+		</p>
+
+		<div class="note-side">
+			適当な値 \(a\) を中心とした標本の二乗偏差（ばらつき） \(\nu\) を考えたとき，この \(a\) が標本平均 \(\bar{X}\) のときに \(\nu\) は最小になることは簡単に示せる．
+			\[
+			\begin{aligned}
+			\nu &= \frac{1}{n} \sum (X_i - a)^2
+			= \frac{1}{n} \sum (X_i^2 - 2a X_i + a^2) \\
+			&= \frac{1}{n} \sum X_i^2 - \frac{2a}{n} \sum X_i + a^2.
+			\end{aligned}
+			\]
+			\(\sum X_i^2\) と \(\sum X_i\) は実際の測定値から決まる定数である．したがってこの式は \(a\) についての下に凸な二次関数となり，\(a\) で微分してゼロになる点が最小値．
+			\[
+			\frac{d\nu}{da} = -\frac{2}{n} \sum X_i + 2a = 0 \quad \Longrightarrow \quad a = \frac{1}{n} \sum X_i = \bar{X}.
+			\]
+
+			目の前の標本に対する二乗偏差は，中心を \(a=\bar{X}\) に選んだとき最小になる．したがって，標本平均を中心にした標本分散
+			\[
+			\nu(a=\bar{X}) = \frac{1}{n}\sum_{i=1}^n (X_i-\bar{X})^2
+			\]
+			は，真の平均 \(\mu\) を中心にした二乗偏差
+			\[
+			\nu(a=\mu) = \frac{1}{n}\sum_{i=1}^n (X_i-\mu)^2
+			\]
+			よりも小さくなる方向にずれる．後者の期待値が母分散 \(\sigma^2\) なので，標本分散は平均的に母分散を過小評価してしまう．
+		</div>
+
+		<h2>たまにある間違い</h2>
+
+		<p>
+			「分散を計算するときには \(n\) ではなく \(n - 1\) で割れば偏りがないんだ！」と機械的に覚えて，どんな場面でも \(n - 1\) で割ろうとするのは誤りである．使い分けが必要だ：
+		</p>
+
+		<ul>
+			<li>
+				今，目の前にあるサンプルデータがデータのすべての場合，つまり <strong>全数調査</strong> (complete survey) を行う場合は，あるいは手元のデータそのもののばらつきを記述したい場合は，分散の定義として当然 <strong>\(n\) で割るのが正しい</strong>．たとえばクラスの中でテストの点数の分散を求めて，そこから個々人の偏差値を計算したいときなどはこれに該当する．
+			</li>
+			<li>
+				一方，目の前にあるサンプルデータが巨大な母集団から抜き出された一部であり，そこから母集団全体の分散を <strong>推定</strong> したい場合は <strong>\(n - 1\) で割るのが自然である</strong>（平均的に偏りのない推定ができる）．たとえば同じテストについて，全国の学生の分散を，あるクラスの学生の点数から推定したい場合などはこれに該当する．
+			</li>
+		</ul>
+
+		<p>
+			つまり，標本分散を使うべきか不偏分散を使うべきかは <strong>分析の目的に依存する</strong>．テキストによっては単に「分散」と書いて不偏分散を指している場合があるので，前後の文脈に注意しよう<sup>※</sup>．
+		</p>
+
+		<div class="note-side">
+			「\(n\) が大きければ \(n\) で割ろうが \(n - 1\) で割ろうが大して変わらないから，別に気にしなくてよいのでは？」という考え方もあるだろう．しかし \(n\) で割る操作は記述統計，\(n - 1\) で割る操作は統計的推論を想定しており，両者の態度には本質的な違いがある．
+		</div>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../11-central-limit-theorem/">← 前へ：中心極限定理</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../13-linear-regression/">次へ：線形回帰 →</a>
+		</nav>
+	</main>
+</body>
+</html>

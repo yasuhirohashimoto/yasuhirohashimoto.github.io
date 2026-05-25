@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>相関と独立 — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="correlation-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="correlation-demo.js" defer></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../04-population-and-sample/">← 前へ：母集団と標本</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../06-marginal-probability/">次へ：周辺確率 →</a>
+	</nav>
+
+	<main>
+		<h1>相関と独立</h1>
+
+		<h2>確率変数が複数の場合</h2>
+
+		<p>
+			ノート「<a href="../03-random-variables/">確率変数</a>」では 1 つの確率変数 \(X\) とその分布を扱った．現実の問題では 2 つ以上の確率変数を同時に観察することが多い．たとえば，「ある学生の身長 \(X\) と体重 \(Y\)」，「あるユーザーの年齢 \(X\) とサイト滞在時間 \(Y\)」，「ある年の平均気温 \(X\) とアイスクリームの売り上げ \(Y\)」など．観測されるのはペア \((X_1, Y_1), (X_2, Y_2), \ldots, (X_n, Y_n)\) のように対になった標本である．
+		</p>
+
+		<p>
+			複数の確率変数を扱うと，自然と次の問いが立ち上がる：
+		</p>
+
+		<ul>
+			<li>\(X\) と \(Y\) はどう「関係」しているか？ \(X\) が大きいときに \(Y\) も大きい傾向があるか？</li>
+			<li>\(X\) の値を知ったときに\(Y\) の予測は変わるか？</li>
+		</ul>
+
+		<p>
+			本ノートでは以下の 2 つの概念を扱う：
+		</p>
+
+		<ul>
+			<li><strong>独立</strong> (independent) \(\Rightarrow\) 無相関（独立ならば必ず無相関）</li>
+			<li><strong>無相関</strong> (uncorrelated) \(\nRightarrow\) 独立（無相関だからといって独立とは限らない）</li>
+		</ul>
+
+		<p>
+			両者は非対称な関係にあり，<strong>独立は無相関よりも強い概念</strong> である．以下，まず相関を定義し，その幾何学的な意味を見たうえで独立との違いを明らかにする．
+		</p>
+
+		<h2>相関</h2>
+
+		<p>
+			2 つのデータ系列の直線的な関係の強さを表す指標として <strong>相関</strong> (correlation) がある．その前に，まず 2 つの量が同じ向きに動きやすいか，逆向きに動きやすいかを測る <strong>共分散</strong> (covariance) を導入しよう．
+		</p>
+
+		<h3>共分散と相関係数</h3>
+
+		<p>
+			母集団全体（ないしそれと同一視される確率分布）において，2 つの確率変数 \(X,Y\) の共分散は \(\mathrm{Cov}[X,Y]\) と表記し，以下のように定義する：
+		</p>
+
+		\[
+		\mathrm{Cov}[X,Y] \;=\; E\bigl[(X - E[X])(Y - E[Y])\bigr].
+		\]
+
+		<p>
+			この分布側の量は <strong>母共分散</strong> (population covariance) と呼ばれ，\(\sigma_{X,Y}\) と表記することもある．一方，手元の \(n\) 個のデータ対 \((X_1, Y_1), (X_2, Y_2), \ldots, (X_n, Y_n)\) から計算する標本側の量が <strong>標本共分散</strong> (sample covariance) である．<strong>標本平均</strong> (sample mean) をそれぞれ \(\bar{X}, \bar{Y}\) と書くとき，\(X,Y\) それぞれの <strong>標本分散</strong> (sample variance) と標本共分散は
+		</p>
+
+		\[
+		\begin{aligned}
+		S_X^2 \;&=\; \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})^2, \\
+		S_Y^2 \;&=\; \frac{1}{n} \sum_{i=1}^{n} (Y_i - \bar{Y})^2, \\
+		S_{X,Y} \;&=\; \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})
+		\end{aligned}
+		\]
+
+		<p>
+			で定義される．標本共分散が正なら \(X\) が平均より大きいときに \(Y\) も平均より大きくなりやすく，負なら片方が大きいときにもう片方は小さくなりやすい．ただし，共分散は \(X,Y\) の単位に依存するため値そのものは比較しづらい．そこで共分散を各データ系列の <strong>標準偏差</strong> (standard deviation) \(S_X, S_Y\) で割って \(-1\) から \(1\) の範囲に正規化したものが <strong>相関係数</strong> (correlation coefficient) である：
+		</p>
+
+		\[
+		r_{X,Y} \;=\; \frac{S_{X,Y}}{S_XS_Y}.
+		\]
+
+		<p>
+			分母の \(S_X, S_Y\) を非ゼロと考えれば，「共分散が \(0\)」と「相関係数が \(0\)」は同じことを意味する．相関係数が 0 のとき「\(X\) と \(Y\) は<strong>無相関</strong> である」という．
+		</p>
+
+		<h3>ベクトルに見立てたデータ列の内積が 0</h3>
+
+		<p>
+			データ系列 \(X = (X_1, X_2, \ldots, X_n)\) は \(n\) 次元空間のベクトルと見なすことができる．そこで平均を引いた <strong>中心化ベクトル</strong> を
+		</p>
+
+		\[
+		\widetilde{X} \;=\; (X_1 - \bar{X},\; X_2 - \bar{X},\; \ldots,\; X_n - \bar{X})
+		\]
+
+		<p>
+			と定めよう（\(Y\) 側も同様に \(\widetilde{Y}\) を定義する）．するとベクトルの内積は
+		</p>
+
+		\[
+		\langle \widetilde{X},\, \widetilde{Y} \rangle \;=\; \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})
+		\]
+
+		<p>
+			となる．これを共分散の定義式と見比べると，\(\langle \widetilde{X},\, \widetilde{Y} \rangle = n S_{X,Y}\) であることが分かる．すなわち，<strong>共分散が 0 であることは，中心化ベクトルどうしの内積が 0 であること</strong> に他ならない．
+		</p>
+
+		<p>
+			さらに一歩進めて，中心化ベクトルを標準偏差で割った <strong>標準化ベクトル</strong> \(\widetilde{X}/S_X,\ \widetilde{Y}/S_Y\) を考えよう．それぞれのノルムは \(\sqrt{n}\) なので<sup>※</sup>，ノルムで割って正規化した標準化ベクトルの内積は
+		</p>
+
+		\[
+		\left\langle \frac{\widetilde{X}}{\sqrt{n}S_X},\ \frac{\widetilde{Y}}{\sqrt{n}S_Y} \right\rangle \;=\; \frac{1}{nS_XS_Y}\langle \widetilde{X},\ \widetilde{Y} \rangle \;=\; r_{X,Y}.
+		\]
+
+		<p>
+			となり，相関係数に等しい．つまり，2 つの標準化ベクトルのなす角を \(\theta\) とすると，相関係数は \(\cos\theta\) に等しい．相関係数が必ず \(-1\) から \(1\) の間に収まるのはこのためである．
+		</p>
+
+		<ul>
+			<li>\(r_{X,Y} = 1 \quad \rightarrow \quad\) 2 つのベクトルが同じ向き ── 完全な <strong>正の相関</strong> (positive correlation)</li>
+			<li>\(r_{X,Y} = 0 \quad \rightarrow \quad\) 2 つのベクトルが直交 ── <strong>無相関</strong> (uncorrelated, zero correlation)</li>
+			<li>\(r_{X,Y} = -1 \quad \rightarrow \quad\) 2 つのベクトルが逆向き ── 完全な <strong>負の相関</strong> (negative correlation)</li>
+		</ul>
+
+		<p>
+			言い換えると，<strong>無相関であることは，中心化したデータベクトルどうしが幾何学的に直交していること</strong> に他ならない．
+		</p>
+
+		<div class="note-side">
+			標準化ベクトル \(\widetilde{X}/S_X\) のノルムを計算してみよう：
+		\[
+		\left\|\frac{\widetilde{X}}{S_X}\right\|
+		= \sqrt{\sum_{i=1}^{n} \left(\frac{\widetilde{X}_i}{S_X}\right)^2}
+		= \frac{1}{S_X}\sqrt{\sum_{i=1}^{n} \widetilde{X}_i^2}
+		= \frac{1}{S_X}\sqrt{nS_X^2}
+		= \sqrt{n}.
+		\]
+		</div>
+
+		<h2>独立</h2>
+
+		<p>
+			2 つの確率変数が独立な場合，片方の値が分かったとしても，どう頑張ってももう片方の値の予測精度を上げることはできない．ノート「<a href="../02-bayes-theorem/">ベイズの定理</a>」では，データ（一方の事象）を得ることで仮説（もう一方の事象）の予測精度を上げられることを見たが，そのような更新がそもそも起こらないのが <strong>独立</strong> (independence) という状態である．
+		</p>
+
+		<p>
+			式で書けば，独立とは
+		</p>
+
+		\[
+		\begin{aligned}
+		\text{離散型} &\quad P(X = x \mid Y = y) \;=\; P(X = x)\\[12pt]
+		\text{連続型} &\quad f_{X \mid Y}(x \mid y) \;=\; f_X(x)
+		\end{aligned}
+		\]
+
+		<p>
+			が成り立つことに他ならない．「\(Y\) の値を知っても \(X\) の確率分布は変わらない」を式にしたものである．\(X\) と \(Y\) を二つのサイコロの出目と考えると，両者が独立であれば，片方の出目を知ってももう片方の出目の確率分布は変わらない．
+		</p>
+
+		<p>
+			対称性から \(P(X = x \mid Y = y) \;=\; P(X = x)\) ならば \(P(Y = y \mid X = x) \;=\; P(Y = y)\) も成り立つ．また，最初の式の両辺に \(P(Y = y)\) をかけると \(P(X = x, Y = y) = P(X = x)P(Y = y)\) が成り立つことも分かる．\(p_{X,Y}(x,y) = p_X(x)\ p_Y(y)\) という関係式は，\(X\) と \(Y\) が独立であることを表す典型的な表現だ．確率密度関数についても同様である．
+		</p>
+
+		<p>
+			独立は「無相関」と似た概念だが，より強い条件である．2 つの確率変数が独立ならばそれらは必ず無相関だが，無相関だからといって独立とは限らない．両者の違いを，以下では具体例で見ていこう．
+		</p>
+
+		<h3>相関 0 でも独立ではない例</h3>
+
+		<p>次の 4 組のデータを考えよう：</p>
+
+		<table class="data-table">
+			<thead>
+				<tr><th>\(i\)</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+			</thead>
+			<tbody>
+				<tr><th>\(X_i\)</th><td>\(-2\)</td><td>\(-1\)</td><td>\(1\)</td><td>\(2\)</td></tr>
+				<tr><th>\(Y_i\)</th><td>\(4\)</td><td>\(1\)</td><td>\(1\)</td><td>\(4\)</td></tr>
+			</tbody>
+		</table>
+
+		<p>
+			これは \(Y_i = X_i^2\) という関係にあるデータである．<strong>\(Y\) は \(X\) から完全に決まっている（予測できる）ので明らかに独立ではない</strong>．それでも相関は \(0\) になる．実際に計算してみよう．
+		</p>
+
+		<p><strong>標本平均：</strong></p>
+
+		\[
+		\bar{X} \;=\; \frac{-2 - 1 + 1 + 2}{4} \;=\; 0, \qquad
+		\bar{Y} \;=\; \frac{4 + 1 + 1 + 4}{4} \;=\; 2.5.
+		\]
+
+		<p><strong>標本共分散：</strong></p>
+
+		\[
+		\begin{aligned}
+		S_{X,Y} &= \frac{1}{4} \sum_{i=1}^{4} (X_i - 0)(Y_i - 2.5) \\
+		&= \frac{1}{4} \left[ (-2)(1.5) + (-1)(-1.5) + (1)(-1.5) + (2)(1.5) \right] \\
+		&= \frac{1}{4} \left[ -3 + 1.5 - 1.5 + 3 \right] \;=\; 0.
+		\end{aligned}
+		\]
+
+		<p>
+			したがって \(S_{X,Y} = 0\)，すなわち相関係数 \(r_{X,Y} = 0\) である．
+		</p>
+
+		<p>
+			\(X\) と \(Y\) のあいだには \(Y = X^2\) という明白な関係があるのに，相関はピタリと \(0\) になってしまう．<strong>相関は \(X\) そのものと \(Y\) そのものの直線的な関係（線形関係）しか捉えられない</strong> ことを示す例である．
+		</p>
+
+		<h3>視覚的な例：Datasaurus</h3>
+
+		<p>
+			もうひとつ有名な例として，Alberto Cairo が 2016 年に作成した <strong>Datasaurus</strong><sup>※</sup> を紹介しよう．これは散布図を描くと恐竜の輪郭になる 142 点からなる \((X,Y)\) のデータセットで，相関係数は \(r_{X,Y} \approx -0.06\) と「ほぼ無相関」である．しかし \(X\) を知れば \(Y\) の取りうる範囲は強く制約されるので，明らかに独立ではない．
+		</p>
+
+		<figure class="datasaurus-fig">
+			<svg id="datasaurus-svg" role="img" aria-label="Datasaurus: 散布図を描くと恐竜になるデータセット"></svg>
+			<figcaption>
+				Alberto Cairo, <em>Datasaurus</em> (2016)．
+			</figcaption>
+		</figure>
+
+		<p>
+			複数の確率変数間の関係は，要約統計量だけ見て判断するのではなく，散布図を描いて構造を確認することが重要である．
+		</p>
+
+		<div class="note-side">
+			Alberto Cairo,
+			<a href="https://web.archive.org/web/20161221114530/http://www.thefunctionalart.com/2016/08/download-datasaurus-never-trust-summary.html">"Download the Datasaurus: Never trust summary statistics alone; always visualize your data"</a>
+			(2016)．のちに Justin Matejka と George Fitzmaurice が同じ統計量をもつ 12 個の異なる形のデータセットを生成し，<strong>Datasaurus Dozen</strong> として発表している
+			(<a href="https://doi.org/10.1145/3025453.3025912">Matejka &amp; Fitzmaurice, CHI 2017</a>)．
+		</div>
+
+		<h3>任意の関数で変換しても直交＝独立</h3>
+
+		<p>
+			では「独立」を幾何学的にどう表現できるだろうか？
+		</p>
+
+		<p>
+			鍵は，\(X, Y\) をそのまま使うのではなく，<strong>任意の関数 \(f, g\) で変換した \(f(X), g(Y)\) についても常に無相関になるかどうか</strong> を問うことである．
+		</p>
+
+		<p>
+			先の \(n=4\) の例を用いて，\(f(X) = X^2,\ g(Y) = Y\) として新しいデータ系列の相関を計算してみよう．\(X^2\) の値は \(4, 1, 1, 4\) で平均は \(2.5\)，\(Y\) の値もまったく同じで \(4, 1, 1, 4\) で平均 \(2.5\) になるから，
+		</p>
+
+		\[
+		S_{f(X),g(Y)} \;=\; \frac{1}{4} \sum_{i=1}^{4} (X_i^2 - 2.5)(Y_i - 2.5)
+		\;=\; \frac{1.5^2 + 1.5^2 + 1.5^2 + 1.5^2}{4}
+		\;=\; 2.25
+		\]
+
+		<p>
+			と，今度は \(0\) ではなくなった．\(X\) そのものと \(Y\) そのものは直交しているが（相関 0），\(X^2\) と \(Y\) は直交していない（相関あり）．これが「相関 \(0\) だが独立ではない」正体である．
+		</p>
+
+		<p>
+			一般に，「独立」とは次のように特徴づけられる：
+		</p>
+
+		\[
+		X \text{ と } Y \text{ が独立} \iff \text{任意の関数 } f, g \text{ について } f(X) \text{ と } g(Y) \text{ が無相関}^\text{※}.
+		\]
+
+		<div class="note-side">
+			厳密には，ここでいう「任意の関数」とは期待値や共分散が発散してしまわないような十分広い関数クラスに限って考える．
+		</div>
+
+		<h2>まとめ</h2>
+
+		<p>
+			今回見た 2 つの概念を，ベクトルの言葉で並べると：
+		</p>
+
+		<ul>
+			<li><strong>無相関</strong>：\(X\) と \(Y\) という <strong>1 組</strong> のベクトルが直交している．</li>
+			<li><strong>独立</strong>：\(f(X)\) と \(g(Y)\) という形で作れる <strong>あらゆる組</strong> のベクトルが直交している．</li>
+		</ul>
+
+		<p>
+			独立とは，あらゆる関数変換を施しても直交性が保たれるという <strong>無限個の直交条件の束</strong> を意味する．この視点に立つと，「独立ならば無相関」はすぐに分かるし，逆が一般には成り立たないことも理解できるだろう．
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../04-population-and-sample/">← 前へ：母集団と標本</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../06-marginal-probability/">次へ：周辺確率 →</a>
+		</nav>
+	</main>
+</body>
+</html>

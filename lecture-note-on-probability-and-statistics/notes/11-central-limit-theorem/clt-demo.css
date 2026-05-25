@@ -1,0 +1,118 @@
+.clt-demo {
+	margin: 1.5em auto;
+	max-width: 680px;
+}
+.clt-figure {
+	margin: 1.4em auto;
+	max-width: 720px;
+}
+.clt-figure svg {
+	width: 100%;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+.clt-panel-title {
+	font-size: 13px;
+	font-weight: 700;
+	fill: #222;
+}
+.clt-panel-note {
+	font-size: 11px;
+	fill: #555;
+}
+.clt-demo .clt-controls {
+	margin: 0 auto .75em;
+	display: grid;
+	grid-template-columns: max-content minmax(9em, 1fr) max-content minmax(5em, .5fr);
+	gap: .55em .7em;
+	align-items: center;
+	max-width: 620px;
+	font-size: .92rem;
+}
+.clt-demo .clt-controls label {
+	text-align: right;
+	white-space: nowrap;
+	margin: 0;
+	font-weight: 500;
+}
+.clt-demo select {
+	width: 100%;
+	min-width: 0;
+	padding: 5px 28px 5px 9px;
+	font-size: inherit;
+	font-family: inherit;
+	border: 1px solid #cfd6dd;
+	border-radius: 6px;
+	background: #fff;
+	color: #2f3a46;
+	box-sizing: border-box;
+}
+.clt-demo select:focus {
+	outline: none;
+	border-color: #2c6ea6;
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .15);
+}
+.clt-demo button {
+	padding: .45em 1.15em;
+	font-size: .9rem;
+	font-family: inherit;
+	font-weight: 500;
+	cursor: pointer;
+	background: #fff;
+	border: 1px solid #cfd6dd;
+	border-radius: 6px;
+	color: #2f3a46;
+	transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.clt-demo button:hover {
+	background: #f3f6f9;
+	border-color: #a8b0ba;
+}
+.clt-demo button:active {
+	background: #e6ebf0;
+}
+.clt-demo .icon-btn {
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	justify-self: start;
+}
+.clt-demo .icon-btn svg {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+.clt-demo .clt-readout {
+	margin: .25em auto .65em;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: .5em .9em;
+	font-size: .9rem;
+	font-variant-numeric: tabular-nums;
+	color: #2f3a46;
+}
+.clt-demo .clt-readout span {
+	padding: 3px 9px;
+	background: #f3f6f9;
+	border-radius: 4px;
+}
+.clt-demo #clt-svg {
+	width: 100%;
+	max-width: 620px;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+@media (max-width: 640px) {
+	.clt-demo .clt-controls {
+		grid-template-columns: max-content minmax(0, 1fr);
+	}
+	.clt-demo .icon-btn {
+		grid-column: 2;
+	}
+}

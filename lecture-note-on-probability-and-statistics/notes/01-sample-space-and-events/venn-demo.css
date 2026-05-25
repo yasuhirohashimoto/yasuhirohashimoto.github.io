@@ -1,0 +1,21 @@
+/* venn diagram (note 1 only) */
+	.venn {
+		margin: 1.2em 0 1.5em;
+	}
+	.venn-controls {
+		margin: .6em 0 .4em;
+		font-size: .9rem;
+	}
+	.venn-controls select {
+		font-family: inherit;
+		font-size: .95rem;
+		padding: 4px 8px;
+		margin-left: .4em;
+	}
+	#venn-svg {
+		width: 100%;
+		max-width: 440px;
+		display: block;
+		margin: 0 auto;
+		user-select: none;
+	}

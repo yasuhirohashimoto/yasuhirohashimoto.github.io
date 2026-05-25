@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>線形回帰における回帰係数の計算と式変形 — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>線形回帰における回帰係数の計算と式変形</h1>
+
+		<p>
+			ノート「<a href="../13-linear-regression/">線形回帰</a>」では，残差二乗和を最小化する直線
+		</p>
+
+		\[
+		\hat{y}_i = ax_i + b
+		\]
+
+		<p>
+			の傾き \(a\) と切片 \(b\) が
+		</p>
+
+		\[
+		\hat{a} = \frac{S_{X,Y}}{S_X^2}, \qquad
+		\hat{b} = \bar{y} - \hat{a}\bar{x}
+		\]
+
+		<p>
+			で求まることを使った．ここではその式変形を確認する．
+		</p>
+
+		<h2>傾きと切片の計算</h2>
+
+		<p>
+			回帰直線 \(\hat{y}_i=ax_i+b\) と観測値 \(y_i\) のずれを二乗して足し合わせた量
+		</p>
+
+		\[
+		\mathrm{RSS}(a,b)=\sum_{i=1}^{n}(\hat{y}_i-y_i)^2
+		=\sum_{i=1}^{n}(ax_i+b-y_i)^2
+		\]
+
+		<p>
+			を最小化する \(a,b\) を求める．まず中身を展開すると，
+		</p>
+
+		\[
+		\begin{aligned}
+		\mathrm{RSS}(a,b)
+		&= \sum_{i=1}^{n}(ax_i+b-y_i)^2\\
+		&= \sum_{i=1}^{n}
+		\left(a^2x_i^2+b^2+y_i^2+2abx_i-2by_i-2ax_iy_i\right).
+		\end{aligned}
+		\]
+
+		<p>
+			\(a\) および \(b\) でそれぞれ偏微分すると，
+		</p>
+
+		\[
+		\begin{aligned}
+		\frac{\partial \mathrm{RSS}}{\partial a}
+		&= \sum_{i=1}^{n}\left(2ax_i^2+2bx_i-2x_iy_i\right)\\
+		&= 2a\sum_{i=1}^{n}x_i^2+2b\sum_{i=1}^{n}x_i-2\sum_{i=1}^{n}x_iy_i,\\[6pt]
+		\frac{\partial \mathrm{RSS}}{\partial b}
+		&= \sum_{i=1}^{n}\left(2b+2ax_i-2y_i\right)\\
+		&= 2bn+2a\sum_{i=1}^{n}x_i-2\sum_{i=1}^{n}y_i\\
+		&= 2n(b+a\bar{x}-\bar{y}).
+		\end{aligned}
+		\]
+
+		<p>
+			最小値では偏微分が \(0\) になる．したがって \(\partial \mathrm{RSS}/\partial b=0\) より
+		</p>
+
+		\[
+		b=\bar{y}-a\bar{x}.
+		\]
+
+		<p>
+			これを \(\partial \mathrm{RSS}/\partial a=0\) に代入すると，
+		</p>
+
+		\[
+		2a\sum_{i=1}^{n}x_i^2
+		+2(\bar{y}-a\bar{x})n\bar{x}
+		-2\sum_{i=1}^{n}x_iy_i
+		=0.
+		\]
+
+		<p>
+			\(a\) について整理すると，
+		</p>
+
+		\[
+		2a\left(\sum_{i=1}^{n}x_i^2-n\bar{x}^2\right)
+		=
+		2\sum_{i=1}^{n}x_iy_i-2n\bar{x}\bar{y}.
+		\]
+
+		<p>
+			したがって，傾き \(a\) は
+		</p>
+
+		\[
+		a
+		=
+		\frac{\sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}}
+		{\sum_{i=1}^{n}x_i^2-n\bar{x}^2}
+		\]
+
+		<p>
+			と求まる．さらに \(b=\bar{y}-a\bar{x}\) にこの \(a\) を代入すれば，切片 \(b\) が求まる．
+		</p>
+
+		<div class="note-side">
+			すべての \(x_i\) が同じ値の場合，分母は \(0\) になり，傾きは定まらない．以下では \(x_i\) にばらつきがあり，\(S_X^2>0\) であると考える．
+		</div>
+
+		<h2>共分散と分散による表現</h2>
+
+		<p>
+			上で得た \(a\) の式は，標本共分散と標本分散を使ってもっと短く書ける．まず分母は
+		</p>
+
+		\[
+		\begin{aligned}
+		\sum_{i=1}^{n}(x_i-\bar{x})^2
+		&= \sum_{i=1}^{n}(x_i^2-2x_i\bar{x}+\bar{x}^2)\\
+		&= \sum_{i=1}^{n}x_i^2-2\bar{x}\sum_{i=1}^{n}x_i+n\bar{x}^2\\
+		&= \sum_{i=1}^{n}x_i^2-2n\bar{x}^2+n\bar{x}^2\\
+		&= \sum_{i=1}^{n}x_i^2-n\bar{x}^2.
+		\end{aligned}
+		\]
+
+		<p>
+			これは \(a\) の分母と一致する．次に分子は
+		</p>
+
+		\[
+		\begin{aligned}
+		\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})
+		&= \sum_{i=1}^{n}(x_iy_i-x_i\bar{y}-\bar{x}y_i+\bar{x}\bar{y})\\
+		&= \sum_{i=1}^{n}x_iy_i-\bar{y}\sum_{i=1}^{n}x_i-\bar{x}\sum_{i=1}^{n}y_i+n\bar{x}\bar{y}\\
+		&= \sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}-n\bar{x}\bar{y}+n\bar{x}\bar{y}\\
+		&= \sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}.
+		\end{aligned}
+		\]
+
+		<p>
+			これも \(a\) の分子と一致する．したがって，
+		</p>
+
+		\[
+		\begin{aligned}
+		a
+		&= \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}
+		{\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[4pt]
+		&= \frac{\frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}
+		{\frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[4pt]
+		&= \frac{S_{X,Y}}{S_X^2}.
+		\end{aligned}
+		\]
+
+		<p>
+			このように，単回帰の傾きは「標本共分散 ÷ 説明変数の標本分散」というシンプルな形になる．相関係数
+		</p>
+
+		\[
+		r_{X,Y}=\frac{S_{X,Y}}{S_XS_Y}
+		\]
+
+		<p>
+			とよく似た形をしていることも分かる．
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

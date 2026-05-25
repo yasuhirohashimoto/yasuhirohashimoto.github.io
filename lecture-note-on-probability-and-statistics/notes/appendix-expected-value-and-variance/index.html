@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>確率変数の期待値と分散の式変形いろいろ — 確率統計学 講義ノート</title>
+	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>確率変数の期待値と分散の式変形いろいろ</h1>
+
+		<ul>
+			<li>先に導出した関係を後で用いるので，途中で不明な点があれば，前の項目に戻って確認してほしい．</li>
+			<li>ここでは離散型確率変数を想定して \(\sum\) と \(P(X=x,Y=y)\) を用いる．連続型確率変数の場合は，和を積分に，確率を確率密度関数 \(f_{X,Y}(x,y)\) に置き換えればよい．</li>
+		</ul>
+
+		<h2>期待値の線形性</h2>
+
+		<p>
+			確率変数 \(X,Y\) の和の期待値を求める．ここでは \(X,Y\) の独立は仮定しない．
+		</p>
+
+		<details open>
+			<summary>\(E[X\pm Y]=E[X]\pm E[Y]\)</summary>
+			<p>定義より，</p>
+			\[
+			\begin{aligned}
+			E[X\pm Y]
+			&= \sum_x\sum_y (x\pm y)P(X=x,Y=y)\\
+			&= \sum_x\sum_y xP(X=x,Y=y)
+			\pm \sum_x\sum_y yP(X=x,Y=y)\\
+			&= \sum_x x\sum_y P(X=x,Y=y)
+			\pm \sum_y y\sum_x P(X=x,Y=y)\\
+			&= \sum_x xP(X=x)
+			\pm \sum_y yP(Y=y)\\
+			&= E[X]\pm E[Y].
+			\end{aligned}
+			\]
+		</details>
+
+		<h2>分散の基本公式</h2>
+
+		<details open>
+			<summary>\(V[X]=E[X^2]-E[X]^2\)</summary>
+			<p>定義と期待値の線形性より，</p>
+			\[
+			\begin{aligned}
+			V[X]
+			&= E\left[(X-E[X])^2\right]\\
+			&= E\left[X^2-2XE[X]+E[X]^2\right]\\
+			&= E[X^2]-2E[X]E[X]+E[X]^2\\
+			&= E[X^2]-E[X]^2.
+			\end{aligned}
+			\]
+			<p>
+				\(E[X]\) は定数であることに注意する．
+			</p>
+		</details>
+
+		<h2>定数倍の期待値と分散</h2>
+
+		<p>
+			確率変数 \(X\) を定数 \(a\) 倍したときの期待値と分散を確認しておく．
+		</p>
+
+		<details>
+			<summary>\(E[aX]=aE[X]\)</summary>
+			<p>定義より，</p>
+			\[
+			\begin{aligned}
+			E[aX]
+			&= \sum_x (ax)P(X=x)\\
+			&= a\sum_x xP(X=x)\\
+			&= aE[X].
+			\end{aligned}
+			\]
+		</details>
+
+		<details>
+			<summary>\(V[aX]=a^2V[X]\)</summary>
+			<p>定義から計算すると，</p>
+			\[
+			\begin{aligned}
+			V[aX]
+			&= \sum_x \bigl(ax-E[aX]\bigr)^2P(X=x)\\
+			&= \sum_x \bigl(a^2x^2-2axE[aX]+E[aX]^2\bigr)P(X=x)\\
+			&= a^2\sum_x x^2P(X=x)-2aE[aX]\sum_x xP(X=x)+E[aX]^2\sum_x P(X=x)\\
+			&= a^2E[X^2]-2aE[aX]E[X]+E[aX]^2\\
+			&= a^2E[X^2]-2a^2E[X]^2+a^2E[X]^2\\
+			&= a^2\bigl(E[X^2]-E[X]^2\bigr)\\
+			&= a^2V[X].
+			\end{aligned}
+			\]
+			<p>また，分散の基本公式を使えば，より短く</p>
+			\[
+			\begin{aligned}
+			V[aX]
+			&= E[(aX)^2]-E[aX]^2\\
+			&= a^2E[X^2]-a^2E[X]^2\\
+			&= a^2V[X].
+			\end{aligned}
+			\]
+			<p>
+				分散では係数が二乗になる点に注意する．
+			</p>
+		</details>
+
+		<h2>共分散</h2>
+
+		<p>
+			確率変数 \(X,Y\) の共分散を，計算しやすい形に変形する．
+		</p>
+
+		<details open>
+			<summary>\(\mathrm{Cov}[X,Y]=E[XY]-E[X]E[Y]\)</summary>
+			<p>定義と期待値の線形性より，</p>
+			\[
+			\begin{aligned}
+			\mathrm{Cov}[X,Y]
+			&= E\left[(X-E[X])(Y-E[Y])\right]\\
+			&= E\left[XY+E[X]E[Y]-XE[Y]-YE[X]\right]\\
+			&= E[XY]+E[X]E[Y]-E[X]E[Y]-E[Y]E[X]\\
+			&= E[XY]-E[X]E[Y].
+			\end{aligned}
+			\]
+		</details>
+
+		<h3>発展：分散共分散行列</h3>
+
+		<p>
+			3 つの確率変数 \(X,Y,Z\) について，共分散を並べてみよう．異なる確率変数どうしの共分散は
+		</p>
+
+		\[
+		\begin{aligned}
+		\mathrm{Cov}[X,Y]
+		&= \mathrm{Cov}[Y,X]
+		= E[(X-E[X])(Y-E[Y])]
+		= E[XY]-E[X]E[Y],\\
+		\mathrm{Cov}[Y,Z]
+		&= \mathrm{Cov}[Z,Y]
+		= E[(Y-E[Y])(Z-E[Z])]
+		= E[YZ]-E[Y]E[Z],\\
+		\mathrm{Cov}[Z,X]
+		&= \mathrm{Cov}[X,Z]
+		= E[(Z-E[Z])(X-E[X])]
+		= E[ZX]-E[Z]E[X].
+		\end{aligned}
+		\]
+
+		<p>
+			同じ確率変数どうしの共分散を計算すれば，それは分散になる：
+		</p>
+
+		\[
+		\begin{aligned}
+		\mathrm{Cov}[X,X]&=V[X],\\
+		\mathrm{Cov}[Y,Y]&=V[Y],\\
+		\mathrm{Cov}[Z,Z]&=V[Z].
+		\end{aligned}
+		\]
+
+		<p>
+			これらを行列に並べたものを <strong>分散共分散行列</strong> (variance-covariance matrix) と呼び，一般に \(\Sigma\) と表記する：
+		</p>
+
+		\[
+		\Sigma =
+		\begin{pmatrix}
+		V[X]&\mathrm{Cov}[X,Y]&\mathrm{Cov}[X,Z]\\
+		\mathrm{Cov}[Y,X]&V[Y]&\mathrm{Cov}[Y,Z]\\
+		\mathrm{Cov}[Z,X]&\mathrm{Cov}[Z,Y]&V[Z]
+		\end{pmatrix}.
+		\]
+
+		<p>
+			確率変数を縦ベクトル \(\mathbf{X}\)，期待値ベクトルを \(E[\mathbf{X}]\) と書けば，分散共分散行列は
+		</p>
+
+		\[
+		\begin{aligned}
+		\Sigma
+		&= E\left[(\mathbf{X}-E[\mathbf{X}])(\mathbf{X}-E[\mathbf{X}])^T\right]\\
+		&= E[\mathbf{X}\mathbf{X}^T]-E[\mathbf{X}]E[\mathbf{X}]^T
+		\end{aligned}
+		\]
+
+		<p>
+			のようにコンパクトに書ける．多数の確率変数の関係を分析する際，分散共分散行列は重要な役割を果たす．たとえば主成分分析では，分散共分散行列を対角化することで，互いに無相関な新しい軸を探している．
+		</p>
+
+		<h2>和の分散</h2>
+
+		<p>
+			確率変数 \(X,Y\) の和の分散を求める．ここでも \(X,Y\) の独立は仮定しない．
+		</p>
+
+		<details open>
+			<summary>\(V[X\pm Y]=V[X]+V[Y]\pm 2\mathrm{Cov}[X,Y]\)</summary>
+			<p>分散の基本公式より，</p>
+			\[
+			\begin{aligned}
+			V[X\pm Y]
+			&= E[(X\pm Y)^2]-E[X\pm Y]^2\\
+			&= E[X^2+Y^2\pm 2XY]-(E[X]\pm E[Y])^2\\
+			&= E[X^2]+E[Y^2]\pm 2E[XY]-E[X]^2-E[Y]^2\mp 2E[X]E[Y]\\
+			&= (E[X^2]-E[X]^2)+(E[Y^2]-E[Y]^2)
+			\pm 2(E[XY]-E[X]E[Y])\\
+			&= V[X]+V[Y]\pm 2\mathrm{Cov}[X,Y].
+			\end{aligned}
+			\]
+		</details>
+
+		<h2>独立な確率変数</h2>
+
+		<p>
+			ここでは \(X,Y\) が独立な場合に成り立つ関係をまとめる．
+		</p>
+
+		<details>
+			<summary>\(E[X\pm Y]=E[X]\pm E[Y]\)</summary>
+			<p>
+				この関係は \(X,Y\) の独立を仮定しない場合でも成り立つ．
+			</p>
+		</details>
+
+		<details>
+			<summary>\(V[X\pm Y]=V[X]+V[Y]\)</summary>
+			<p>
+				\(X,Y\) が独立ならば \(\mathrm{Cov}[X,Y]=0\) なので，和の分散の公式から
+			</p>
+			\[
+			V[X\pm Y]=V[X]+V[Y]
+			\]
+			<p>
+				が得られる．
+			</p>
+		</details>
+
+		<details>
+			<summary>\(E[XY]=E[X]E[Y]\)</summary>
+			<p>定義と独立性より，</p>
+			\[
+			\begin{aligned}
+			E[XY]
+			&= \sum_x\sum_y (xy)P(X=x,Y=y)\\
+			&= \sum_x\sum_y (xy)P(X=x)P(Y=y)\\
+			&= \sum_x xP(X=x)\sum_y yP(Y=y)\\
+			&= E[X]E[Y].
+			\end{aligned}
+			\]
+		</details>
+
+		<details>
+			<summary>\(V[XY]=E[X^2]E[Y^2]-E[X]^2E[Y]^2\)</summary>
+			<p>分散の基本公式と，独立な場合の \(E[XY]=E[X]E[Y]\) より，</p>
+			\[
+			\begin{aligned}
+			V[XY]
+			&= E[(XY)^2]-E[XY]^2\\
+			&= E[X^2Y^2]-E[X]^2E[Y]^2\\
+			&= E[X^2]E[Y^2]-E[X]^2E[Y]^2.
+			\end{aligned}
+			\]
+			<p>
+				さらに，この式は
+			</p>
+			\[
+			V[XY]=V[X]V[Y]+E[X]^2V[Y]+E[Y]^2V[X]
+			\]
+			<p>
+				とも書ける．暗記する必要はないが，展開の流れは追えるようにしておきたい．
+			</p>
+		</details>
+
+		<h2>標本平均の期待値と分散</h2>
+
+		<p>
+			期待値が \(\mu\)，分散が \(\sigma^2\) の分布から，独立同分布な \(n\) 個の確率変数 \(X_1,\ldots,X_n\) を得たとする．この標本平均を
+		</p>
+
+		\[
+		\bar{X}_n=\frac{X_1+X_2+\cdots+X_n}{n}
+		\]
+
+		<p>
+			と書く．このとき以下の関係が成り立つ．
+		</p>
+
+		<details open>
+			<summary>\(E[\bar{X}_n]=\mu\)</summary>
+			<p>期待値の線形性より，</p>
+			\[
+			\begin{aligned}
+			E[\bar{X}_n]
+			&= E\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\
+			&= \frac{1}{n}\{E[X_1]+E[X_2]+\cdots+E[X_n]\}\\
+			&= \frac{1}{n}\{\mu+\mu+\cdots+\mu\}\\
+			&= \mu.
+			\end{aligned}
+			\]
+			<div class="note-side">
+				\(X_1,\ldots,X_n\) は添字で区別しているが，すべて同じ分布に従う確率変数なので，\(E[X_1]=E[X_2]=\cdots=E[X_n]=\mu\) である．
+			</div>
+		</details>
+
+		<details open>
+			<summary>\(V[\bar{X}_n]=\sigma^2/n\)</summary>
+			<p>
+				独立性と \(V[aX]=a^2V[X]\) より，
+			</p>
+			\[
+			\begin{aligned}
+			V[\bar{X}_n]
+			&= V\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\
+			&= V\left[\frac{X_1}{n}\right]+V\left[\frac{X_2}{n}\right]+\cdots+V\left[\frac{X_n}{n}\right]\\
+			&= \frac{V[X_1]}{n^2}+\frac{V[X_2]}{n^2}+\cdots+\frac{V[X_n]}{n^2}\\
+			&= \frac{\sigma^2}{n^2}+\frac{\sigma^2}{n^2}+\cdots+\frac{\sigma^2}{n^2}\\
+			&= \frac{\sigma^2}{n}.
+			\end{aligned}
+			\]
+			<p>
+				標本平均の分散は，サンプルサイズに反比例して小さくなる．
+			</p>
+			<div class="note-side">
+				複数の標本平均が従う分布の分散 \(V[\bar{X}_n]\) と，ある標本の内部のばらつきを表す標本分散 \(S_X^2\) を混同しないように注意．前者は標本間での平均値のばらつき，後者は標本内での個々の値のばらつきを指す．
+			</div>
+		</details>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>
