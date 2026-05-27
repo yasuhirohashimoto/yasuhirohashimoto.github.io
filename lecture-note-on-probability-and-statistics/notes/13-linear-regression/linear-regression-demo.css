@@ -1,217 +1,217 @@
 .regression-demo {
-		margin: 1.5em auto;
-		max-width: 560px;
-	}
-	.regression-demo .controls {
-		margin: 0 auto .6em;
-		display: grid;
-		grid-template-columns: max-content 1fr max-content max-content;
-		gap: .55em .7em;
-		align-items: center;
-		max-width: 480px;
-		font-size: .92rem;
-	}
-	.regression-demo .controls label {
-		text-align: right;
-		white-space: nowrap;
-		margin: 0;
-		font-weight: 500;
-	}
-	.regression-demo .controls input[type=range] {
-		width: 100%;
-		margin: 0;
-		height: 20px;
-		-webkit-appearance: none;
-		appearance: none;
-		background: transparent;
-		cursor: pointer;
-	}
-	.regression-demo .controls input[type=range]::-webkit-slider-runnable-track {
-		height: 4px;
-		background: #d6dde3;
-		border-radius: 2px;
-	}
-	.regression-demo .controls input[type=range]::-moz-range-track {
-		height: 4px;
-		background: #d6dde3;
-		border-radius: 2px;
-	}
-	.regression-demo .controls input[type=range]::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 16px;
-		height: 16px;
-		background: #2c6ea6;
-		border: 2px solid #fff;
-		border-radius: 50%;
-		margin-top: -6px;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
-		cursor: pointer;
-		transition: transform .12s;
-	}
-	.regression-demo .controls input[type=range]:active::-webkit-slider-thumb {
-		transform: scale(1.15);
-	}
-	.regression-demo .controls input[type=range]::-moz-range-thumb {
-		width: 16px;
-		height: 16px;
-		background: #2c6ea6;
-		border: 2px solid #fff;
-		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
-		cursor: pointer;
-	}
-	.regression-demo .num-input {
-		width: 4.4em;
-		padding: 4px 8px;
-		text-align: right;
-		font-variant-numeric: tabular-nums;
-		font-size: inherit;
-		font-family: inherit;
-		border: 1px solid #cfd6dd;
-		border-radius: 6px;
-		background: #fff;
-		box-sizing: border-box;
-		transition: border-color .12s, box-shadow .12s;
-	}
-	.regression-demo .num-input:focus {
-		outline: none;
-		border-color: #2c6ea6;
-		box-shadow: 0 0 0 3px rgba(44, 110, 166, .15);
-	}
-	.regression-demo .num-input::-webkit-outer-spin-button,
-	.regression-demo .num-input::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
-	.regression-demo .num-input { -moz-appearance: textfield; }
-	.regression-demo .truth-cell {
-		color: #1d6b38;
-		background: rgba(44, 138, 74, .1);
-		white-space: nowrap;
-		font-size: .83em;
-		margin-left: .35em;
-		padding: 2px 8px;
-		border-radius: 4px;
-	}
-	.regression-demo .truth-cell .truth-num {
-		font-weight: 700;
-		font-variant-numeric: tabular-nums;
-	}
-	.regression-demo button {
-		padding: .45em 1.15em;
-		font-size: .9rem;
-		font-family: inherit;
-		font-weight: 500;
-		cursor: pointer;
-		background: #fff;
-		border: 1px solid #cfd6dd;
-		border-radius: 6px;
-		color: #2f3a46;
-		transition: background .12s, border-color .12s, box-shadow .12s;
-	}
-	.regression-demo button:hover {
-		background: #f3f6f9;
-		border-color: #a8b0ba;
-	}
-	.regression-demo button:active {
-		background: #e6ebf0;
-	}
-	.regression-demo .icon-btn {
-		width: 34px;
-		height: 34px;
-		padding: 0;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.regression-demo .icon-btn svg {
-		width: 16px;
-		height: 16px;
-		display: block;
-	}
-	.regression-demo .toggle {
-		display: inline-flex;
-		align-items: center;
-		cursor: pointer;
-		gap: .5em;
-		user-select: none;
-	}
-	.regression-demo .toggle-input {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		opacity: 0;
-		pointer-events: none;
-	}
-	.regression-demo .toggle-track {
-		position: relative;
-		display: inline-block;
-		width: 38px;
-		height: 22px;
-		background: #cfd6dd;
-		border-radius: 11px;
-		transition: background-color .2s ease;
-		flex-shrink: 0;
-	}
-	.regression-demo .toggle-thumb {
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		width: 18px;
-		height: 18px;
-		background: #fff;
-		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
-		transition: transform .2s ease;
-	}
-	.regression-demo .toggle-input:checked + .toggle-track {
-		background: #2c8a4a;
-	}
-	.regression-demo .toggle-input:checked + .toggle-track .toggle-thumb {
-		transform: translateX(16px);
-	}
-	.regression-demo .toggle-input:focus-visible + .toggle-track {
-		box-shadow: 0 0 0 3px rgba(44, 110, 166, .25);
-	}
-	.regression-demo .toggle-label {
-		font-size: .9rem;
-		color: #2f3a46;
-		font-weight: 500;
-	}
-	.regression-demo .button-row {
-		text-align: center;
-		margin: .5em 0 .6em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: .9em;
-	}
-	.regression-demo svg {
-		width: 100%;
-		max-width: 520px;
-		display: block;
-		margin: 0 auto;
-		user-select: none;
-	}
-	.regression-demo .readout {
-		text-align: center;
-		margin-top: .8em;
-		font-size: .95rem;
-		font-variant-numeric: tabular-nums;
-	}
-	.regression-demo .readout .rss-num {
-		font-weight: 700;
-		color: var(--text, #2f3a46);
-	}
-	.regression-demo .truth-rss-cell {
-		color: #1d6b38;
-		margin-left: .5em;
-		padding: 2px 10px;
-		background: rgba(44, 138, 74, .1);
-		border-radius: 4px;
-	}
-	.regression-demo .truth-rss-cell .truth-rss {
-		font-weight: 700;
-		color: #1d6b38;
-	}
+	margin: 1.5em auto;
+	max-width: 560px;
+}
+.regression-demo .controls {
+	margin: 0 auto .6em;
+	display: grid;
+	grid-template-columns: max-content 1fr max-content max-content;
+	gap: .55em .7em;
+	align-items: center;
+	max-width: 480px;
+	font-size: .92rem;
+}
+.regression-demo .controls label {
+	text-align: right;
+	white-space: nowrap;
+	margin: 0;
+	font-weight: 500;
+}
+.regression-demo .controls input[type=range] {
+	width: 100%;
+	margin: 0;
+	height: 20px;
+	-webkit-appearance: none;
+	appearance: none;
+	background: transparent;
+	cursor: pointer;
+}
+.regression-demo .controls input[type=range]::-webkit-slider-runnable-track {
+	height: 4px;
+	background: #d6dde3;
+	border-radius: 2px;
+}
+.regression-demo .controls input[type=range]::-moz-range-track {
+	height: 4px;
+	background: #d6dde3;
+	border-radius: 2px;
+}
+.regression-demo .controls input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	background: #2c6ea6;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	margin-top: -6px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	cursor: pointer;
+	transition: transform .12s;
+}
+.regression-demo .controls input[type=range]:active::-webkit-slider-thumb {
+	transform: scale(1.15);
+}
+.regression-demo .controls input[type=range]::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	background: #2c6ea6;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	cursor: pointer;
+}
+.regression-demo .num-input {
+	width: 4.4em;
+	padding: 4px 8px;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	font-size: inherit;
+	font-family: inherit;
+	border: 1px solid #cfd6dd;
+	border-radius: 6px;
+	background: #fff;
+	box-sizing: border-box;
+	transition: border-color .12s, box-shadow .12s;
+}
+.regression-demo .num-input:focus {
+	outline: none;
+	border-color: #2c6ea6;
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .15);
+}
+.regression-demo .num-input::-webkit-outer-spin-button,
+.regression-demo .num-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.regression-demo .num-input { -moz-appearance: textfield; }
+.regression-demo .truth-cell {
+	color: #1d6b38;
+	background: rgba(44, 138, 74, .1);
+	white-space: nowrap;
+	font-size: .83em;
+	margin-left: .35em;
+	padding: 2px 8px;
+	border-radius: 4px;
+}
+.regression-demo .truth-cell .truth-num {
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.regression-demo button {
+	padding: .45em 1.15em;
+	font-size: .9rem;
+	font-family: inherit;
+	font-weight: 500;
+	cursor: pointer;
+	background: #fff;
+	border: 1px solid #cfd6dd;
+	border-radius: 6px;
+	color: #2f3a46;
+	transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.regression-demo button:hover {
+	background: #f3f6f9;
+	border-color: #a8b0ba;
+}
+.regression-demo button:active {
+	background: #e6ebf0;
+}
+.regression-demo .icon-btn {
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.regression-demo .icon-btn svg {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+.regression-demo .toggle {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	gap: .5em;
+	user-select: none;
+}
+.regression-demo .toggle-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	pointer-events: none;
+}
+.regression-demo .toggle-track {
+	position: relative;
+	display: inline-block;
+	width: 38px;
+	height: 22px;
+	background: #cfd6dd;
+	border-radius: 11px;
+	transition: background-color .2s ease;
+	flex-shrink: 0;
+}
+.regression-demo .toggle-thumb {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 18px;
+	height: 18px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+	transition: transform .2s ease;
+}
+.regression-demo .toggle-input:checked + .toggle-track {
+	background: #2c8a4a;
+}
+.regression-demo .toggle-input:checked + .toggle-track .toggle-thumb {
+	transform: translateX(16px);
+}
+.regression-demo .toggle-input:focus-visible + .toggle-track {
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .25);
+}
+.regression-demo .toggle-label {
+	font-size: .9rem;
+	color: #2f3a46;
+	font-weight: 500;
+}
+.regression-demo .button-row {
+	text-align: center;
+	margin: .5em 0 .6em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: .9em;
+}
+.regression-demo svg {
+	width: 100%;
+	max-width: 520px;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+.regression-demo .readout {
+	text-align: center;
+	margin-top: .8em;
+	font-size: .95rem;
+	font-variant-numeric: tabular-nums;
+}
+.regression-demo .readout .rss-num {
+	font-weight: 700;
+	color: var(--text, #2f3a46);
+}
+.regression-demo .truth-rss-cell {
+	color: #1d6b38;
+	margin-left: .5em;
+	padding: 2px 10px;
+	background: rgba(44, 138, 74, .1);
+	border-radius: 4px;
+}
+.regression-demo .truth-rss-cell .truth-rss {
+	font-weight: 700;
+	color: #1d6b38;
+}

@@ -16,18 +16,16 @@
 				.call(d3.axisBottom(xScale).ticks(7));
 			g.append("g").call(d3.axisLeft(yScale).ticks(6));
 
-			g.append("text")
-				.attr("x", innerW / 2).attr("y", innerH + 32)
-				.attr("text-anchor", "middle")
-				.attr("font-size", "12px")
-				.attr("fill", PROB_COLORS.text)
-				.text("x");
-			g.append("text")
-				.attr("transform", `translate(-30, ${innerH / 2}) rotate(-90)`)
-				.attr("text-anchor", "middle")
-				.attr("font-size", "12px")
-				.attr("fill", PROB_COLORS.text)
-				.text("y");
+			texFO(g, innerW / 2, innerH + 24, 28, 20, "\\(x\\)", {
+				anchor: "topcenter",
+				color: PROB_COLORS.text,
+				size: "12px"
+			});
+			texFO(g, -31, innerH / 2, 28, 20, "\\(y\\)", {
+				anchor: "center",
+				color: PROB_COLORS.text,
+				size: "12px"
+			});
 
 			// Layers in z-order: residuals → user line hit area → user line → truth line → datapoints → handles
 			const residualGroup = g.append("g").attr("class", "residuals");
@@ -266,4 +264,5 @@
 			renderPoints();
 			hideTruth();
 			update();
+			await typesetSvg(svg);
 		})();

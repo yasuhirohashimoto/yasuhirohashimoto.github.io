@@ -19,28 +19,28 @@
 
 		<ul>
 			<li>先に導出した関係を後で用いるので，途中で不明な点があれば，前の項目に戻って確認してほしい．</li>
-			<li>ここでは離散型確率変数を想定して \(\sum\) と \(P(X=x,Y=y)\) を用いる．連続型確率変数の場合は，和を積分に，確率を確率密度関数 \(f_{X,Y}(x,y)\) に置き換えればよい．</li>
+			<li>ここでは離散型確率変数を想定して \(\sum\) と \(P(X=x,Y=y)\) を用いる．連続型確率変数の場合は，和を積分に，\(P(X=x)\) を \(f_X(x)\,dx\) に，\(P(X=x,Y=y)\) を \(f_{X,Y}(x,y)\,dx\,dy\) に読み替えればよい．</li>
 		</ul>
 
 		<h2>期待値の線形性</h2>
 
 		<p>
-			確率変数 \(X,Y\) の和の期待値を求める．ここでは \(X,Y\) の独立は仮定しない．
+			確率変数 \(X,Y\) の和の期待値を求める．
 		</p>
 
-		<details open>
+		<details>
 			<summary>\(E[X\pm Y]=E[X]\pm E[Y]\)</summary>
 			<p>定義より，</p>
 			\[
 			\begin{aligned}
 			E[X\pm Y]
-			&= \sum_x\sum_y (x\pm y)P(X=x,Y=y)\\
+			&= \sum_x\sum_y (x\pm y)P(X=x,Y=y)\\[6pt]
 			&= \sum_x\sum_y xP(X=x,Y=y)
-			\pm \sum_x\sum_y yP(X=x,Y=y)\\
+			\pm \sum_x\sum_y yP(X=x,Y=y)\\[6pt]
 			&= \sum_x x\sum_y P(X=x,Y=y)
-			\pm \sum_y y\sum_x P(X=x,Y=y)\\
+			\pm \sum_y y\sum_x P(X=x,Y=y)\\[6pt]
 			&= \sum_x xP(X=x)
-			\pm \sum_y yP(Y=y)\\
+			\pm \sum_y yP(Y=y)\\[6pt]
 			&= E[X]\pm E[Y].
 			\end{aligned}
 			\]
@@ -48,20 +48,20 @@
 
 		<h2>分散の基本公式</h2>
 
-		<details open>
+		<details>
 			<summary>\(V[X]=E[X^2]-E[X]^2\)</summary>
 			<p>定義と期待値の線形性より，</p>
 			\[
 			\begin{aligned}
 			V[X]
-			&= E\left[(X-E[X])^2\right]\\
-			&= E\left[X^2-2XE[X]+E[X]^2\right]\\
-			&= E[X^2]-2E[X]E[X]+E[X]^2\\
+			&= E\left[(X-E[X])^2\right]\\[6pt]
+			&= E\left[X^2-2XE[X]+E[X]^2\right]\\[6pt]
+			&= E[X^2]-2E[X]E[X]+E[X]^2\\[6pt]
 			&= E[X^2]-E[X]^2.
 			\end{aligned}
 			\]
 			<p>
-				\(E[X]\) は定数であることに注意する．
+				\(E[X]\) は \(X\) に依存しない定数なので，期待値の外に出せることに注意する．
 			</p>
 		</details>
 
@@ -77,8 +77,8 @@
 			\[
 			\begin{aligned}
 			E[aX]
-			&= \sum_x (ax)P(X=x)\\
-			&= a\sum_x xP(X=x)\\
+			&= \sum_x (ax)P(X=x)\\[6pt]
+			&= a\sum_x xP(X=x)\\[6pt]
 			&= aE[X].
 			\end{aligned}
 			\]
@@ -90,12 +90,12 @@
 			\[
 			\begin{aligned}
 			V[aX]
-			&= \sum_x \bigl(ax-E[aX]\bigr)^2P(X=x)\\
-			&= \sum_x \bigl(a^2x^2-2axE[aX]+E[aX]^2\bigr)P(X=x)\\
-			&= a^2\sum_x x^2P(X=x)-2aE[aX]\sum_x xP(X=x)+E[aX]^2\sum_x P(X=x)\\
-			&= a^2E[X^2]-2aE[aX]E[X]+E[aX]^2\\
-			&= a^2E[X^2]-2a^2E[X]^2+a^2E[X]^2\\
-			&= a^2\bigl(E[X^2]-E[X]^2\bigr)\\
+			&= \sum_x \bigl(ax-E[aX]\bigr)^2P(X=x)\\[6pt]
+			&= \sum_x \bigl(a^2x^2-2axE[aX]+E[aX]^2\bigr)P(X=x)\\[6pt]
+			&= a^2\sum_x x^2P(X=x)-2aE[aX]\sum_x xP(X=x)+E[aX]^2\sum_x P(X=x)\\[6pt]
+			&= a^2E[X^2]-2aE[aX]E[X]+E[aX]^2\\[6pt]
+			&= a^2E[X^2]-2a^2E[X]^2+a^2E[X]^2\\[6pt]
+			&= a^2\bigl(E[X^2]-E[X]^2\bigr)\\[6pt]
 			&= a^2V[X].
 			\end{aligned}
 			\]
@@ -103,8 +103,8 @@
 			\[
 			\begin{aligned}
 			V[aX]
-			&= E[(aX)^2]-E[aX]^2\\
-			&= a^2E[X^2]-a^2E[X]^2\\
+			&= E[(aX)^2]-E[aX]^2\\[6pt]
+			&= a^2E[X^2]-a^2E[X]^2\\[6pt]
 			&= a^2V[X].
 			\end{aligned}
 			\]
@@ -119,101 +119,49 @@
 			確率変数 \(X,Y\) の共分散を，計算しやすい形に変形する．
 		</p>
 
-		<details open>
+		<details>
 			<summary>\(\mathrm{Cov}[X,Y]=E[XY]-E[X]E[Y]\)</summary>
 			<p>定義と期待値の線形性より，</p>
 			\[
 			\begin{aligned}
 			\mathrm{Cov}[X,Y]
-			&= E\left[(X-E[X])(Y-E[Y])\right]\\
-			&= E\left[XY+E[X]E[Y]-XE[Y]-YE[X]\right]\\
-			&= E[XY]+E[X]E[Y]-E[X]E[Y]-E[Y]E[X]\\
+			&= E\left[(X-E[X])(Y-E[Y])\right]\\[6pt]
+			&= E\left[XY+E[X]E[Y]-XE[Y]-YE[X]\right]\\[6pt]
+			&= E[XY]+E[X]E[Y]-E[X]E[Y]-E[Y]E[X]\\[6pt]
 			&= E[XY]-E[X]E[Y].
 			\end{aligned}
 			\]
 		</details>
 
-		<h3>発展：分散共分散行列</h3>
-
 		<p>
-			3 つの確率変数 \(X,Y,Z\) について，共分散を並べてみよう．異なる確率変数どうしの共分散は
+			同じ確率変数どうしの共分散を考えると，
 		</p>
 
 		\[
-		\begin{aligned}
-		\mathrm{Cov}[X,Y]
-		&= \mathrm{Cov}[Y,X]
-		= E[(X-E[X])(Y-E[Y])]
-		= E[XY]-E[X]E[Y],\\
-		\mathrm{Cov}[Y,Z]
-		&= \mathrm{Cov}[Z,Y]
-		= E[(Y-E[Y])(Z-E[Z])]
-		= E[YZ]-E[Y]E[Z],\\
-		\mathrm{Cov}[Z,X]
-		&= \mathrm{Cov}[X,Z]
-		= E[(Z-E[Z])(X-E[X])]
-		= E[ZX]-E[Z]E[X].
-		\end{aligned}
+		\mathrm{Cov}[X,X]=E[(X-E[X])^2]=V[X]
 		\]
 
 		<p>
-			同じ確率変数どうしの共分散を計算すれば，それは分散になる：
-		</p>
-
-		\[
-		\begin{aligned}
-		\mathrm{Cov}[X,X]&=V[X],\\
-		\mathrm{Cov}[Y,Y]&=V[Y],\\
-		\mathrm{Cov}[Z,Z]&=V[Z].
-		\end{aligned}
-		\]
-
-		<p>
-			これらを行列に並べたものを <strong>分散共分散行列</strong> (variance-covariance matrix) と呼び，一般に \(\Sigma\) と表記する：
-		</p>
-
-		\[
-		\Sigma =
-		\begin{pmatrix}
-		V[X]&\mathrm{Cov}[X,Y]&\mathrm{Cov}[X,Z]\\
-		\mathrm{Cov}[Y,X]&V[Y]&\mathrm{Cov}[Y,Z]\\
-		\mathrm{Cov}[Z,X]&\mathrm{Cov}[Z,Y]&V[Z]
-		\end{pmatrix}.
-		\]
-
-		<p>
-			確率変数を縦ベクトル \(\mathbf{X}\)，期待値ベクトルを \(E[\mathbf{X}]\) と書けば，分散共分散行列は
-		</p>
-
-		\[
-		\begin{aligned}
-		\Sigma
-		&= E\left[(\mathbf{X}-E[\mathbf{X}])(\mathbf{X}-E[\mathbf{X}])^T\right]\\
-		&= E[\mathbf{X}\mathbf{X}^T]-E[\mathbf{X}]E[\mathbf{X}]^T
-		\end{aligned}
-		\]
-
-		<p>
-			のようにコンパクトに書ける．多数の確率変数の関係を分析する際，分散共分散行列は重要な役割を果たす．たとえば主成分分析では，分散共分散行列を対角化することで，互いに無相関な新しい軸を探している．
+			となる．つまり，分散は「自分自身との共分散」と見ることもできる．
 		</p>
 
 		<h2>和の分散</h2>
 
 		<p>
-			確率変数 \(X,Y\) の和の分散を求める．ここでも \(X,Y\) の独立は仮定しない．
+			確率変数 \(X,Y\) の和の分散を求める．
 		</p>
 
-		<details open>
+		<details>
 			<summary>\(V[X\pm Y]=V[X]+V[Y]\pm 2\mathrm{Cov}[X,Y]\)</summary>
 			<p>分散の基本公式より，</p>
 			\[
 			\begin{aligned}
 			V[X\pm Y]
-			&= E[(X\pm Y)^2]-E[X\pm Y]^2\\
-			&= E[X^2+Y^2\pm 2XY]-(E[X]\pm E[Y])^2\\
-			&= E[X^2]+E[Y^2]\pm 2E[XY]-E[X]^2-E[Y]^2\mp 2E[X]E[Y]\\
+			&= E[(X\pm Y)^2]-E[X\pm Y]^2\\[6pt]
+			&= E[X^2+Y^2\pm 2XY]-(E[X]\pm E[Y])^2\\[6pt]
+			&= E[X^2]+E[Y^2]\pm 2E[XY]-E[X]^2-E[Y]^2\mp 2E[X]E[Y]\\[6pt]
 			&= (E[X^2]-E[X]^2)+(E[Y^2]-E[Y]^2)
-			\pm 2(E[XY]-E[X]E[Y])\\
+			\pm 2(E[XY]-E[X]E[Y])\\[6pt]
 			&= V[X]+V[Y]\pm 2\mathrm{Cov}[X,Y].
 			\end{aligned}
 			\]
@@ -222,20 +170,27 @@
 		<h2>独立な確率変数</h2>
 
 		<p>
-			ここでは \(X,Y\) が独立な場合に成り立つ関係をまとめる．
+			ここでは \(X,Y\) が <strong>独立な場合のみに成り立つ</strong> 関係をまとめる．
 		</p>
 
 		<details>
-			<summary>\(E[X\pm Y]=E[X]\pm E[Y]\)</summary>
-			<p>
-				この関係は \(X,Y\) の独立を仮定しない場合でも成り立つ．
-			</p>
+			<summary>\(E[XY]=E[X]E[Y]\)</summary>
+			<p>定義と独立性より，</p>
+			\[
+			\begin{aligned}
+			E[XY]
+			&= \sum_x\sum_y (xy)P(X=x,Y=y)\\[6pt]
+			&= \sum_x\sum_y (xy)P(X=x)P(Y=y)\\[6pt]
+			&= \sum_x xP(X=x)\sum_y yP(Y=y)\\[6pt]
+			&= E[X]E[Y].
+			\end{aligned}
+			\]
 		</details>
 
 		<details>
 			<summary>\(V[X\pm Y]=V[X]+V[Y]\)</summary>
 			<p>
-				\(X,Y\) が独立ならば \(\mathrm{Cov}[X,Y]=0\) なので，和の分散の公式から
+				上で見た \(E[XY]=E[X]E[Y]\) より，独立な \(X,Y\) では \(\mathrm{Cov}[X,Y]=0\) である．したがって，和の分散の公式から
 			</p>
 			\[
 			V[X\pm Y]=V[X]+V[Y]
@@ -246,30 +201,21 @@
 		</details>
 
 		<details>
-			<summary>\(E[XY]=E[X]E[Y]\)</summary>
-			<p>定義と独立性より，</p>
-			\[
-			\begin{aligned}
-			E[XY]
-			&= \sum_x\sum_y (xy)P(X=x,Y=y)\\
-			&= \sum_x\sum_y (xy)P(X=x)P(Y=y)\\
-			&= \sum_x xP(X=x)\sum_y yP(Y=y)\\
-			&= E[X]E[Y].
-			\end{aligned}
-			\]
-		</details>
-
-		<details>
 			<summary>\(V[XY]=E[X^2]E[Y^2]-E[X]^2E[Y]^2\)</summary>
-			<p>分散の基本公式と，独立な場合の \(E[XY]=E[X]E[Y]\) より，</p>
+			<p>
+				分散の基本公式と，独立な場合の \(E[XY]=E[X]E[Y]\) より，
+			</p>
 			\[
 			\begin{aligned}
 			V[XY]
-			&= E[(XY)^2]-E[XY]^2\\
-			&= E[X^2Y^2]-E[X]^2E[Y]^2\\
+			&= E[(XY)^2]-E[XY]^2\\[6pt]
+			&= E[X^2Y^2]-E[X]^2E[Y]^2\\[6pt]
 			&= E[X^2]E[Y^2]-E[X]^2E[Y]^2.
 			\end{aligned}
 			\]
+			<p>
+				最後の行では，独立な \(X,Y\) から作った \(X^2,Y^2\) も独立なので，\(E[X^2Y^2]=E[X^2]E[Y^2]\) となることを使っている．
+			</p>
 			<p>
 				さらに，この式は
 			</p>
@@ -292,48 +238,132 @@
 		\]
 
 		<p>
-			と書く．このとき以下の関係が成り立つ．
+			と表記する．このとき以下の関係が成り立つ．
 		</p>
 
-		<details open>
+		<details>
 			<summary>\(E[\bar{X}_n]=\mu\)</summary>
-			<p>期待値の線形性より，</p>
+			<p>
+				期待値の線形性より，
+			</p>
+
 			\[
 			\begin{aligned}
 			E[\bar{X}_n]
-			&= E\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\
-			&= \frac{1}{n}\{E[X_1]+E[X_2]+\cdots+E[X_n]\}\\
-			&= \frac{1}{n}\{\mu+\mu+\cdots+\mu\}\\
+			&= E\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[6pt]
+			&= \frac{1}{n}\{E[X_1]+E[X_2]+\cdots+E[X_n]\}\\[6pt]
+			&= \frac{1}{n}\{\mu+\mu+\cdots+\mu\}\\[6pt]
 			&= \mu.
 			\end{aligned}
 			\]
-			<div class="note-side">
+
+			<p>
 				\(X_1,\ldots,X_n\) は添字で区別しているが，すべて同じ分布に従う確率変数なので，\(E[X_1]=E[X_2]=\cdots=E[X_n]=\mu\) である．
-			</div>
+			</p>
+
 		</details>
 
-		<details open>
+		<details>
 			<summary>\(V[\bar{X}_n]=\sigma^2/n\)</summary>
+
+			<p>
+				標本平均が従う分布の分散 \(V[\bar{X}_n]\) と，ある標本の内部のばらつきを表す標本分散 \(S_X^2\) を混同しないように注意．前者は標本間での平均値のばらつき，後者は標本内での個々の値のばらつきを指す．
+			</p>
+
 			<p>
 				独立性と \(V[aX]=a^2V[X]\) より，
 			</p>
+
 			\[
 			\begin{aligned}
 			V[\bar{X}_n]
-			&= V\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\
-			&= V\left[\frac{X_1}{n}\right]+V\left[\frac{X_2}{n}\right]+\cdots+V\left[\frac{X_n}{n}\right]\\
-			&= \frac{V[X_1]}{n^2}+\frac{V[X_2]}{n^2}+\cdots+\frac{V[X_n]}{n^2}\\
-			&= \frac{\sigma^2}{n^2}+\frac{\sigma^2}{n^2}+\cdots+\frac{\sigma^2}{n^2}\\
+			&= V\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[6pt]
+			&= V\left[\frac{X_1}{n}\right]+V\left[\frac{X_2}{n}\right]+\cdots+V\left[\frac{X_n}{n}\right]\\[6pt]
+			&= \frac{V[X_1]}{n^2}+\frac{V[X_2]}{n^2}+\cdots+\frac{V[X_n]}{n^2}\\[6pt]
+			&= \frac{\sigma^2}{n^2}+\frac{\sigma^2}{n^2}+\cdots+\frac{\sigma^2}{n^2}\\[6pt]
 			&= \frac{\sigma^2}{n}.
 			\end{aligned}
 			\]
+
 			<p>
 				標本平均の分散は，サンプルサイズに反比例して小さくなる．
 			</p>
-			<div class="note-side">
-				複数の標本平均が従う分布の分散 \(V[\bar{X}_n]\) と，ある標本の内部のばらつきを表す標本分散 \(S_X^2\) を混同しないように注意．前者は標本間での平均値のばらつき，後者は標本内での個々の値のばらつきを指す．
-			</div>
 		</details>
+
+		<hr>
+
+		<h2>発展的な内容</h2>
+
+		<h3>分散共分散行列</h3>
+
+		<p>
+			1 つの確率変数なら，ばらつきは分散 \(V[X]\) で表せる．では，複数の確率変数が同時に動くときはどうだろうか．たとえば \(X,Y,Z\) をそれぞれ数学，英語，国語の点数だと考えると，各科目がどれくらいばらつくかだけでなく，「数学が高い人は英語も高い傾向があるか」のような一緒に動く向きも知りたくなる．
+		</p>
+
+		<p>
+			そこで，分散と共分散をまとめて並べる．このように分散も共分散の一種と見れば，分散と共分散を行列に並べたものを <strong>分散共分散行列</strong> (variance-covariance matrix) と呼び，一般に \(\Sigma\) と表記する：
+		</p>
+
+		\[
+		\Sigma =
+		\begin{pmatrix}
+		V[X]&\mathrm{Cov}[X,Y]&\mathrm{Cov}[X,Z]\\
+		\mathrm{Cov}[Y,X]&V[Y]&\mathrm{Cov}[Y,Z]\\
+		\mathrm{Cov}[Z,X]&\mathrm{Cov}[Z,Y]&V[Z]
+		\end{pmatrix}.
+		\]
+
+		<p>
+			対角成分にはそれぞれの確率変数の分散が並び，対角線から外れた成分には 2 つの確率変数の共分散が並ぶ．共分散は \(\mathrm{Cov}[X,Y]=\mathrm{Cov}[Y,X]\) なので，分散共分散行列は対称になる．つまり，\(\Sigma\) は「それぞれがどれくらいばらつくか」と「互いにどちら向きに一緒に動くか」を 1 つにまとめた表である．
+		</p>
+
+		<p>
+			この行列が便利なのは，複数の確率変数を足したり，重みをつけて合計したりしたときの分散をまとめて計算できるからである．たとえば合計点 \(T=X+Y+Z\) の分散は
+		</p>
+
+		\[
+		\begin{aligned}
+		V[T]
+		&= V[X]+V[Y]+V[Z]\\
+		&\quad +2\mathrm{Cov}[X,Y]+2\mathrm{Cov}[Y,Z]+2\mathrm{Cov}[Z,X]
+		\end{aligned}
+		\]
+
+		<p>
+			となる．共分散が正なら，科目どうしが同じ方向に動きやすいため，合計点のばらつきは大きくなる．逆に共分散が負なら，一方が高いと他方が低くなりやすいので，合計点のばらつきは打ち消される方向に働く．
+		</p>
+
+		<p>
+			より一般に，重み付き和 \(W=aX+bY+cZ\) の分散は，\(\mathbf{a}=(a,b,c)^T\) とおけば
+		</p>
+
+		\[
+		V[W]=\mathbf{a}^T\Sigma\mathbf{a}
+		\]
+
+		<p>
+			と書ける．分散共分散行列は，複数の確率変数を組み合わせたときのばらつきを計算するための道具でもある．
+		</p>
+
+		<p>
+			さらに，確率変数を縦ベクトル \(\mathbf{X}\)，期待値ベクトルを \(E[\mathbf{X}]\) と書けば，分散共分散行列は
+		</p>
+
+		\[
+		\begin{aligned}
+		\Sigma
+		&= E\left[(\mathbf{X}-E[\mathbf{X}])(\mathbf{X}-E[\mathbf{X}])^T\right]\\
+		&= E[\mathbf{X}\mathbf{X}^T]-E[\mathbf{X}]E[\mathbf{X}]^T
+		\end{aligned}
+		\]
+
+		<p>
+			のようにコンパクトに書ける．多変量の確率分布では，\(\Sigma\) は分布の広がり方や傾きを表す．特に多変量正規分布では，平均ベクトルが分布の中心を，分散共分散行列が分布の形を決める．
+		</p>
+
+		<div class="note-side">
+			線形代数とのつながり ── 分散共分散行列を対角化することは，確率変数の座標軸を回転して，互いに無相関な新しい軸を探すことに対応している．対角化後の対角成分は，それぞれの新しい軸方向の分散である．<strong>主成分分析</strong> (principal component analysis; <strong>PCA</strong>) は，この分散が大きい方向から順に，複数の変数が組み合わさって生じるばらつきの方向を取り出す手法である．
+		</div>
 
 		<hr>
 

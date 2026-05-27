@@ -15,7 +15,7 @@
 </head>
 <body>
 	<nav class="note-nav">
-		<a href="../08-distribution-digest/">← 前へ：発生回数と待ち時間の確率分布</a>
+		<a href="../08-event-counts-and-waiting-times-distributions/">← 前へ：発生回数と待ち時間の確率分布</a>
 		<a href="../../">↑ 目次</a>
 		<a href="../10-law-of-large-numbers/">次へ：大数の法則 →</a>
 	</nav>
@@ -24,7 +24,7 @@
 		<h1>統計的推定：最尤法の初歩</h1>
 
 		<p>
-			統計的な <strong>推定</strong> (estimation) とは，手元にある標本を用いて，母集団や確率分布の未知の性質を読み取る作業である．たとえば，観測されたデータ \(X_1, X_2, \ldots, X_n\) から確率分布の母数 \(\theta\)<sup>※</sup> を推定する，という形式で考える．推定の方法にはいろいろあるが，本ノートではその代表例として <strong>最尤推定</strong> (maximum likelihood estimation) を扱う．ノート「<a href="../02-bayes-theorem/">ベイズの定理</a>」で見た考え方に基づく <strong>ベイズ推定</strong> (Bayesian estimation) も代表的な推定手法のひとつである．
+			統計的な <strong>推定</strong> (estimation) とは，手元にある標本 \(X_1, X_2, \ldots, X_n\) を用いて，その背後にある母集団や確率分布の未知の性質（たとえば母数 \(\theta\) <sup>※</sup>）を推定する作業である．
 		</p>
 
 		<div class="note-side">
@@ -32,21 +32,21 @@
 		</div>
 
 		<p>
-			ノート「<a href="../07-poisson-and-exponential/">ポアソン分布と指数分布</a>」では，観測された複数の事象から母数 \(\lambda\) を推定する道具として『最尤法』を用いた．以下でその具体的な手順を見ていこう．
+			ノート「<a href="../07-poisson-and-exponential/">ポアソン分布と指数分布</a>」では，観測された事象の系列から母数 \(\lambda\) を推定する道具として <strong>最尤法</strong> を用いた．最尤法によって母数を推定することを <strong>最尤推定</strong> (maximum likelihood estimation) と呼ぶ．ここでは最尤法の具体的な手順を見ていこう．
 		</p>
 
 		<h2>最尤原理という信念</h2>
 
 		<p>
-			<strong>最尤法</strong> (maximum likelihood method) とは，<strong>実際に観測されたデータは，それを最も起こりやすくする母数のもとで生じたのだろう</strong> という考え方に基づいて，想定する確率分布の母数を <strong>点推定</strong> (point estimation) ── 値をピンポイントで推定 ── する手法である．この考え方を <strong>最尤原理</strong> (maximum likelihood principle) と呼ぶ．
+			<strong>最尤法</strong> (maximum likelihood method) とは，<strong>実際に観測されたデータは，それを最も起こりやすくする母数のもとで生じたはずだ</strong> という考え方に基づいて，想定する確率分布の母数を <strong>点推定</strong> (point estimation) ── 値をピンポイントで推定 ── する手法である．この考え方を <strong>最尤原理</strong> (maximum likelihood principle) と呼ぶ．
 		</p>
 
 		<p>
-			しかし，観測されたデータが必ずしも「それを起こりやすくする母数」のもとで生じたとは限らない．真の母数のもとでも，稀な結果にたまたま出くわす可能性は常にある．それでもこの「信念」を出発点に置けば，<em>観測データを最もうまく説明する母数</em>を系統的に求められる<sup>※</sup> ── 最尤法はそういう道具である．
+			しかし，観測されたデータが必ずしも「それを起こりやすくする母数」のもとで生じたとは限らない．真の母数のもとでも稀な結果にたまたま出くわす可能性は常にある．それでもこの「信念」を出発点に置けば，「観測データを最もうまく説明する母数」を系統的に求めることが可能だ<sup>※</sup>．
 		</p>
 
 		<div class="note-side">
-			最もうまく説明するのであって，それが真実とは限らない．
+			最もうまく説明する＝真実，とは限らない．
 		</div>
 
 		<p>
@@ -60,11 +60,11 @@
 		</ol>
 
 		<p>
-			「何らかの確率分布を仮定し，その母数を推定する」という点で，これは <strong>パラメトリック推定</strong><sup>※</sup> (parametric estimation)の一種である．
+			「何らかの確率分布を仮定し，その母数を推定する」という点で，これは <strong>パラメトリック推定</strong> (parametric estimation)の一種である<sup>※</sup>．
 		</p>
 
 		<div class="note-side">
-			一方，特定の確率分布の形を仮定しない推定を <strong>ノンパラメトリック推定</strong> (nonparametric estimation) と呼ぶ．
+			一方，特定の確率分布の形を仮定しない推定を <strong>ノンパラメトリック推定</strong> (nonparametric estimation) と呼ぶ．データから分布の形を直接推定するヒストグラムや，その滑らかなバージョンである <strong>カーネル密度推定</strong> (kernel density estimation) などがノンパラメトリック推定の代表例．「え？それって推定？」と思うかもしれないが，標本の背後にある確率分布の形を推定しているので立派な推定である（真顔）．
 		</div>
 
 		<h2>例題</h2>
@@ -74,7 +74,7 @@
 		</p>
 
 		<p>
-			いま，ある工場で年間の事故件数を 5 年間にわたり記録したところ，1 〜 5 年目はそれぞれ 1, 3, 2, 1, 5 件であった．これらの発生頻度はランダムかつ非常に稀であるとして，年間の事故発生件数を確率変数 \(X\) とおき，ポアソン分布 \(X \sim \mathrm{Po}(\lambda)\) を仮定する（<strong>手順 1</strong>）．すると，たとえば年間 1 件の事故が発生する確率は
+			いま，ある工場で年間の事故件数を 5 年間にわたり記録したところ，1 〜 5 年目はそれぞれ 1, 3, 2, 1, 5 件であった．事故はランダムかつ稀に発生するとして，年間の事故発生件数を確率変数 \(X\) とおき，ポアソン分布 \(X \sim \mathrm{Po}(\lambda)\) を仮定する（<strong>手順 1</strong>）．すると，たとえば年間 1 件の事故が発生する確率は
 		</p>
 
 		\[
@@ -98,7 +98,7 @@
 		</p>
 
 		<p>
-			\(L(\lambda)\) と，後述する <strong>対数尤度</strong> (log-likelihood) \(\log L(\lambda)\) の概形を以下に示す ── どちらも同じ \(\lambda = 2.4\) でピークをもち，この値が \(\lambda\) の <strong>最尤推定値</strong> (maximum likelihood estimate) となる：
+			\(L(\lambda)\) と，その対数である \(\log L(\lambda)\) ── 後述する <strong>対数尤度</strong> の概形を以下に示す．どちらも同じ \(\lambda = 2.4\) でピークをもち，この値が \(\lambda\) の <strong>最尤推定値</strong> (maximum likelihood estimate) となる：
 		</p>
 
 		<figure class="likelihood-fig">
@@ -109,7 +109,7 @@
 		</figure>
 
 		<p>
-			関数が最大値あるいは最小値をとる変数の値を知るための定石は，調べたい変数で関数を微分し，導関数が \(0\) になる点<sup>※</sup>を求めることだ（<strong>手順 3</strong>）：
+			関数が最大値あるいは最小値をとる変数の値を知るための定石は，調べたい変数で関数を微分し，導関数が \(0\) になる点を求めることだ（<strong>手順 3</strong>）<sup>※</sup>：
 		</p>
 
 		\[
@@ -123,7 +123,7 @@
 		\]
 
 		<div class="note-side">
-			偏微分の値が \(0\) になるだけでは最大値か最小値かは分からないが，\(\lambda < 2.4\) のとき \(\partial L/\partial \lambda > 0\)，\(\lambda > 2.4\) のとき \(\partial L/\partial \lambda < 0\) なので，\(\lambda = 2.4\) で \(L\) が最大値をとることが分かる．
+			微分の値が \(0\) になるだけでは最大値か最小値かは分からないが，\(\lambda < 2.4\) のとき \(\partial L/\partial \lambda > 0\)，\(\lambda > 2.4\) のとき \(\partial L/\partial \lambda < 0\) なので，\(\lambda = 2.4\) で \(L\) が最大値をとることが分かる．
 		</div>
 
 		<p>
@@ -133,7 +133,7 @@
 		<h2>対数尤度</h2>
 
 		<p>
-			一般には \(L(\lambda)\) はもっと複雑な確率の積の形をしており，このままでは計算しにくい場合が多い．その場合，\(L(\lambda)\) の対数をとった <strong>対数尤度</strong> (log-likelihood) を考える：
+			一般に \(L(\lambda)\) はもっと複雑な確率の積の形をしており，このままでは計算しにくい場合が多い．その場合，\(L(\lambda)\) の対数をとった <strong>対数尤度</strong> (log-likelihood) を考える：
 		</p>
 
 		\[
@@ -141,19 +141,18 @@
 		\log L
 		&= \log \left( \frac{\lambda^{12}}{1440} e^{-5\lambda} \right) \\[6pt]
 		&= \log \lambda^{12} + \log e^{-5\lambda} - \log 1440 \\[6pt]
-		&= 12 \log \lambda - 5\lambda - \log 1440 \\[6pt]
-		&\Rightarrow 12 \log \lambda - 5\lambda. \quad \text{（後で偏微分するので定数項は無視する）}
+		&= 12 \log \lambda - 5\lambda - \log 1440
 		\end{aligned}
 		\]
 
 		<p>
-			対数をとることで積は和に変わるが，値の大小関係は変わらないので，関数の最大や最小（極大や極小）をとる変数の値は変わらない．これを微分して \(0\) になる \(\lambda\) は，
+			最大化する \(\lambda\) を求めるだけなら，定数項 \(-\log 1440\) は無視できる．また，対数をとることで積は和に変わるが，値の大小関係は変わらないので，関数の最大や最小（極大や極小）をとる変数の値は変わらない．これを微分して \(0\) になる \(\lambda\) は，
 		</p>
 
 		\[
 		\begin{aligned}
 		\frac{\partial \log L}{\partial \lambda}
-		&= \frac{\partial}{\partial \lambda} \left( 12 \log \lambda - 5\lambda \right) \\[6pt]
+		&= \frac{\partial}{\partial \lambda} \left( 12 \log \lambda - 5\lambda - \log 1440 \right) \\[6pt]
 		&= \frac{12}{\lambda} - 5 \\[6pt]
 		&= 0
 		\end{aligned}
@@ -170,7 +169,7 @@
 		</p>
 
 		<p>
-			最尤法の真価は，こうした単純な状況ではなく，現実の複雑な状況で発揮される．たとえば，ある年は操業時間が長かったかもしれないし，別の年は作業員の数が多かったかもしれない．その場合，事故件数が多いのは事故が起こりやすくなったからではなく，単に事故が起こる機会が多かったからかもしれない．この「事故が起こる機会の多さ」を統計では <strong>曝露量</strong> (exposure) と呼ぶ．曝露量が年ごとに違うときは，単純平均ではなく，各年の発生件数を曝露量で割って調整する必要がある．
+			最尤法の真価は，こうした単純な状況ではなく，現実の複雑な状況で発揮される．たとえば，ある年は操業時間が長かったかもしれないし，別の年は作業員の数が多かったかもしれない．その場合，事故件数が多いのは事故が起こりやすくなったからではなく，単に事故が起こる機会が多かったからかもしれない．この「事故が起こる機会の多さ」を統計では <strong>曝露量</strong> (exposure) と呼ぶ．曝露量が年ごとに違うときは，単純平均ではなく，曝露量を考慮して発生率を推定する必要がある．
 		</p>
 
 		<p>
@@ -184,7 +183,7 @@
 		<hr>
 
 		<nav class="note-nav">
-			<a href="../08-distribution-digest/">← 前へ：発生回数と待ち時間の確率分布</a>
+			<a href="../08-event-counts-and-waiting-times-distributions/">← 前へ：発生回数と待ち時間の確率分布</a>
 			<a href="../../">↑ 目次</a>
 			<a href="../10-law-of-large-numbers/">次へ：大数の法則 →</a>
 		</nav>

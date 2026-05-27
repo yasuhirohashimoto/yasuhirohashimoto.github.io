@@ -1,16 +1,16 @@
 figure.likelihood-fig {
-		margin: 1.4em auto;
-		max-width: 640px;
-	}
-	figure.likelihood-fig svg {
-		width: 100%;
-		display: block;
-		user-select: none;
-	}
-	figure.likelihood-fig figcaption {
-		font-size: .85rem;
-		color: var(--muted);
-		text-align: center;
-		margin-top: .4em;
-		line-height: 1.6;
-	}
+	margin: 1.4em auto;
+	max-width: 640px;
+}
+figure.likelihood-fig svg {
+	width: 100%;
+	display: block;
+	user-select: none;
+}
+figure.likelihood-fig figcaption {
+	font-size: .85rem;
+	color: var(--muted);
+	text-align: center;
+	margin-top: .4em;
+	line-height: 1.6;
+}

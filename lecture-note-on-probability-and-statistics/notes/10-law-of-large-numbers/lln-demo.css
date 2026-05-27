@@ -1,50 +1,66 @@
 .lln-demo {
-		margin: 1.2em 0 1.5em;
-	}
-	.lln-demo .lln-controls {
-		margin: .5em 0 .6em;
-		display: flex;
-		justify-content: center;
-		gap: .8em;
-		align-items: center;
-		font-size: .9rem;
-	}
-	.lln-demo button {
-		padding: .45em 1.15em;
-		font-size: .9rem;
-		font-family: inherit;
-		font-weight: 500;
-		cursor: pointer;
-		background: #fff;
-		border: 1px solid #cfd6dd;
-		border-radius: 6px;
-		color: #2f3a46;
-		transition: background .12s, border-color .12s, box-shadow .12s;
-	}
-	.lln-demo button:hover {
-		background: #f3f6f9;
-		border-color: #a8b0ba;
-	}
-	.lln-demo button:active {
-		background: #e6ebf0;
-	}
-	.lln-demo .icon-btn {
-		width: 34px;
-		height: 34px;
-		padding: 0;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.lln-demo .icon-btn svg {
-		width: 16px;
-		height: 16px;
-		display: block;
-	}
-	.lln-demo #lln-svg {
-		width: 100%;
-		max-width: 520px;
-		display: block;
-		margin: 0 auto;
-		user-select: none;
-	}
+	margin: 1.2em 0 1.5em;
+}
+.lln-demo .lln-controls {
+	margin: .5em 0 .6em;
+	display: flex;
+	justify-content: center;
+	gap: .8em;
+	align-items: center;
+	font-size: .9rem;
+}
+.lln-demo button {
+	padding: .45em 1.15em;
+	font-size: .9rem;
+	font-family: inherit;
+	font-weight: 500;
+	cursor: pointer;
+	background: #fff;
+	border: 1px solid #cfd6dd;
+	border-radius: 6px;
+	color: #2f3a46;
+	transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.lln-demo button:hover {
+	background: #f3f6f9;
+	border-color: #a8b0ba;
+}
+.lln-demo button:active {
+	background: #e6ebf0;
+}
+.lln-demo .icon-btn {
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.lln-demo .icon-btn svg {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+.lln-demo .lln-compare {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: .9em;
+	align-items: start;
+}
+.lln-demo .lln-compare-panel {
+	margin: 0;
+	text-align: center;
+}
+.lln-demo .lln-compare-panel svg {
+	width: 100%;
+	aspect-ratio: 520 / 340;
+	height: auto;
+	display: block;
+	user-select: none;
+}
+.lln-demo .lln-compare-panel figcaption {
+	font-size: .85rem;
+	margin-top: .35em;
+	color: var(--muted, #6b7280);
+	line-height: 1.5;
+}

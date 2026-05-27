@@ -1,52 +1,61 @@
-/* density area illustration */
-	figure.density-fig {
-		margin: 1em auto;
-		max-width: 500px;
-	}
-	figure.density-fig svg {
-		width: 100%;
-		display: block;
-		user-select: none;
-	}
-	figure.density-fig figcaption {
-		font-size: .85rem;
-		color: var(--muted);
-		text-align: center;
-		margin-top: .3em;
-	}
+.density-fig {
+	margin: 1.4em 0;
+	width: 100%;
+}
 
-	/* random variable PDF/CDF visualization */
-	.rv-viz {
-		margin: 1.2em 0 1.5em;
-	}
-	.rv-controls {
-		margin: .8em 0 .4em;
-		display: flex;
-		gap: 1.8em;
-		flex-wrap: wrap;
-		font-size: .9rem;
-		align-items: center;
-	}
-	.rv-controls label {
-		display: inline-flex;
-		align-items: center;
-		gap: 0;
-	}
-	.rv-controls input[type=range] {
-		width: 160px;
-		margin-left: .4em;
-	}
-	.rv-controls .val {
-		display: inline-block;
-		min-width: 2.6em;
-		text-align: right;
-		font-variant-numeric: tabular-nums;
-		margin-left: .1em;
-	}
-	#rv-svg {
-		width: 100%;
-		max-width: 560px;
-		display: block;
-		margin: 0 auto;
-		user-select: none;
-	}
+.density-fig > svg {
+	display: block;
+	width: 100%;
+	max-width: 560px;
+	height: auto;
+	margin: 0 auto;
+	user-select: none;
+}
+
+.density-fig figcaption {
+	font-size: .9rem;
+	color: var(--muted, #6b7280);
+	line-height: 1.7;
+	margin-top: .6em;
+	text-align: center;
+}
+
+.rv-viz {
+	margin: 1.2em 0 1.5em;
+}
+
+.rv-controls {
+	margin: .8em 0 .4em;
+	display: flex;
+	gap: 1.8em;
+	flex-wrap: wrap;
+	font-size: .9rem;
+	align-items: center;
+}
+
+.rv-controls label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0;
+}
+
+.rv-controls input[type=range] {
+	width: 160px;
+	margin-left: .4em;
+}
+
+.rv-controls .val {
+	display: inline-block;
+	min-width: 2.6em;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	margin-left: .1em;
+}
+
+#rv-svg {
+	width: 100%;
+	max-width: 560px;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}

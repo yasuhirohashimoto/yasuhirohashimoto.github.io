@@ -218,6 +218,21 @@ details[open] > summary {
 	color: var(--accent-hover);
 }
 
+.note-nav.note-nav-terminal {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+}
+
+.note-nav.note-nav-terminal a:first-child {
+	justify-self: start;
+}
+
+.note-nav.note-nav-terminal a:last-child {
+	justify-self: center;
+	grid-column: 2;
+}
+
 /* MathJax: prevent flash of unstyled math */
 mjx-container {
 	font-size: 1em !important;

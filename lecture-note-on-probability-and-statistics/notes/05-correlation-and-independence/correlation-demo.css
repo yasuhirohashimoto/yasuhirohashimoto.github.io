@@ -1,4 +1,4 @@
-/* small numeric data table (note 4 only) */
+/* small numeric data table (note 5 only) */
 	table.data-table {
 		margin: 1em auto;
 	}
@@ -8,7 +8,7 @@
 		padding: 6px 24px;
 	}
 
-	/* Datasaurus visualization (note 4 only) */
+	/* Datasaurus visualization (note 5 only) */
 	.datasaurus-fig {
 		max-width: 400px;
 		margin: 1.2em auto;

@@ -1,0 +1,33 @@
+.distribution-map {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.1em auto 1.5em;
+	font-size: .92rem;
+	background: #fff;
+}
+.distribution-map th,
+.distribution-map td {
+	border: 1px solid var(--rule);
+	padding: .65em .8em;
+	vertical-align: middle;
+	text-align: center;
+}
+.distribution-map th {
+	background: #e9eef3;
+	font-weight: normal;
+}
+.distribution-map th:first-child,
+.distribution-map td:first-child {
+	width: 32%;
+}
+.distribution-map td:first-child {
+	background: #f4f4f4;
+	white-space: nowrap;
+}
+@media (max-width: 720px) {
+	.distribution-map {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+}

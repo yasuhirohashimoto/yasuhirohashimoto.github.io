@@ -30,21 +30,17 @@
 		<h2>大数の法則の主張</h2>
 
 		<p>
-			大数の法則とは，「分散が有限な独立同分布 (i.i.d.) に従う確率変数の標本平均 \(\bar{X}\) は，サンプルサイズが増えると母平均 \(\mu_X\)（＝期待値 \(E[X]\)）の値に収束（確率収束）していく<sup>※</sup>」という事実を述べている．これを統計の言葉では「標本平均 \(\bar{X}\) は期待値 \(\mu_X\) の <strong>一致推定量</strong> (consistent estimator) である」と言い換えられる ── 一致推定量とは，サンプルサイズを大きくすれば真の値にいくらでも近づけられる推定量のことである．つまり，<strong>標本平均は期待値のよい推定量となっている</strong> ということだ．
+			大数の法則とは，「分散が有限な独立同分布 (i.i.d.) に従う確率変数の標本平均 \(\bar{X}\) は，サンプルサイズが増えると母平均 \(\mu_X\)（＝期待値 \(E[X]\)）の値に収束していく」という事実を述べている．これを統計の言葉では「標本平均 \(\bar{X}\) は期待値 \(\mu_X\) の <strong>一致推定量</strong> (consistent estimator) である」と言い換えられる．一致推定量とは，サンプルサイズを大きくすれば真の値にいくらでも近づけられる推定量のことである．つまり，<strong>標本平均は期待値のよい推定量となっている</strong> ということだ．
 		</p>
-
-		<div class="note-side">
-			「確率」そのものの値がある値に収束していく意味で「確率収束」と呼ばれている．
-		</div>
 
 		<h2>チェビシェフの不等式による証明</h2>
 
 		<p>
-			大数の法則は <strong>チェビシェフの不等式</strong> を用いて証明することができる<sup>※</sup>．
+			大数の法則は <strong>チェビシェフの不等式</strong> (Chebyshev's inequality) を用いて証明することができる<sup>※</sup>．
 		</p>
 
 		<div class="note-side">
-			大数の法則には対象とする確率変数に関する前提条件や収束のしかたの違いで「大数の<strong>強</strong>法則」と「大数の<strong>弱</strong>法則」の 2 種類がある．チェビシェフの不等式から証明できるのは大数の弱法則である．
+			大数の法則には確率変数に関する前提条件や収束のしかたの違いで「大数の<strong>強</strong>法則」と「大数の<strong>弱</strong>法則」の 2 種類がある．チェビシェフの不等式から証明できるのは大数の弱法則である．
 		</div>
 
 		<p>
@@ -52,7 +48,7 @@
 		</p>
 
 		\[
-		\bar{X} = \frac{1}{n}\sum_{i=1}^{n}X_i
+		\bar{X}_n = \frac{1}{n}\sum_{i=1}^{n}X_i
 		\]
 
 		<p>
@@ -60,31 +56,46 @@
 		</p>
 
 		\[
-		E[\bar{X}] = \mu_X,\qquad
-		V[\bar{X}] = \frac{\sigma_X^2}{n}
+		E[\bar{X}_n] = \mu_X,\qquad
+		V[\bar{X}_n] = \frac{\sigma_X^2}{n}
 		\]
 
 		<p>
-			である．したがってチェビシェフの不等式より，任意の \(\varepsilon>0\) について
+			である<sup>※</sup>．
+		</p>
+
+		<div class="note-side">
+			この計算の詳しい式変形は，付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」の「標本平均の期待値と分散」を参照．
+		</div>
+
+		<p>
+			したがってチェビシェフの不等式より，任意の \(\varepsilon>0\) について
 		</p>
 
 		\[
-		P(|\bar{X}-\mu_X|\ge \varepsilon)
+		P(|\bar{X}_n-\mu_X|\ge \varepsilon)
 		\le
-		\frac{V[\bar{X}]}{\varepsilon^2}
+		\frac{V[\bar{X}_n]}{\varepsilon^2}
 		=
 		\frac{\sigma_X^2}{n\varepsilon^2}.
 		\]
 
 		<p>
-			右辺は \(n\to\infty\) で \(0\) に近づく．つまり，どんなに小さな誤差幅 \(\varepsilon\) を決めても，標本平均がその範囲から外れる確率は，サンプルサイズを大きくすればいくらでも小さくできる．これが大数の弱法則である．
+			右辺は \(n\to\infty\) で \(0\) に近づく．つまり，どんなに小さな誤差幅 \(\varepsilon\) を決めても，標本平均がその範囲から外れる確率は，サンプルサイズを大きくすればいくらでも小さくできる．これが大数の弱法則である<sup>※</sup>．
 		</p>
 
+		<div class="note-side">
+			チェビシェフの不等式は
+			\[
+			P(|X-\mu_X|\ge k\sigma_X) \le \frac{1}{k^2}
+			\]
+			と表される．「確率変数 \(X\) が期待値 \(\mu_X\) から標準偏差 \(k\) 個分以上離れる確率は \(1/k^2\) 以下である」という，ものすごく「ざっくりとした」関係式だ．しかしながら，この不等式のすごいところは \(X\) の分布がどんな形であっても成り立つところにある．本文では \(X\rightarrow\bar{X}_n\)，\(\sigma_X\rightarrow\sigma_{\bar{X}_n}\)，\(k\rightarrow\varepsilon/\sigma_{\bar{X}_n}\) と置き換えている．
+		</div>
 
 		<h2>動かして体感しよう</h2>
 
 		<p>
-			一様分布 \(X \sim \mathrm{U}(0, 1)\)（期待値は \(0.5\)）から \(n\) 個の標本を取り出し，その平均 \(\bar{X}\) を計算してみよう．以下の図は横軸がサンプルサイズ \(n\)（対数軸），縦軸が \(n\) 個の標本の累積平均（青線）．オレンジの水平線が期待値 \(0.5\) を示している．\(n\) を大きくしていくと青線がオレンジ線に張り付いていく ── これがまさに大数の法則の振る舞いだ．更新ボタンを何度か押して，毎回違うサンプル列で同じ収束が起こることも確かめてみよう．
+			一様分布 \(X \sim \mathrm{U}(0, 1)\) から \(n\) 個の標本を取り出し，その標本平均 \(\bar{X}_n\) を計算してみよう．以下の図は横軸がサンプルサイズ \(n\)（対数軸），縦軸が標本平均 \(\bar{X}_n\)（青線）．橙の水平線が期待値 \(0.5\) を示している．左図は通常の縦軸，右図は \(0.5\) 付近を拡大した縦軸で，同じ標本点の系列を表示している．\(n\) を大きくしていくと青線が橙線に張り付いていく様子が分かる ── 一方，右図を見ると，大きな \(n\) でも期待値のまわりで小さくゆらいでいる様子が分かる．更新ボタンを押して，毎回違うサンプル列で同じ収束が起こることも確かめてみよう．
 		</p>
 
 		<div class="lln-demo">
@@ -96,8 +107,40 @@
 					</svg>
 				</button>
 			</div>
-			<svg id="lln-svg" viewBox="0 0 520 340" role="img" aria-label="大数の法則のシミュレーション"></svg>
+			<div class="lln-compare">
+				<figure class="lln-compare-panel">
+					<svg id="lln-svg" viewBox="0 0 520 340" role="img" aria-label="大数の法則のシミュレーション"></svg>
+					<figcaption>通常の縦軸</figcaption>
+				</figure>
+				<figure class="lln-compare-panel">
+					<svg id="lln-svg-c" viewBox="0 0 520 340" role="img" aria-label="大数の法則：symlog 軸"></svg>
+					<figcaption>対称対数 (symlog) で \(E[X] = 0.5\) 付近を拡大した縦軸</figcaption>
+				</figure>
+			</div>
 		</div>
+
+		<hr>
+
+		<h2>発展的な内容</h2>
+		<p>
+			チェビシェフの不等式で見たように，\(n\rightarrow\infty\) の極限において
+		</p>
+
+		\[
+		P(|\bar{X}_n-\mu_X|\ge \varepsilon) \rightarrow 0
+		\]
+
+		<p>
+			である．このように，目標値から外れる確率が \(0\) に収束するという振る舞いを <strong>確率収束</strong> (convergence in probability) と呼び，
+		</p>
+
+		\[
+		\bar{X}_n \xrightarrow{p} \mu_X
+		\]
+
+		<p>
+			と表記する．「\(\xrightarrow{p}\)」は「確率収束」を表す記法である．ノート「<a href="../11-central-limit-theorem/">中心極限定理</a>」で登場する「分布収束」と対比される概念である．
+		</p>
 
 		<hr>
 

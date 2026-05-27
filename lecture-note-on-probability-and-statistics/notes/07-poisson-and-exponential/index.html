@@ -6,14 +6,17 @@
 	<title>ポアソン分布と指数分布 — 確率統計学 講義ノート</title>
 	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="poisson-exponential-demo.css">
 	<script src="../../assets/mathjax-config.js"></script>
 	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+	<script src="poisson-exponential-demo.js" defer></script>
 </head>
 <body>
 	<nav class="note-nav">
-		<a href="../06-marginal-probability/">← 前へ：周辺確率</a>
+		<a href="../06-marginal-probability/">← 前へ：同時確率と周辺確率</a>
 		<a href="../../">↑ 目次</a>
-		<a href="../08-distribution-digest/">次へ：発生回数と待ち時間の確率分布 →</a>
+		<a href="../08-event-counts-and-waiting-times-distributions/">次へ：発生回数と待ち時間の確率分布 →</a>
 	</nav>
 
 	<main>
@@ -26,7 +29,7 @@
 		<h2>定常ポアソン過程</h2>
 
 		<p>
-			ある事象がランダムに一定頻度で発生する<sup>※</sup>過程を <strong>定常ポアソン過程</strong> (homogeneous Poisson	process) と呼ぶ．交通事故の発生，うっかり割ってしまうお皿，電話やメールの着信などが典型例で，独立に「ぱらぱら」と発生する事象は定常ポアソン過程でモデル化できることが多い．
+			ある事象がランダムに一定頻度で発生する過程を <strong>定常ポアソン過程</strong> (homogeneous Poisson process) と呼ぶ．交通事故の発生，うっかり割ってしまうお皿，電話やメールの着信などが典型例で，独立に「ぱらぱら」と発生する事象は定常ポアソン過程でモデル化できることが多い<sup>※</sup>．
 		</p>
 
 		<div class="note-side">
@@ -34,11 +37,11 @@
 		</div>
 
 		<p>
-			定常ポアソン過程が生成する標本が従う確率分布として <strong>ポアソン分布</strong> (Poisson distribution) と <strong>指数分布</strong> (Exponential distribution) は表裏の関係にある．発生回数に着目するのがポアソン分布であり，事象間の時間間隔に着目するのが指数分布である．両分布には <strong>レートパラメータ</strong> (rate parameter; \(\lambda\)) と呼ばれる非負の値をもつ共通の母数が現れる．
+			定常ポアソン過程から自然に現れる確率分布として <strong>ポアソン分布</strong> (Poisson distribution) と <strong>指数分布</strong> (Exponential distribution) は表裏の関係にある．発生回数に着目するのがポアソン分布であり，事象間の時間間隔に着目するのが指数分布である．両分布には <strong>レートパラメータ</strong> (rate parameter; \(\lambda\)) と呼ばれる非負の値をもつ共通の母数が現れる．
 		</p>
 
 		<p>
-			レートパラメータ \(\lambda\) は，一言でいえば <strong>単位時間あたりの事象の平均的な発生回数</strong>である．例題などでは「平均的に 1 年間に事故が \(\lambda\) 件発生する」のように説明されることが多い．ただし単位時間は人間が自由に決めてよい ── 年でも日でも秒でもよい ── という点が混乱を招きやすいポイントだろう．同じ現象でも単位時間の取り方次第で \(\lambda\) の数値は変わるからである．
+			レートパラメータ \(\lambda\) は，一言でいえば <strong>単位時間あたりの事象の平均的な発生回数</strong> である．例題などでは「平均的に 1 年間に事故が \(\lambda\) 件発生する」のように説明されることが多い．ただし単位時間は人間が自由に決めてよい ── 年でも日でも秒でもよい ── という点が混乱を招きやすいポイントだろう．同じ現象でも単位時間の取り方次第で \(\lambda\) の数値は変わるからである．
 		</p>
 
 		<p>
@@ -80,7 +83,7 @@
 		</p>
 
 		<div class="note-side">
-			\(f(x; \lambda)\) のセミコロンは，条件付き確率の縦棒に似た雰囲気で「母数 \(\lambda\) を決めたうえでの \(x\) の関数 \(f\)」を意味する．ただし \(\lambda\) は確率変数ではなく固定されたパラメータなので，縦棒ではなくセミコロンで区切るのが慣例である．
+			\(f(x; \lambda)\) のセミコロンは，条件付き確率の縦棒に似た雰囲気で「母数 \(\lambda\) を決めたうえでの \(x\) の関数 \(f_X\)」を意味する．ただし \(\lambda\) は確率変数ではなく固定されたパラメータなので，縦棒ではなくセミコロンで区切るのが慣例である．
 		</div>
 
 		<p>
@@ -96,19 +99,19 @@
 		</p>
 
 		<p>
-			いま，単位時間を 1 分と定め，5 つの来店間隔を順に確率変数 \(X_1, X_2, \ldots, X_5\) とおく．実現値はそれぞれ \(x_1 = 10, x_2 = 5, x_3 = 2, x_4 = 28, x_5 = 15\) である．この 5 つの来店間隔が観測される確率密度は，<strong>複数の独立な事象の同時確率密度は個々の事象の確率密度の積</strong> で表されることを思い出せば（ノート「<a href="../05-correlation-and-independence/">相関と独立</a>」を参照），
+			いま，単位時間を 1 分と定め，5 つの来店間隔を順に確率変数 \(X_1, X_2, \ldots, X_5\) とおく．実現値はそれぞれ \(x_1 = 10, x_2 = 5, x_3 = 2, x_4 = 28, x_5 = 15\) である．この 5 つの来店間隔が観測される同時確率密度は，ノート「<a href="../06-marginal-probability/">同時確率と周辺確率</a>」で見た同時確率密度の考え方を独立な複数の確率変数に拡張すれば，個々の確率密度の積で表される：
 		</p>
 
 		\[
 		\begin{aligned}
 		f_{X_1,X_2,X_3,X_4,X_5}(x_1, x_2, x_3, x_4, x_5; \lambda) &= f_{X_1}(x_1; \lambda) f_{X_2}(x_2; \lambda) f_{X_3}(x_3; \lambda) f_{X_4}(x_4; \lambda) f_{X_5}(x_5; \lambda) \\[3pt]
 		&= \lambda e^{-10\lambda} \cdot \lambda e^{-5\lambda} \cdot \lambda e^{-2\lambda} \cdot \lambda e^{-28\lambda} \cdot \lambda e^{-15\lambda} \\[3pt]
-		&= \lambda^5 e^{-60\lambda}
+		&= \lambda^5 e^{-60\lambda}.
 		\end{aligned}
 		\]
 
 		<p>
-			と計算できる．ここから <a href="../09-maximum-likelihood-estimation/"><strong>最尤法</strong></a>（ノート9で詳述）を用いると \(\lambda = \frac{1}{12}\) と推定できる．これは単位時間（1 分）あたり \(\frac{1}{12}\) 人が来店する頻度を表し，1 時間で 5 人が来店した事実と合致している．
+			ここから <strong>最尤法</strong>（ノート「<a href="../09-maximum-likelihood-estimation/">統計的推定：最尤法の初歩</a>」で詳述）を用いると \(\lambda = \frac{1}{12}\) と推定できる．これは単位時間（1 分）あたり \(\frac{1}{12}\) 人が来店する頻度を表し，1 時間で 5 人が来店した事実と合致している．
 		</p>
 
 		<p>
@@ -127,7 +130,7 @@
 		</p>
 
 		<p>
-			つまり，単位時間の選び方により \(\lambda\) の値は変わるが，結果に不整合は出ないのだ．
+			つまり，単位時間の選び方により \(\lambda\) の値は変わるが，結果に不整合はないのだ．
 		</p>
 
 		<h2>ポアソン分布からの視点</h2>
@@ -156,14 +159,14 @@
 			指数分布で見たように，ここでも単位時間を変えて結果を見ていこう．
 		</p>
 
-		  <p>
+		<p>
 			いま，単位時間を 10 分と定め，時間帯を 03:00 から 03:10 まで，03:10 から 03:20 まで…のように 10 分ごとに区切る．原則，区切りの時刻は後ろの時間帯に含むものとして，最後の時間帯は 4 時ちょうども含むものとする．すると，各時間帯の来店数はそれぞれ 0 人，3 人，0 人，0 人，1 人，1 人となる．これらを順に確率変数 \(X_1, X_2, \ldots, X_6\) とおけば，<strong>定常ポアソン過程では互いに重ならない時間帯における事象の発生回数は独立</strong> なので，事象全体の同時確率は個々の確率の積で表され，
 		</p>
 
 		\[
 		\begin{aligned}
-		P(X_1=k_1, X_2=k_2, \ldots, X_6=k_6; \lambda)
-		&= P(X_1=k_1; \lambda) \cdot P(X_2=k_2; \lambda) \cdots P(X_6=k_6; \lambda) \\[3pt]
+		P(X_1 = k_1, X_2 = k_2, \ldots, X_6 = k_6; \lambda)
+		&= P(X_1 = k_1; \lambda) \cdot P(X_2 = k_2; \lambda) \cdots P(X_6 = k_6; \lambda) \\[3pt]
 		&= \frac{\lambda^0}{0!} e^{-\lambda} \cdot \frac{\lambda^3}{3!} e^{-\lambda} \cdot \frac{\lambda^0}{0!} e^{-\lambda} \cdot \frac{\lambda^0}{0!} e^{-\lambda} \cdot \frac{\lambda^1}{1!}	e^{-\lambda} \cdot \frac{\lambda^1}{1!} e^{-\lambda} \\[3pt]
 		&= \frac{\lambda^5 e^{-6\lambda}}{6}
 		\end{aligned}
@@ -179,22 +182,22 @@
 
 		\[
 		\begin{aligned}
-		P(X_1=k_1, X_2=k_2; \lambda)
+		P(X_1 = k_1, X_2 = k_2; \lambda)
 		&= \frac{\lambda^3}{3!} e^{-\lambda} \cdot \frac{\lambda^2}{2!} e^{-\lambda} \\[3pt]
 		&= \frac{\lambda^5 e^{-2\lambda}}{12}
 		\end{aligned}
 		\]
 
 		<p>
-			となり，\(\lambda = \frac{5}{2}\) と推定できる．もちろん，結果は 1 時間あたり 5 人（30 分あたり	\(5/2\) 人）である．
+			となり，\(\lambda = \frac{5}{2}\) と推定できる．もちろん，結果は 1 時間あたり 5 人である．
 		</p>
 
 		<p>
-			単位時間を 60 分にしたら？これはもはやポアソン分布にそのまま 5 人を代入した確率
+			単位時間を 60 分にしたら？これはもはやポアソン分布にそのまま \(k = 5\) を代入した確率
 		</p>
 
 		\[
-		P(X_1=5; \lambda) = \frac{\lambda^5}{5!} e^{-\lambda}
+		P(X_1 = 5; \lambda) = \frac{\lambda^5}{5!} e^{-\lambda}
 		\]
 
 		<p>
@@ -204,7 +207,7 @@
 		<h2>レートパラメータ</h2>
 
 		<p>
-			以上のように，レートパラメータとは「観測者が決める単位時間<sup>※</sup>」あたりに事象が発生する平均的な回数である．したがってその次元は
+			以上のように，レートパラメータとは「観測者が決める単位時間」あたりに事象が発生する平均的な回数である<sup>※</sup>．したがってその次元は
 		</p>
 
 		\[
@@ -216,7 +219,7 @@
 		</p>
 
 		<div class="note-side">
-			数値シミュレーションを行う際などは実時間への換算ができないので，単位時間の選び方で \(\lambda\) の値が変化することに違和感を覚えるかもしれない．しかし考えてみれば，現実世界の「秒」や「分」も人間が決めた単位であって，シミュレーション内で「1 ステップ」を単位時間と決めることと本質的には同じである．現実であれシミュレーションであれ，観測する側が単位時間を恣意的に設定しているからこそ \(\lambda\) の値が定まる，と思えば違和感は和らぐはずだ．
+			数値シミュレーションを行う場合などは実時間への換算ができないので，単位時間の選び方で \(\lambda\) の値が変化することに違和感を覚えるかもしれない．しかし考えてみれば，現実世界の「秒」や「分」も人間が決めた単位であって，シミュレーション内で「1 ステップ」を単位時間と決めることと本質的には同じである．現実であれシミュレーションであれ，観測する側が単位時間を恣意的に設定しているからこそ \(\lambda\) の値が定まる，と思えば違和感は和らぐはずだ．
 		</div>
 
 		<p>
@@ -231,6 +234,35 @@
 			するともうひとつの疑問が浮かぶだろう．指数関数の部分 \(e^{-\lambda x}\) は無次元なので，確率密度関数全体としては \(\lambda\) と同じ \([\text{時間}]^{-1}\) の次元を持つことになる．「確率は無次元のはずなのに，確率密度関数が次元を持つのは矛盾ではないか？」と感じるかもしれない．しかし矛盾はない．ここでの確率密度関数は，それ自体が確率なのではなく，時間で積分して初めて確率になる量だからである．実際，\(dx\) は時間の次元 \([\text{時間}]\) を持つので，\(f_X(x; \lambda)\,dx\) の次元は \([\text{時間}]^{-1} \times [\text{時間}] =\) 無次元となり，積分結果である確率 \(P(a < X < b) = \int_a^b f_X(x; \lambda)\,dx\) は無事に無次元になる．
 		</p>
 
+		<h2>レートパラメータと分布の形</h2>
+
+		<p>
+			ここまでに登場した <strong>ポアソン分布</strong> \(\mathrm{Po}(\lambda)\) と <strong>指数分布</strong> \(\mathrm{Exp}(\lambda)\) について，レートパラメータ \(\lambda\) を動かして両者の形がどう変わるかを見比べてみよう．
+		</p>
+
+		<div class="pe-demo">
+			<div class="controls">
+				<label>\(\lambda\) =</label>
+				<input type="range" id="pe-lambda" min="0.5" max="5" step="0.05" value="2.0">
+				<input type="number" class="num-input" id="pe-lambda-num" min="0.5" max="5" step="0.05" value="2.00">
+			</div>
+			<div class="pe-panels">
+				<figure class="pe-panel">
+					<svg id="pe-poisson" viewBox="0 0 360 240" role="img" aria-label="ポアソン分布の確率質量関数"></svg>
+					<figcaption>ポアソン分布 \(\mathrm{Po}(\lambda)\)：単位時間あたりの発生回数</figcaption>
+				</figure>
+				<figure class="pe-panel">
+					<svg id="pe-exp" viewBox="0 0 360 240" role="img" aria-label="指数分布の確率密度関数"></svg>
+					<figcaption>指数分布 \(\mathrm{Exp}(\lambda)\)：次の発生までの待ち時間</figcaption>
+				</figure>
+			</div>
+		</div>
+
+		<p>
+			\(\lambda\) が小さいとき，ポアソン分布の重心は \(n = 0\) に寄り（ほとんど発生しない），指数分布の裾は右へ長く伸びる（次の発生まで時間がかかる）．逆に \(\lambda\) が大きくなると，ポアソン分布の重心が右にシフトし（よく発生する），指数分布は原点付近で急峻に減衰する（次の発生がすぐ来る）．
+		</p>
+
+
 		<hr>
 
 		<h2>発展的な内容</h2>
@@ -244,7 +276,7 @@
 		</p>
 
 		<p>
-			あるいは，「ある話題についてのソーシャルメディア上での投稿」を事象と考えると，投稿自身が他のユーザの関心を刺激し，さらなる投稿を誘発する．つまりレートパラメータを高める場合がある．こうした振る舞いを <strong>自己励起的</strong> (self-excited) と呼び，いわゆる「バズる」現象を説明するメカニズムとして議論される．自己励起的な確率過程としては <strong>ホークス過程</strong> (Hawkes process) がよく知られている．
+			あるいは，「ある話題についてのソーシャルメディア上での投稿」を事象と考えると，投稿自身が他のユーザの関心を刺激し，さらなる投稿を誘発する．つまりレートパラメータを高める場合がある．こうした振る舞いを <strong>自己励起的</strong> (self-exciting) と呼び，いわゆる「バズる」現象を説明するメカニズムとして議論される．自己励起的な確率過程としては <strong>ホークス過程</strong> (Hawkes process) がよく知られている．
 		</p>
 
 		<hr>
@@ -280,19 +312,19 @@
 
 		\[
 		\begin{aligned}
-		P(X \ge 4) &= 1 - P(X<4) \\
-		&= 1 - \bigl(P(X=0) + P(X=1) + P(X=2) + P(X=3)\bigr) \\
-		&= 1 - \left( \frac{1^0}{0!} e^{-1} + \frac{1^1}{1!} e^{-1} + \frac{1^2}{2!} e^{-1} + \frac{1^3}{3!} e^{-1} \right) \\
+		P(X \ge 4) &= 1 - P(X<4) \\[6pt]
+		&= 1 - \bigl(P(X=0) + P(X=1) + P(X=2) + P(X=3)\bigr) \\[6pt]
+		&= 1 - \left( \frac{1^0}{0!} e^{-1} + \frac{1^1}{1!} e^{-1} + \frac{1^2}{2!} e^{-1} + \frac{1^3}{3!} e^{-1} \right) \\[6pt]
 		&= 0.01898\ldots
 		\end{aligned}
 		\]
 
 		<p>
-			つまり「年に 4 回以上割る」事象が発生する確率は 2%<sup>※</sup> 未満のようだ．「平均的に 1 年に 1 回食器を割る」 \((\lambda = 1)\) という仮説では，すでに 4 回割ってしまったという現実は説明しにくい．しかもこの投稿はまだ 6 月なのである．
+			つまり「年に 4 回以上割る」事象が発生する確率は 2% 未満のようだ<sup>※</sup>．「平均的に 1 年に 1 回食器を割る」 \((\lambda = 1)\) という仮説では，すでに 4 回割ってしまったという現実は説明しにくい．しかもこの投稿はまだ 6 月なのである．
 		</p>
 
 		<div class="note-side">
-			\(P(X \ge x_{\text{obs}})\) のように，仮説のもとで観測値以上に極端な事象が生じる確率を <strong>\(p\) 値</strong> (p-value) と呼ぶ．得られた \(p \approx 0.019\) は，統計的には「起きにくい」とされている水準である．
+			何らかの仮説のもとで，\(P(X \ge x_{\text{obs}})\) のように，ある観測値以上に極端な事象が生じる確率を <strong>\(p\) 値</strong> (p-value) と呼ぶ．得られた \(p \approx 0.019\) は，統計的には「起きにくい」とされている水準である．
 		</div>
 
 		<h3>指数関数的な現象</h3>
@@ -306,11 +338,11 @@
 		\]
 
 		<p>
-			ここで \(n(t)\) は時間 \(t\) 経過後の個数，\(n_0\) は最初にあった個数である．\(\tau\) は <strong>緩和時間</strong> (relaxation time) や <strong>特徴時間</strong> (characteristic time)，<strong>時定数</strong> (time constant) などいろいろな呼ばれ方をする量で，核種の平均寿命を表すパラメータであり，\(t\) と同じ \([\text{時間}]\) の次元を持つ．したがって \(e\) の指数 \(-t/\tau\) は時間どうしの比となり，ちゃんと無次元数になっている．\(\tau\) が大きければ崩壊は緩やかで，小さければ崩壊は速く進行する．\(\tau\) が「時間」や「定数」などと呼ばれているのも，まさにこの理由による．
+			ここで \(n(t)\) は時間 \(t\) 経過後の個数，\(n_0\) は最初にあった個数である．\(\tau\) は <strong>緩和時間</strong> (relaxation time) や <strong>特徴時間</strong> (characteristic time)，<strong>時定数</strong> (time constant) などいろいろな呼ばれ方をする量で，核種の平均寿命を表すパラメータであり，\(t\) と同じ \([\text{時間}]\) の次元を持つ．したがって \(e\) の指数 \(-t/\tau\) は時間どうしの比となり，ちゃんと無次元数になっている．\(\tau\) が大きければ崩壊は緩やかで，小さければ崩壊は速く進行する．つまり，\(\tau\) は時間 \(t\) に対して現象の振る舞いを特徴づけるスケールという意味をもつ．
 		</p>
 
 		<p>
-			なお，\(n(t) = n_0 e^{-t}\) のように指数が物理次元を持つ書き方を見かけることもあるが，これは単純な誤りか，あるいは \(\tau = 1\) が省略されている ── つまり \(t\) を \(\tau\) で割って「無次元化された時間」として扱っている ── と解釈すればよい．
+			なお，\(n(t) = n_0 e^{-t}\) のように指数が物理次元を持つように見える書き方を見かけることもあるが，これは単純な誤りか，あるいは \(\tau = 1\) が省略されている ── つまり \(t\) を \(\tau\) で割って「無次元化された時間」として扱っている ── と解釈すればよい．
 		</p>
 
 		<p>
@@ -320,9 +352,9 @@
 		<hr>
 
 		<nav class="note-nav">
-			<a href="../06-marginal-probability/">← 前へ：周辺確率</a>
+			<a href="../06-marginal-probability/">← 前へ：同時確率と周辺確率</a>
 			<a href="../../">↑ 目次</a>
-			<a href="../08-distribution-digest/">次へ：発生回数と待ち時間の確率分布 →</a>
+			<a href="../08-event-counts-and-waiting-times-distributions/">次へ：発生回数と待ち時間の確率分布 →</a>
 		</nav>
 	</main>
 </body>
