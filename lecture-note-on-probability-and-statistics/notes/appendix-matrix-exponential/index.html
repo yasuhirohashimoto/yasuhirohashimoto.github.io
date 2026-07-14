@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="正方行列を指数の肩に乗せた行列の指数関数を，級数による定義と対角化による計算で解説する付録。">
+	<title>行列の指数関数 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>行列の指数関数</h1>
+
+		<p>
+			正方行列 \(A\) に対して，\(e^A\) のような形を <strong>行列の指数関数</strong> (matrix exponential) と呼ぶ。<sup>※</sup> \(e^2\) ならば \(e \times e\) のように直感的に理解できるだろう。一方，\(e^A\) のように行列が指数として肩に乗った形には，最初は戸惑うかもしれない。以下で，行列の指数関数がどのように定義されるかを見ていこう。
+		</p>
+
+		<div class="note-side">
+			ここで \(e\) は自然対数の底（<a href="https://ja.wikipedia.org/wiki/%E3%83%8D%E3%82%A4%E3%83%94%E3%82%A2%E6%95%B0" target="_blank" rel="noopener">ネイピア数</a>）である。 \(e^A\) は \(\exp(A)\) と書く場合もある。後者の書き方は，指数部分を表す式が長く複雑な場合に好んで用いられる。
+		</div>
+
+		<h2 id="definition">級数による定義</h2>
+
+		<p>
+			行列の指数関数は，変数 \(x\) の級数で与えられる指数関数の定義（付録「<a href="../appendix-exponential-function/">指数関数の定義</a>」）
+		</p>
+
+		\[
+		e^x = \sum_{n=0}^\infty \frac{x^n}{n!} = \frac{x^0}{0!} + \frac{x^1}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \ldots
+		\]
+
+		<p>
+			に立ち返り，\(x\) の掛け算を<a href="https://ja.wikipedia.org/wiki/%E8%A1%8C%E5%88%97%E3%81%AE%E4%B9%97%E6%B3%95#%E9%80%9A%E5%B8%B8%E3%81%AE%E8%A1%8C%E5%88%97%E3%81%AE%E7%A9%8D" target="_blank" rel="noopener">行列積</a>に拡張することで，新たに定義することができる。つまり，
+		</p>
+
+		\[
+		e^A = \sum_{n=0}^\infty \frac{A^n}{n!} = \frac{E}{0!} + \frac{A^1}{1!} + \frac{A^2}{2!} + \frac{A^3}{3!} + \ldots
+		\]
+
+		<p>
+			これが行列の指数関数の定義である（\(E\) は単位行列を表す）。
+		</p>
+
+		<h2 id="diagonalization">対角化を使った計算</h2>
+
+		<p>
+			いま，仮に \(A\) が，何らかの<a href="https://ja.wikipedia.org/wiki/%E6%AD%A3%E5%89%87%E8%A1%8C%E5%88%97" target="_blank" rel="noopener">正則行列</a>（逆行列をもつ正方行列）\(P\) を用いて，次のように<a href="https://ja.wikipedia.org/wiki/%E5%AF%BE%E8%A7%92%E8%A1%8C%E5%88%97" target="_blank" rel="noopener">対角行列</a>（対角成分以外がすべて \(0\) の正方行列）\(\Lambda\) に変形できるとする：
+		</p>
+
+		\[
+		\Lambda = P^{-1}AP \quad\text{つまり}\quad A = P\Lambda P^{-1}.
+		\]
+
+		<p>
+			このとき，\(A\) は <strong>対角化可能</strong> という。 \(A\) が対角化可能ならば，\(A\) のべき乗は
+		</p>
+
+		\[
+		\begin{aligned}
+		A^2 &= AA\\
+		&= (P\Lambda P^{-1})(P\Lambda P^{-1})\\
+		&= P\Lambda (P^{-1}P)\Lambda P^{-1}\\
+		&= P\Lambda\Lambda P^{-1}\\
+		&= P\Lambda^2 P^{-1}
+		\end{aligned}
+		\]
+
+		<p>
+			のように，\(P\) と \(P^{-1}\) で \(\Lambda\) のべき乗を挟む形になる。これは容易に \(A^n = P\Lambda^n P^{-1}\) へと一般化できる（ためしに \(A^3\) について計算してみよう）。いま \(m \times m\) の正方行列を考え，
+		</p>
+
+		\[
+		\Lambda =
+		\begin{pmatrix}
+		\lambda_1 & 0 & \cdots & 0\\
+		0 & \lambda_2 & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \lambda_m
+		\end{pmatrix}
+		\]
+
+		<p>
+			とおくならば，\(\Lambda^n\) は
+		</p>
+
+		\[
+		\Lambda^n =
+		\begin{pmatrix}
+		\lambda_1^n & 0 & \cdots & 0\\
+		0 & \lambda_2^n & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \lambda_m^n
+		\end{pmatrix}
+		\]
+
+		<p>
+			である。ここで重要なのは，<strong>\(A^n\) に比べて \(\Lambda^n\) の計算が圧倒的に簡単</strong> という点である。この関係を行列の指数関数の定義に代入すると，
+		</p>
+
+		\[
+		\begin{aligned}
+		e^A &= \frac{E}{0!} + \frac{A^1}{1!} + \frac{A^2}{2!} + \frac{A^3}{3!} + \ldots\\[10pt]
+		&= \frac{PEP^{-1}}{0!} + \frac{P\textcolor{#9f302b}{\Lambda^1}P^{-1}}{1!} + \frac{P\textcolor{#1d4f7a}{\Lambda^2}P^{-1}}{2!} + \frac{P\textcolor{#1d6b38}{\Lambda^3}P^{-1}}{3!} + \ldots\\[10pt]
+		&= P\left(\frac{E}{0!} + \frac{\textcolor{#9f302b}{\Lambda^1}}{1!} + \frac{\textcolor{#1d4f7a}{\Lambda^2}}{2!} + \frac{\textcolor{#1d6b38}{\Lambda^3}}{3!} + \ldots\right)P^{-1}\\[10pt]
+		&= P
+		\left(
+		\frac{1}{0!}
+		\begin{pmatrix}
+		1 & 0 & \cdots & 0\\
+		0 & 1 & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & 1\\
+		\end{pmatrix}
+		+
+		\frac{1}{1!}\textcolor{#9f302b}{
+		\begin{pmatrix}
+		\lambda_1^1 & 0 & \cdots & 0\\
+		0 & \lambda_2^1 & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \lambda_m^1\\
+		\end{pmatrix}}
+		+
+		\frac{1}{2!}\textcolor{#1d4f7a}{
+		\begin{pmatrix}
+		\lambda_1^2 & 0 & \cdots & 0\\
+		0 & \lambda_2^2 & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \lambda_m^2\\
+		\end{pmatrix}}
+		+
+		\frac{1}{3!}\textcolor{#1d6b38}{
+		\begin{pmatrix}
+		\lambda_1^3 & 0 & \cdots & 0\\
+		0 & \lambda_2^3 & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \lambda_m^3\\
+		\end{pmatrix}}
+		+ \ldots
+		\right)
+		P^{-1}\\[10pt]
+		&= P
+		\begin{pmatrix}
+		\frac{1}{0!} + \frac{\textcolor{#9f302b}{\lambda_1^1}}{1!} + \frac{\textcolor{#1d4f7a}{\lambda_1^2}}{2!} + \frac{\textcolor{#1d6b38}{\lambda_1^3}}{3!} + \ldots & 0 & \cdots & 0\\
+		0 & \frac{1}{0!} + \frac{\textcolor{#9f302b}{\lambda_2^1}}{1!} + \frac{\textcolor{#1d4f7a}{\lambda_2^2}}{2!} + \frac{\textcolor{#1d6b38}{\lambda_2^3}}{3!} + \ldots & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \frac{1}{0!} + \frac{\textcolor{#9f302b}{\lambda_m^1}}{1!} + \frac{\textcolor{#1d4f7a}{\lambda_m^2}}{2!} + \frac{\textcolor{#1d6b38}{\lambda_m^3}}{3!} + \ldots\\
+		\end{pmatrix}
+		P^{-1}\\[10pt]
+		&= P
+		\begin{pmatrix}
+		e^{\lambda_1} & 0 & \cdots & 0\\
+		0 & e^{\lambda_2} & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & e^{\lambda_m}\\
+		\end{pmatrix}
+		P^{-1}
+		\end{aligned}
+		\]
+
+		<p>
+			のように，\(\Lambda\) の対角成分 \(\lambda_1, \lambda_2, \ldots, \lambda_m\) の指数関数 \(e^{\lambda_1}, e^{\lambda_2}, \ldots, e^{\lambda_m}\) を対角成分にもつ対角行列を，\(P\) と \(P^{-1}\) で挟んだ形が得られる。この形が，行列の指数関数の一般的な求め方である。他ならぬ \(\Lambda\) とは固有値を対角成分に並べた対角行列であり，\(P\) とは固有ベクトルを対応する固有値と同じ順序で横に並べた行列である。
+		</p>
+
+		<p>
+			もし \(A\) が
+		</p>
+
+		\[
+		A =
+		\begin{pmatrix}
+		a_{11} & 0 & \cdots & 0\\
+		0 & a_{22} & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & a_{mm}
+		\end{pmatrix}
+		\]
+
+		<p>
+			のように最初から対角行列だった場合は，\(P = P^{-1} = E\) とでき，
+		</p>
+
+		\[
+		e^A =
+		\begin{pmatrix}
+		\exp(a_{11}) & 0 & \cdots & 0\\
+		0 & \exp(a_{22}) & \cdots & 0\\
+		\vdots & \vdots & \ddots & \vdots\\
+		0 & 0 & \cdots & \exp(a_{mm})
+		\end{pmatrix}
+		\]
+
+		<p>
+			となる。
+		</p>
+
+		<p>
+			この行列の指数関数という表現は，線形の連立微分方程式の解として現れる。その話はまた別の機会に。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+
+	<script src="/logger.js"></script>
+</body>
+</html>
