@@ -3,11 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="指数分布の期待値と分散を部分積分で導出する付録。">
 	<title>指数分布の期待値と分散 — 確率統計学 講義ノート</title>
-	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../../assets/style.css">
 	<script src="../../assets/mathjax-config.js"></script>
-	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
 </head>
 <body>
 	<nav class="note-nav">
@@ -18,7 +21,7 @@
 		<h1>指数分布の期待値と分散</h1>
 
 		<p>
-			指数分布は <strong>レートパラメータ</strong> (rate parameter) \(\lambda\) と呼ばれるパラメータを 1 つだけ持つ確率分布で，確率密度関数は
+			指数分布は，ノート「<a href="../08-poisson-and-exponential/">ポアソン分布と指数分布</a>」で解説したように母数を 1 つ（レートパラメータ \(\lambda\)）だけもつ確率分布で，確率密度関数は
 		</p>
 
 		\[
@@ -27,34 +30,34 @@
 		\]
 
 		<p>
-			という形で表される．確率変数 \(X\) は，頻度 \(\lambda\) でランダムに発生する事象の発生間隔に相当する．これはポアソン分布に出てくるレートパラメータと同じもので，ポアソン分布と指数分布は表裏の関係にある分布である．定義より \(\lambda > 0\) であり，\(f(x)\) を \(0 \leq x < \infty\) の範囲で積分した値はもちろん \(1\) になる．以下では \(X\) の期待値と分散の導出を行う．
+			という形で表される。確率変数 \(X\) は，頻度 \(\lambda\) でランダムに発生する事象の発生間隔に相当し，ポアソン分布と指数分布は表裏の関係にある。定義より \(\lambda > 0\) であり，\(f(x)\) を \(0 \leq x < \infty\) の範囲で積分した値はもちろん \(1\) になる。以下では \(X\) の期待値と分散の導出を行う。
 		</p>
 
 		<p>
-			直感的に，発生頻度 \(\lambda\) が \(2\) 倍になれば発生間隔（の期待値）は \(1/2\) 倍になりそうである．つまり \(E[X] \propto 1/\lambda\) となりそうだと予想できるがどうだろうか？
+			直感的に，発生頻度 \(\lambda\) が 2 倍になれば発生間隔（の期待値）は 1/2 倍になりそうである。つまり \(E[X] \propto 1/\lambda\) と予想できるがどうだろうか？
 		</p>
 
-		<h2>期待値の導出</h2>
+		<h2 id="expected-value">期待値の導出</h2>
 
 		\[
 		\begin{aligned}
 		E[X]
 		&= \int_0^\infty x f(x)\, dx = \int_0^\infty x \lambda e^{-\lambda x}\, dx = \lambda \int_0^\infty x e^{-\lambda x}\, dx \\[6pt]
 		&= \lambda \left\{ \left[x \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\right]_0^\infty - \int_0^\infty \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\, dx \right\} && \text{※部分積分の公式} \\[6pt]
-		&= \left[-x e^{-\lambda x}\right]_0^\infty + \int_0^\infty e^{-\lambda x}\, dx && \text{※} \lim_{x \to \infty} x e^{-x} = 0 \text{ より第一項は消える．} \\[6pt]
+		&= \left[-x e^{-\lambda x}\right]_0^\infty + \int_0^\infty e^{-\lambda x}\, dx && \text{※} \lim_{x \to \infty} x e^{-\lambda x} = 0 \text{ より第一項は消える。} \\[6pt]
 		&= \left[-\frac{1}{\lambda} e^{-\lambda x}\right]_0^\infty \\[6pt]
 		&= \frac{1}{\lambda}.
 		\end{aligned}
 		\]
 
 		<p>
-			たしかに期待値は \(\lambda\) の逆数になった．予想とも整合している．
+			たしかに期待値は \(\lambda\) の逆数になった。予想とも整合している。
 		</p>
 
-		<h2>分散の導出</h2>
+		<h2 id="variance">分散の導出</h2>
 
 		<p>
-			分散 \(V[X] = E[X^2] - E[X]^2\) の関係を思い出そう．まず \(E[X^2]\) を求める：
+			分散 \(V[X] = E[X^2] - E[X]^2\) の関係（付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」で導出）を思い出そう。まず \(E[X^2]\) を求める：
 		</p>
 
 		\[
@@ -62,7 +65,7 @@
 		E[X^2]
 		&= \int_0^\infty x^2 \cdot \lambda e^{-\lambda x}\, dx = \lambda \int_0^\infty x^2 e^{-\lambda x}\, dx \\[6pt]
 		&= \lambda \left\{ \left[x^2 \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\right]_0^\infty - \int_0^\infty 2x \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\, dx \right\} && \text{※部分積分の公式} \\[6pt]
-		&= \left[-x^2 e^{-\lambda x}\right]_0^\infty + 2 \int_0^\infty x e^{-\lambda x}\, dx && \text{※} \lim_{x \to \infty} x^2 e^{-x} = 0 \text{ より第一項は消える．} \\[6pt]
+		&= \left[-x^2 e^{-\lambda x}\right]_0^\infty + 2 \int_0^\infty x e^{-\lambda x}\, dx && \text{※} \lim_{x \to \infty} x^2 e^{-\lambda x} = 0 \text{ より第一項は消える。} \\[6pt]
 		&= 2 \cdot \frac{E[X]}{\lambda} && \text{※第二項の積分は期待値と同じ形} \\[6pt]
 		&= \frac{2}{\lambda^2}.
 		\end{aligned}
@@ -77,7 +80,7 @@
 		\]
 
 		<p>
-			もちろん定義から直接計算してもよい．
+			もちろん定義から直接計算してもよい。
 		</p>
 
 		\[

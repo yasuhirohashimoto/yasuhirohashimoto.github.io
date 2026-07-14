@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="p 値と z 値を相互に換算できるインタラクティブツール。">
+	<title>p 値と z 値の換算ツール — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="./p-value-z-value-calculator.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script defer src="./p-value-z-value-calculator.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1 id="pzc-tool-title">p 値と z 値の換算ツール</h1>
+
+		<p>
+		標準正規分布 \(\mathcal{N}(0,1)\) の密度関数 \(f(z)\) について，z 値 (z-value) とその外側の面積（裾確率）を計算するツール。左右の裾と中央部分の面積を同時に確認できる。ノート「<a href="../16-hypothesis-testing/">仮説検定の初歩</a>」の例 1 のように検定統計量 \(Z\) が標準正規分布に従うときは，その値を \(z\) とすれば，この裾の面積がそのまま p 値 (p-value)，すなわち有意確率になる。グラフと有限な \(z\) 値の入力範囲は \(\pm 5\) に制限しており，裾確率 \(0\) または \(1\) に対応する \(z\) 値は \(-\infty\) または \(+\infty\) と表示する。
+		</p>
+
+		<section class="pzc-tool" aria-labelledby="pzc-tool-title">
+			<div class="pzc-tool-head">
+				<label class="pzc-preset">
+					<span>プリセット</span>
+					<select id="pzc-preset">
+						<option value="manual">手動</option>
+						<option value="sigma-1">±1σ</option>
+						<option value="sigma-2">±2σ</option>
+						<option value="sigma-3">±3σ</option>
+						<option value="sigma-4">±4σ</option>
+						<option value="sigma-5">±5σ</option>
+						<option value="two-0.05">両側: 5%</option>
+						<option value="two-0.01">両側: 1%</option>
+						<option value="two-0.001">両側: 0.1%</option>
+						<option value="two-0.0001">両側: 0.01%</option>
+						<option value="one-0.05">片側: 5%</option>
+						<option value="one-0.01">片側: 1%</option>
+						<option value="one-0.001">片側: 0.1%</option>
+						<option value="one-0.0001">片側: 0.01%</option>
+					</select>
+				</label>
+			</div>
+
+			<svg id="pzc-chart" class="pzc-chart" viewBox="0 0 760 360" role="img" aria-label="標準正規分布の密度。横軸は z 値でマイナス 5 から 5，縦軸は密度 f(z)。下側の裾を赤，中央部分をグレー，上側の裾を青で示す"></svg>
+
+			<div class="pzc-controls">
+				<div class="pzc-control pzc-control-lower pzc-control-z" role="group" aria-labelledby="pzc-z-minus-label">
+					<span id="pzc-z-minus-label">\(z_-\)</span>
+					<input id="pzc-z-minus" type="range" min="-5" max="5" step="0.000001" value="-1" aria-label="下側の z 値を調整するスライダー">
+					<input id="pzc-z-minus-value" class="num-input" type="text" autocomplete="off" value="-1.000000" aria-label="下側の z 値の数値入力">
+				</div>
+
+				<div class="pzc-control pzc-control-upper pzc-control-z" role="group" aria-labelledby="pzc-z-plus-label">
+					<span id="pzc-z-plus-label">\(z_+\)</span>
+					<input id="pzc-z-plus" type="range" min="-5" max="5" step="0.000001" value="1" aria-label="上側の z 値を調整するスライダー">
+					<input id="pzc-z-plus-value" class="num-input" type="text" autocomplete="off" value="1.000000" aria-label="上側の z 値の数値入力">
+				</div>
+
+				<div class="pzc-control pzc-control-lower" role="group" aria-labelledby="pzc-p-lower-label">
+					<span id="pzc-p-lower-label">\(P(Z\leq z_-)\)</span>
+					<input id="pzc-p-lower" type="range" min="0" max="1" step="0.000001" value="0.158655" aria-label="下側の裾確率を調整するスライダー">
+					<input id="pzc-p-lower-value" class="num-input" type="text" autocomplete="off" value="0.158655" aria-label="下側の裾確率の数値入力">
+				</div>
+
+				<div class="pzc-control pzc-control-middle">
+					<label for="pzc-p-middle">\(P(z_- \lt Z \lt z_+)\)</label>
+					<input id="pzc-p-middle" class="num-input" type="text" value="0.682689" readonly>
+				</div>
+
+				<div class="pzc-control pzc-control-upper" role="group" aria-labelledby="pzc-p-upper-label">
+					<span id="pzc-p-upper-label">\(P(Z\geq z_+)\)</span>
+					<input id="pzc-p-upper" type="range" min="0" max="1" step="0.000001" value="0.158655" aria-label="上側の裾確率を調整するスライダー">
+					<input id="pzc-p-upper-value" class="num-input" type="text" autocomplete="off" value="0.158655" aria-label="上側の裾確率の数値入力">
+				</div>
+			</div>
+			<p id="pzc-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+		</section>
+
+		<p>
+			なお，密度関数 \(f(z)\) の具体的な形は以下である：
+		</p>
+
+		\[
+			f(z)=\frac{1}{\sqrt{2\pi}}\exp\left(-\frac{z^2}{2}\right)
+		\]
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

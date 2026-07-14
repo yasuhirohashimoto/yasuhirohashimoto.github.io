@@ -3,16 +3,24 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="会津大学の学部 2 年生向け講義「確率統計学」の講義ノート集。インタラクティブなデモと用語索引つき。">
 	<title>確率統計学 講義ノート</title>
-	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="./assets/style.css">
 	<link rel="stylesheet" href="./index.css">
+	<script src="./assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="./assets/term-highlight.js"></script>
 </head>
 <body>
 	<main>
 		<h1>確率統計学 講義ノート</h1>
 		<p>
-			会津大学の学部 2 年生向け講義「確率統計学」のための講義ノート集．
+			会津大学の学部 2 年生向け講義「確率統計学」のための講義ノート集。
+		</p>
+		<p>
+			1 ページ 10〜20 分で読めるようにまとめてある。「発展的な内容」や「雑談」としているところは読み飛ばして構わない。インタラクティブなデモもあるので，ぜひ触って理解を深めてほしい。
 		</p>
 
 		<ol class="toc">
@@ -20,314 +28,379 @@
 			<li><a href="./notes/02-bayes-theorem/">ベイズの定理</a></li>
 			<li><a href="./notes/03-random-variables/">確率変数</a></li>
 			<li><a href="./notes/04-population-and-sample/">母集団と標本</a></li>
-			<li><a href="./notes/05-correlation-and-independence/">相関と独立</a></li>
-			<li><a href="./notes/06-marginal-probability/">同時確率と周辺確率</a></li>
-			<li><a href="./notes/07-poisson-and-exponential/">ポアソン分布と指数分布</a></li>
-			<li><a href="./notes/08-event-counts-and-waiting-times-distributions/">発生回数と待ち時間の確率分布</a></li>
-			<li><a href="./notes/09-maximum-likelihood-estimation/">統計的推定：最尤法の初歩</a></li>
-			<li><a href="./notes/10-law-of-large-numbers/">大数の法則</a></li>
-			<li><a href="./notes/11-central-limit-theorem/">中心極限定理</a></li>
-			<li><a href="./notes/12-unbiased-variance/">母分散，標本分散，不偏分散</a></li>
-			<li><a href="./notes/13-linear-regression/">線形回帰</a></li>
-			<li><a href="./notes/14-interval-estimation/">区間推定</a></li>
-			<li><a href="./notes/15-hypothesis-testing/">仮説検定の初歩</a></li>
+			<li><a href="./notes/05-standard-deviation-and-standardization/">標準偏差と標準化</a></li>
+			<li><a href="./notes/06-correlation-and-independence/">相関と独立</a></li>
+			<li><a href="./notes/07-marginal-probability/">同時確率と周辺確率</a></li>
+			<li><a href="./notes/08-poisson-and-exponential/">ポアソン分布と指数分布</a></li>
+			<li><a href="./notes/09-event-counts-and-waiting-times-distributions/">発生回数と待ち時間の確率分布</a></li>
+			<li><a href="./notes/10-maximum-likelihood-estimation/">統計的推定：最尤法の初歩</a></li>
+			<li><a href="./notes/11-law-of-large-numbers/">大数の法則</a></li>
+			<li><a href="./notes/12-central-limit-theorem/">中心極限定理</a></li>
+			<li><a href="./notes/13-unbiased-variance/">母分散，標本分散，不偏分散</a></li>
+			<li><a href="./notes/14-linear-regression/">線形回帰</a></li>
+			<li><a href="./notes/15-interval-estimation/">区間推定</a></li>
+			<li><a href="./notes/16-hypothesis-testing/">仮説検定の初歩</a></li>
 		</ol>
 		<hr>
-		<h2>付録</h2>
+		<h2 id="appendices">付録</h2>
 		<ul class="appendix-list">
 			<li><a href="./notes/appendix-exponential-distribution/">指数分布の期待値と分散</a></li>
 			<li><a href="./notes/appendix-sum-of-random-variables-and-convolution/">確率変数の和が従う確率分布と畳み込み</a></li>
 			<li><a href="./notes/appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a></li>
 			<li><a href="./notes/appendix-linear-regression-coefficients/">線形回帰における回帰係数の計算と式変形</a></li>
+			<li><a href="./notes/appendix-p-value-z-value-calculator/">p 値と z 値の換算ツール</a></li>
+			<li><a href="./notes/appendix-exponential-function/">指数関数の定義</a></li>
+			<li><a href="./notes/appendix-binomial-approximations/">二項分布のポアソン近似と正規近似</a></li>
 		</ul>
 
 		<hr>
-		<h2>用語索引</h2>
+		<h2 id="readings">読み物</h2>
+		<ul class="appendix-list reading-list">
+			<li><a href="./notes/appendix-st-petersburg-paradox/">サンクトペテルブルクのパラドクス</a></li>
+			<li><a href="./notes/appendix-optimal-stopping-problem/">最適停止問題</a></li>
+			<li><a href="./notes/appendix-clt-experiments/">中心極限定理の実験 ── ベキ分布</a></li>
+			<li><a href="./notes/appendix-monty-hall-problem/">モンティ・ホール問題</a></li>
+		</ul>
+
+		<hr>
+		<h2 id="term-index">用語索引</h2>
 		<p class="index-intro">
-			各ノートで定義・解説した主要な専門用語の索引．リンク先末尾のかっこ内はノート番号（付録は <code>[A1]</code>, <code>[A2]</code> など）．太字はその用語を主に導入・解説しているノートを表す．同じ用語が複数のノートで新たな視点・重要な使われ方をしている場合は複数のリンクを示す．
+			各ノートで定義・解説した主要な用語の索引。各項目末尾の角かっこ内の番号はリンク先のノート番号（付録は <code>[A1]</code>，<code>[A2]</code> など，読み物は <code>[R1]</code>，<code>[R2]</code> など）。太字はその用語を主に導入・解説しているノートを表す。同じ用語が複数のノートで新たな視点・重要な使われ方をしている場合は複数のリンクを示す。なお，<code>[A5]</code> へのリンクは用語の解説ではなく，関連する換算ツールのページを指す。
 		</p>
 
 		<div class="term-index">
-			<h3>あ行</h3>
+			<h3 id="index-a">あ行</h3>
 			<ul>
-				<li>一致推定量 (consistent estimator) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>一様分布 (uniform distribution) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong> <a href="./notes/10-law-of-large-numbers/">[10]</a></li>
+				<li>アーラン分布 (Erlang distribution) ── <strong><a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></strong></li>
+				<li>一様分布 (uniform distribution) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
+				<li>一致推定量 (consistent estimator) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>重い裾 (heavy tail; fat tail) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
 			</ul>
 
-			<h3>か行</h3>
+			<h3 id="index-ka">か行</h3>
 			<ul>
-				<li>回帰 (regression) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>回帰係数 (regression coefficient) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>カーネル密度推定 (kernel density estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>回帰 (regression) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>回帰係数 (regression coefficient) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>回帰の誤謬 (regression fallacy) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>外挿 (extrapolation) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 				<li>確率 (probability) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>確率収束 (convergence in probability) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong> <a href="./notes/11-central-limit-theorem/">[11]</a></li>
+				<li>確率過程 (stochastic process) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
 				<li>確率質量関数 (probability mass function; PMF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>確率収束 (convergence in probability) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
 				<li>確率測度 (probability measure) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>確率分布 (probability distribution) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></li>
+				<li>確率分布 (probability distribution) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></li>
 				<li>確率変数 (random variable) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>確率密度 (probability density) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>確率密度関数 (probability density function; PDF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>下側信頼限界 (lower confidence limit) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>傾き (slope) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>決定係数 (coefficient of determination; R<sup>2</sup>) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>仮説 (hypothesis) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong> <a href="./notes/15-hypothesis-testing/">[15]</a></li>
-				<li>仮説検定 (hypothesis testing) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>確率密度 (probability density) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/07-marginal-probability/">[7]</a></li>
+				<li>確率密度関数 (probability density function; PDF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/07-marginal-probability/">[7]</a></li>
+				<li>仮説 (hypothesis) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong> <a href="./notes/16-hypothesis-testing/">[16]</a></li>
+				<li>仮説検定 (hypothesis testing) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>下側信頼限界 (lower confidence limit) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>片側検定 (one-sided test) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>傾き (slope) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>観測値 (observed value) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 				<li>感度 (sensitivity) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>観測値 (observed value) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>ガンマ分布 (gamma distribution) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
-				<li>緩和時間 (relaxation time) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>外挿 (extrapolation) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>機械学習 (machine learning) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
+				<li>ガンマ分布 (gamma distribution) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
+				<li>緩和時間 (relaxation time) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>偽陰性 (false negative) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>機械学習 (machine learning) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 				<li>規格化 (normalization) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>幾何分布 (geometric distribution) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>棄却 (reject) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>棄却域 (rejection region) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>疑似相関 (spurious correlation) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>記述統計 (descriptive statistics) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
 				<li>基準率 (base rate) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
 				<li>基準率の罠 (base rate fallacy) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
 				<li>期待値 (expected value) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/appendix-expected-value-and-variance/">[A3]</a></li>
-				<li>幾何分布 (geometric distribution) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>棄却 (reject) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>棄却域 (rejection region) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>帰無仮説 (null hypothesis; \(H_0\)) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>共分散 (covariance) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong> <a href="./notes/appendix-expected-value-and-variance/">[A3]</a></li>
-				<li>偽陰性 (false negative) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>疑似相関 (spurious correlation) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
 				<li>偽発見率 (false discovery rate; FDR) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>帰無仮説 (null hypothesis; \(H_0\)) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>偽陽性 (false positive) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
 				<li>偽陽性率 (false positive rate; FPR) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>共分散 (covariance) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong> <a href="./notes/appendix-expected-value-and-variance/">[A3]</a></li>
+				<li>空事象 (empty event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
 				<li>空集合 (empty set) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>検出力 (power) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>検定統計量 (test statistic) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>区間推定 (interval estimation) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>形状パラメータ (shape parameter) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>交絡変数 (confounding variable) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>効果量 (effect size) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>区間推定 (interval estimation) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>形状パラメータ (shape parameter) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>決定係数 (coefficient of determination; R<sup>2</sup>) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>検出力 (power) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>検定統計量 (test statistic) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>効果量 (effect size) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>交絡変数 (confounding variable) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>誤差項 (error term) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>誤差範囲 (error bar) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>コルモゴロフの公理 (Kolmogorov's probability axioms) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
 			</ul>
 
-			<h3>さ行</h3>
+			<h3 id="index-sa">さ行</h3>
 			<ul>
-				<li>最小絶対偏差法 (least absolute deviations; LAD) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>最小二乗解 (least squares solution) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
-				<li>最小二乗法 (ordinary least squares; OLS) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
-				<li>最尤原理 (maximum likelihood principle) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>最尤推定 (maximum likelihood estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>最尤推定値 (maximum likelihood estimate) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>最尤推定量 (maximum likelihood estimator) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>最尤法 (maximum likelihood method) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>再生性 (reproductivity) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
-				<li>差事象 (difference event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>最小絶対偏差法 (least absolute deviations; LAD) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>最小二乗解 (least squares solution) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>最小二乗法 (ordinary least squares; OLS) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>再生性 (reproductivity) ── <strong><a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></strong></li>
+				<li>再生的 (reproductive) ── <strong><a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></strong></li>
+				<li>最適停止問題 (optimal stopping problem) ── <strong><a href="./notes/appendix-optimal-stopping-problem/">[R2]</a></strong></li>
+				<li>最尤原理 (maximum likelihood principle) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>最尤推定 (maximum likelihood estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>最尤推定値 (maximum likelihood estimate) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>最尤推定量 (maximum likelihood estimator) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>最尤法 (maximum likelihood method) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>差事象 (difference of events) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>サンクトペテルブルクのパラドクス (St. Petersburg paradox) ── <strong><a href="./notes/appendix-st-petersburg-paradox/">[R1]</a></strong></li>
+				<li>残差 (residual) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>残差二乗和 (residual sum of squares; RSS) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>散布図 (scatter plot) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
 				<li>サンプリング (sampling) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>散布図 (scatter plot) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>残差 (residual) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>残差二乗和 (residual sum of squares; RSS) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>指数分布 (exponential distribution) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong> <a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a> <a href="./notes/appendix-exponential-distribution/">[A1]</a> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
-				<li>自己励起的 (self-excited) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
+				<li>サンプルサイズ (sample size; 標本サイズ) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>サンプル数 (number of samples; 標本数) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>試行 (trial) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
 				<li>事後確率 (posterior) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>自己励起的 (self-exciting) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
 				<li>事象 (event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>指数分布 (exponential distribution) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong> <a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a> <a href="./notes/appendix-exponential-distribution/">[A1]</a> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
 				<li>事前確率 (prior) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>事前登録 (pre-registration) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>事前登録 (pre-registration) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>実現値 (realization) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>自由度 (degree of freedom) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>試行 (trial) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>試行回数 (number of trials) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>時定数 (time constant) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
+				<li>時定数 (time constant) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
 				<li>集合 (set) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>周辺化 (marginalization) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong></li>
-				<li>周辺確率 (marginal probability) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong></li>
-				<li>周辺確率密度関数 (marginal probability density function) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong></li>
+				<li>自由度 (degrees of freedom) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>周辺化 (marginalization) ── <strong><a href="./notes/07-marginal-probability/">[7]</a></strong></li>
+				<li>周辺確率 (marginal probability) ── <strong><a href="./notes/07-marginal-probability/">[7]</a></strong></li>
+				<li>周辺確率密度関数 (marginal probability density function) ── <strong><a href="./notes/07-marginal-probability/">[7]</a></strong></li>
 				<li>周辺尤度 (marginal likelihood) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>条件付き確率 (conditional probability) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong> <a href="./notes/02-bayes-theorem/">[2]</a> <a href="./notes/03-random-variables/">[3]</a> <a href="./notes/05-correlation-and-independence/">[5]</a> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>条件付き確率密度関数 (conditional probability density function) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong></li>
-				<li>上側信頼限界 (upper confidence limit) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
+				<li>主成分分析 (principal component analysis; PCA) ── <strong><a href="./notes/appendix-expected-value-and-variance/">[A3]</a></strong></li>
+				<li>条件付き確率 (conditional probability) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong> <a href="./notes/02-bayes-theorem/">[2]</a> <a href="./notes/03-random-variables/">[3]</a> <a href="./notes/06-correlation-and-independence/">[6]</a> <a href="./notes/07-marginal-probability/">[7]</a></li>
+				<li>条件付き確率密度関数 (conditional probability density function) ── <strong><a href="./notes/07-marginal-probability/">[7]</a></strong></li>
+				<li>少数の法則 (law of small numbers; law of rare events) ── <strong><a href="./notes/appendix-binomial-approximations/">[A7]</a></strong></li>
+				<li>上側信頼限界 (upper confidence limit) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>信頼区間 (confidence interval; CI) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>信頼係数 (confidence coefficient) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>推測統計 (inferential statistics; 統計的推論) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>推定 (estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>推定値 (estimate) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>推定量 (estimator) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>枢軸量 (pivotal quantity) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
 				<li>正規化 (normalization) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>正規分布 (normal distribution) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong> <a href="./notes/11-central-limit-theorem/">[11]</a> <a href="./notes/14-interval-estimation/">[14]</a></li>
-				<li>正の相関 (positive correlation) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>信頼区間 (confidence interval; CI) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>信頼係数 (confidence coefficient) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>推定 (estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>推定値 (estimate) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>積事象 (intersection event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>説明変数 (explanatory variable) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>切片 (intercept) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>線形近似 (linear approximation) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>線形回帰 (linear regression) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>全数調査 (complete enumeration) ── <strong><a href="./notes/12-unbiased-variance/">[12]</a></strong></li>
-				<li>総平方和 (total sum of squares; TSS) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>相関 (correlation) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>相関係数 (correlation coefficient) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong> <a href="./notes/13-linear-regression/">[13]</a> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
-				<li>双対性 (duality) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
+				<li>正規分布 (normal distribution) ── <a href="./notes/07-marginal-probability/">[7]</a> <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong> <a href="./notes/15-interval-estimation/">[15]</a> <a href="./notes/appendix-binomial-approximations/">[A7]</a></li>
+				<li>正の相関 (positive correlation) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>積事象 (intersection of events) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>切片 (intercept) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>説明変数 (explanatory variable) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>線形回帰 (linear regression) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>線形近似 (linear approximation) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>全数調査 (complete enumeration) ── <strong><a href="./notes/13-unbiased-variance/">[13]</a></strong></li>
+				<li>相関 (correlation) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>相関係数 (correlation coefficient) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong> <a href="./notes/14-linear-regression/">[14]</a> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>双対性 (duality) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>総平方和 (total sum of squares; TSS) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 			</ul>
 
-			<h3>た行</h3>
+			<h3 id="index-ta">た行</h3>
 			<ul>
-				<li>大数の法則 (Law of Large Numbers; LLN) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>大数の強法則 (Strong Law of Large Numbers; SLLN) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>大数の弱法則 (Weak Law of Large Numbers; WLLN) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>第一種過誤 (Type I error) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>第二種過誤 (Type II error) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>対数尤度 (log-likelihood) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>対立仮説 (alternative hypothesis; \(H_1\)) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>多重比較補正 (multiple comparison correction) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>第一種過誤 (Type I error) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>大数の強法則 (Strong Law of Large Numbers; SLLN) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>大数の弱法則 (Weak Law of Large Numbers; WLLN) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>大数の法則 (Law of Large Numbers; LLN) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>対数尤度 (log-likelihood) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>第二種過誤 (Type II error) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>大偏差原理 (large deviation principle) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>対立仮説 (alternative hypothesis; \(H_1\)) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>互いに素 (disjoint) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>多重比較補正 (multiple comparison correction) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>畳み込み (convolution) ── <strong><a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></strong></li>
-				<li>単位時間 (unit time) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>単回帰 (simple linear regression) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>チェビシェフの不等式 (Chebyshev's inequality) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>中心極限定理 (Central Limit Theorem; CLT) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
-				<li>中心化ベクトル ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>直交 (orthogonality) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>定常ポアソン過程 (homogeneous Poisson process) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong> <a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></li>
-				<li>点過程 (point process) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>点推定 (point estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
+				<li>単位時間 (unit time) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>単回帰 (simple linear regression) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>チェビシェフの不等式 (Chebyshev's inequality) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>逐次解析 (sequential analysis) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>中心極限定理 (Central Limit Theorem; CLT) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong> <a href="./notes/appendix-binomial-approximations/">[A7]</a></li>
+				<li>定常ポアソン過程 (homogeneous Poisson process) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong> <a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></li>
+				<li>点過程 (point process) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>点推定 (point estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong> <a href="./notes/15-interval-estimation/">[15]</a></li>
+				<li>統計的推論 (inferential statistics; 推測統計) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>統計量 (statistic) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>同時確率 (joint probability) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong> <a href="./notes/06-correlation-and-independence/">[6]</a> <a href="./notes/07-marginal-probability/">[7]</a></li>
+				<li>同時確率密度関数 (joint probability density function) ── <strong><a href="./notes/07-marginal-probability/">[7]</a></strong></li>
+				<li>同等性検定 (equivalence testing) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>特異度 (specificity) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>特徴時間 (characteristic time) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>同時確率 (joint probability) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong> <a href="./notes/05-correlation-and-independence/">[5]</a> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>同時確率密度関数 (joint probability density function) ── <strong><a href="./notes/06-marginal-probability/">[6]</a></strong></li>
-				<li>同時分布 (joint distribution) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>独立 (independence) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong> <a href="./notes/06-marginal-probability/">[6]</a></li>
-				<li>独立同分布 (independent and identically distributed; i.i.d.) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/11-central-limit-theorem/">[11]</a></li>
-				<li>ド・モルガンの法則 (De Morgan's law) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>特徴時間 (characteristic time) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>独立 (independence) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong> <a href="./notes/07-marginal-probability/">[7]</a></li>
+				<li>独立同分布 (independent and identically distributed; i.i.d.) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
+				<li>独立変数 (explanatory variable; 説明変数) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>ド・モアブル＝ラプラスの定理 (de Moivre–Laplace theorem) ── <strong><a href="./notes/appendix-binomial-approximations/">[A7]</a></strong></li>
+				<li>ド・モルガンの法則 (De Morgan's laws) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
 			</ul>
 
-			<h3>な行</h3>
+			<h3 id="index-na">な行</h3>
 			<ul>
-				<li>内積 (inner product) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>二項分布 (binomial distribution) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong> <a href="./notes/14-interval-estimation/">[14]</a></li>
-				<li>ニューラルネットワーク (neural network; NN) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>ノンパラメトリック推定 (nonparametric estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
+				<li>二項分布 (binomial distribution) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong> <a href="./notes/15-interval-estimation/">[15]</a> <a href="./notes/appendix-binomial-approximations/">[A7]</a></li>
+				<li>ニューラルネットワーク (neural network; NN) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>ノンパラメトリック推定 (nonparametric estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
 			</ul>
 
-			<h3>は行</h3>
+			<h3 id="index-ha">は行</h3>
 			<ul>
-				<li>排反 (disjoint, mutually exclusive) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>p 値ハッキング (p-hacking) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>バイバイン ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>曝露量 (exposure) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>発生回数 (number of events) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>パラメトリック推定 (parametric estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>非定常ポアソン過程 (non-homogeneous Poisson process) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>標準化ベクトル ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>標準正規分布 (standard normal distribution) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
-				<li>標準誤差 (standard error; SE) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
-				<li>標準偏差 (standard deviation) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
+				<li>バイバイン ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>排反 (mutually exclusive) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>曝露量 (exposure) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>外れ値 (outlier) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/14-linear-regression/">[14]</a></li>
+				<li>パラメトリック推定 (parametric estimation) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
+				<li>被説明変数 (response variable; 目的変数) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>非定常ポアソン過程 (inhomogeneous Poisson process) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>標準化 (standardization) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a> <a href="./notes/15-interval-estimation/">[15]</a></li>
+				<li>標準化ベクトル ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>標準誤差 (standard error; SE) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>標準正規分布 (standard normal distribution) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>標準正規分布表 (Z-table) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>標準偏差 (standard deviation) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/06-correlation-and-independence/">[6]</a></li>
 				<li>標本 (sample) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>標本共分散 (sample covariance) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
+				<li>標本共分散 (sample covariance) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong> <a href="./notes/appendix-linear-regression-coefficients/">[A4]</a></li>
 				<li>標本空間 (sample space) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>標本サイズ (sample size) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>標本数 (number of samples) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>標本相関係数 (sample correlation coefficient) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
+				<li>標本サイズ (sample size; サンプルサイズ) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>標本数 (number of samples; サンプル数) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>標本相関係数 (sample correlation coefficient) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
 				<li>標本点 (sample point) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong> <a href="./notes/03-random-variables/">[3]</a></li>
-				<li>標本分散 (sample variance) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/05-correlation-and-independence/">[5]</a> <a href="./notes/12-unbiased-variance/">[12]</a></li>
-				<li>標本比率 (sample proportion) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>標本平均 (sample mean) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/05-correlation-and-independence/">[5]</a> <a href="./notes/09-maximum-likelihood-estimation/">[9]</a> <a href="./notes/10-law-of-large-numbers/">[10]</a> <a href="./notes/11-central-limit-theorem/">[11]</a></li>
-				<li>負の相関 (negative correlation) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>負の二項分布 (negative binomial distribution) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>不偏推定量 (unbiased estimator) ── <strong><a href="./notes/12-unbiased-variance/">[12]</a></strong></li>
-				<li>不偏分散 (unbiased variance) ── <strong><a href="./notes/12-unbiased-variance/">[12]</a></strong></li>
-				<li>分布収束 (convergence in distribution) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
+				<li>標本標準偏差 (sample standard deviation) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/06-correlation-and-independence/">[6]</a></li>
+				<li>標本比率 (sample proportion) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>標本分散 (sample variance) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/13-unbiased-variance/">[13]</a></li>
+				<li>標本平均 (sample mean) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/06-correlation-and-independence/">[6]</a> <a href="./notes/10-maximum-likelihood-estimation/">[10]</a> <a href="./notes/11-law-of-large-numbers/">[11]</a> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
+				<li>太い裾 (fat tail; 重い裾) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
+				<li>負の相関 (negative correlation) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>負の二項分布 (negative binomial distribution) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
 				<li>部分集合 (subset) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>不偏推定量 (unbiased estimator) ── <strong><a href="./notes/13-unbiased-variance/">[13]</a></strong></li>
+				<li>不偏分散 (unbiased variance) ── <strong><a href="./notes/13-unbiased-variance/">[13]</a></strong></li>
 				<li>分散 (variance) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/appendix-expected-value-and-variance/">[A3]</a></li>
 				<li>分散共分散行列 (variance-covariance matrix) ── <strong><a href="./notes/appendix-expected-value-and-variance/">[A3]</a></strong></li>
 				<li>分配関数 (partition function) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>平均 (mean) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>分布収束 (convergence in distribution) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>分布族 (family of distributions) ── <strong><a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></strong></li>
 				<li>平均絶対偏差 (mean absolute deviation; MAD) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>ベイズ推定 (Bayesian estimation) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
+				<li>平均への回帰 (regression to the mean) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 				<li>ベイズ因子 (Bayes factor) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>ベイズ統計 (Bayesian statistics) ── <a href="./notes/02-bayes-theorem/">[2]</a> <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>ベイズの定理 (Bayes' theorem) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>ベキ指数 (power exponent) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
+				<li>ベキ分布 (power-law distribution) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
+				<li>ベルヌーイ試行 (Bernoulli trials) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>ベルヌーイ分布 (Bernoulli distribution) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong> <a href="./notes/12-central-limit-theorem/">[12]</a></li>
+				<li>偏差 (deviation) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong></li>
+				<li>偏差値 ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong></li>
 				<li>ベン図 (Venn diagram) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>補事象 (complement event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
-				<li>補累積確率 (complementary cumulative probability) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>補累積分布関数 (complementary cumulative distribution function; CCDF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>ホークス過程 (Hawkes process) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>母共分散 (population covariance) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
+				<li>ポアソン分布 (Poisson distribution) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong> <a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a> <a href="./notes/10-maximum-likelihood-estimation/">[10]</a> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a> <a href="./notes/appendix-binomial-approximations/">[A7]</a></li>
+				<li>ホークス過程 (Hawkes process) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>母共分散 (population covariance) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>補事象 (complement of an event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
 				<li>母集団 (population) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>母相関係数 (population correlation coefficient) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>ベルヌーイ分布 (Bernoulli distribution) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong> <a href="./notes/11-central-limit-theorem/">[11]</a></li>
-				<li>ベルヌーイ試行 (Bernoulli trials) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>母数 (parameter) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/09-maximum-likelihood-estimation/">[9]</a></li>
-				<li>母分散 (population variance) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/12-unbiased-variance/">[12]</a></li>
+				<li>母数 (parameter) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/10-maximum-likelihood-estimation/">[10]</a></li>
+				<li>母相関係数 (population correlation coefficient) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>母標準偏差 (population standard deviation) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong></li>
+				<li>母比率 (population proportion) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>母分散 (population variance) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/13-unbiased-variance/">[13]</a></li>
 				<li>母平均 (population mean) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>母比率 (population proportion) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>ポアソン分布 (Poisson distribution) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong> <a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a> <a href="./notes/09-maximum-likelihood-estimation/">[9]</a> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
+				<li>補累積確率 (complementary cumulative probability) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>補累積分布関数 (complementary cumulative distribution function; CCDF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong> <a href="./notes/appendix-clt-experiments/">[R3]</a></li>
 			</ul>
 
-			<h3>ま行</h3>
+			<h3 id="index-ma">ま行</h3>
 			<ul>
-				<li>待ち時間 (waiting time) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>無記憶性 (memoryless property) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>無次元数 (dimensionless number) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong></li>
-				<li>無相関 (uncorrelated) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>目的変数 (response variable) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
+				<li>マクローリン展開 (Maclaurin expansion) ── <strong><a href="./notes/appendix-exponential-function/">[A6]</a></strong></li>
+				<li>待ち時間 (waiting time) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>無記憶性 (memoryless property) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>無作為抽出 (random sampling; ランダムサンプリング) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>無次元数 (dimensionless number) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong></li>
+				<li>無相関 (uncorrelated) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>目的変数 (response variable) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 				<li>モデル (model) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
 				<li>モデルのエビデンス (model evidence) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>モンティ・ホール問題 (Monty Hall problem) ── <strong><a href="./notes/appendix-monty-hall-problem/">[R4]</a></strong></li>
 			</ul>
 
-			<h3>や行</h3>
+			<h3 id="index-ya">や行</h3>
 			<ul>
-				<li>尤度 (likelihood) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong> <a href="./notes/09-maximum-likelihood-estimation/">[9]</a></li>
-				<li>尤度関数 (likelihood function) ── <strong><a href="./notes/09-maximum-likelihood-estimation/">[9]</a></strong></li>
-				<li>有意 (significant) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>有意確率 (p 値; p-value) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>有意水準 (significance level; \(\alpha\)) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>有意 (significant) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>有意確率 (p-value; p 値) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>有意水準 (significance level; \(\alpha\)) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>尤度 (likelihood) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong> <a href="./notes/10-maximum-likelihood-estimation/">[10]</a></li>
+				<li>尤度関数 (likelihood function) ── <strong><a href="./notes/10-maximum-likelihood-estimation/">[10]</a></strong></li>
 				<li>有病率 (prevalence) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
 				<li>陽性的中率 (positive predictive value; PPV) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>要約統計量 (summary statistic) ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>予測値 (predicted value) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
+				<li>要約統計量 (summary statistic) ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>予測値 (predicted value) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
 			</ul>
 
-			<h3>ら行</h3>
+			<h3 id="index-ra">ら行</h3>
 			<ul>
+				<li>ランダムサンプリング (random sampling; 無作為抽出) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
 				<li>離散型確率変数 (discrete random variable) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>離散時間 (discrete time) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>両側検定 (two-sided test) ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
+				<li>両側検定 (two-sided test) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
 				<li>累積確率 (cumulative probability) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
 				<li>累積分布関数 (cumulative distribution function; CDF) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>レートパラメータ (rate parameter) ── <strong><a href="./notes/07-poisson-and-exponential/">[7]</a></strong> <a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a> <a href="./notes/09-maximum-likelihood-estimation/">[9]</a> <a href="./notes/appendix-exponential-distribution/">[A1]</a></li>
+				<li>レートパラメータ (rate parameter) ── <strong><a href="./notes/08-poisson-and-exponential/">[8]</a></strong> <a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a> <a href="./notes/appendix-exponential-distribution/">[A1]</a> <a href="./notes/appendix-sum-of-random-variables-and-convolution/">[A2]</a></li>
 				<li>連続型確率変数 (continuous random variable) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>連続時間 (continuous time) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
+				<li>ロングテール (long tail) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
 			</ul>
 
-			<h3>わ行</h3>
+			<h3 id="index-wa">わ行</h3>
 			<ul>
-				<li>和事象 (union event) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
+				<li>和事象 (union of events) ── <strong><a href="./notes/01-sample-space-and-events/">[1]</a></strong></li>
 			</ul>
 
-			<h3>欧文</h3>
+			<h3 id="index-latin">欧文</h3>
 			<ul>
-				<li>CCDF (= 補累積分布関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>CDF (= 累積分布関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>CI (= 信頼区間) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>CLT (= 中心極限定理) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
-				<li>Datasaurus ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
-				<li>Datasaurus Dozen ── <strong><a href="./notes/05-correlation-and-independence/">[5]</a></strong></li>
+				<li>CCDF (complementary cumulative distribution function; 補累積分布関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>CDF (cumulative distribution function; 累積分布関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>CI (confidence interval; 信頼区間) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>CLT (Central Limit Theorem; 中心極限定理) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>Datasaurus ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
+				<li>Datasaurus Dozen ── <strong><a href="./notes/06-correlation-and-independence/">[6]</a></strong></li>
 				<li>Eikosogram ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>FDR (= 偽発見率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>FN (= 偽陰性) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>FOR (= false omission rate) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>FP (= 偽陽性) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>FPR (= 偽陽性率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>HARKing ── <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>i.i.d. (= 独立同分布) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong> <a href="./notes/11-central-limit-theorem/">[11]</a></li>
-				<li>LAD (= 最小絶対偏差法) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>LLN (= 大数の法則) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>MAD (= 平均絶対偏差) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
-				<li>ML (= 機械学習) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>NN (= ニューラルネットワーク) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>null モデル (null model) ── <strong><a href="./notes/08-event-counts-and-waiting-times-distributions/">[8]</a></strong></li>
-				<li>OLS (= 最小二乗法) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>PDF (= 確率密度関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>PMF (= 確率質量関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
-				<li>PPV (= 陽性的中率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
-				<li>p-value (= p 値) ── <a href="./notes/07-poisson-and-exponential/">[7]</a> <strong><a href="./notes/15-hypothesis-testing/">[15]</a></strong></li>
-				<li>R<sup>2</sup> (= 決定係数) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>RSS (= 残差二乗和) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>Student の t 分布 (Student's t distribution) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>Wald 信頼区間 (Wald confidence interval) ── <strong><a href="./notes/14-interval-estimation/">[14]</a></strong></li>
-				<li>SE (= 標準誤差) ── <strong><a href="./notes/11-central-limit-theorem/">[11]</a></strong></li>
-				<li>SLLN (= 大数の強法則) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
-				<li>TSS (= 総平方和) ── <strong><a href="./notes/13-linear-regression/">[13]</a></strong></li>
-				<li>WLLN (= 大数の弱法則) ── <strong><a href="./notes/10-law-of-large-numbers/">[10]</a></strong></li>
+				<li>fat tail (= heavy tail) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
+				<li>FDR (false discovery rate; 偽発見率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>FN (false negative; 偽陰性) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>FOR (false omission rate) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>FP (false positive; 偽陽性) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>FPR (false positive rate; 偽陽性率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>HARKing (Hypothesizing After the Results are Known) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>heavy tail (= 重い裾) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
+				<li>i.i.d. (independent and identically distributed; 独立同分布) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>LAD (least absolute deviations; 最小絶対偏差法) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>LLN (Law of Large Numbers; 大数の法則) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>long tail (= ロングテール) ── <strong><a href="./notes/appendix-clt-experiments/">[R3]</a></strong></li>
+				<li>MAD (mean absolute deviation; 平均絶対偏差) ── <strong><a href="./notes/04-population-and-sample/">[4]</a></strong></li>
+				<li>ML (machine learning; 機械学習) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>NN (neural network; ニューラルネットワーク) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>null モデル (null model) ── <strong><a href="./notes/09-event-counts-and-waiting-times-distributions/">[9]</a></strong></li>
+				<li>OLS (ordinary least squares; 最小二乗法) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>PCA (principal component analysis; 主成分分析) ── <strong><a href="./notes/appendix-expected-value-and-variance/">[A3]</a></strong></li>
+				<li>PDF (probability density function; 確率密度関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>PMF (probability mass function; 確率質量関数) ── <strong><a href="./notes/03-random-variables/">[3]</a></strong></li>
+				<li>PPV (positive predictive value; 陽性的中率) ── <strong><a href="./notes/02-bayes-theorem/">[2]</a></strong></li>
+				<li>p-value (= p 値) ── <a href="./notes/08-poisson-and-exponential/">[8]</a> <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>p 値 (p-value; 有意確率) ── <a href="./notes/08-poisson-and-exponential/">[8]</a> <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>p 値ハッキング (p-hacking) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>R<sup>2</sup> (coefficient of determination; 決定係数) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>RSS (residual sum of squares; 残差二乗和) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>SD (standard deviation; 標準偏差) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong></li>
+				<li>SE (standard error; 標準誤差) ── <strong><a href="./notes/12-central-limit-theorem/">[12]</a></strong></li>
+				<li>SLLN (Strong Law of Large Numbers; 大数の強法則) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>Student の t 分布 (Student's t distribution) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>TSS (total sum of squares; 総平方和) ── <strong><a href="./notes/14-linear-regression/">[14]</a></strong></li>
+				<li>t 統計量 (t statistic) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>t 分布 (Student's t distribution) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>t 分布表 (t-table) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>Wald 信頼区間 (Wald confidence interval) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
+				<li>Wilson 信頼区間 (Wilson score interval) ── <strong><a href="./notes/16-hypothesis-testing/">[16]</a></strong></li>
+				<li>WLLN (Weak Law of Large Numbers; 大数の弱法則) ── <strong><a href="./notes/11-law-of-large-numbers/">[11]</a></strong></li>
+				<li>z スコア (z-score) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong></li>
+				<li>z-value (= z 値) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>z 値 (z-value) ── <strong><a href="./notes/05-standard-deviation-and-standardization/">[5]</a></strong> <a href="./notes/appendix-p-value-z-value-calculator/">[A5]</a></li>
+				<li>z 統計量 (z statistic) ── <strong><a href="./notes/15-interval-estimation/">[15]</a></strong></li>
 			</ul>
 		</div>
 
 		<hr>
 		<p style="font-size:.85rem;color:var(--muted)">
-			<a href="/">← トップに戻る</a>
+			<a href="../">← トップに戻る</a>
 		</p>
 	</main>
 </body>

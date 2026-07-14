@@ -3,11 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="確率変数の和と畳み込み ── ポアソン分布とガンマ分布の再生性を導出する付録。指数分布の和はガンマ分布になる。">
 	<title>確率変数の和が従う確率分布と畳み込み — 確率統計学 講義ノート</title>
-	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../../assets/style.css">
 	<script src="../../assets/mathjax-config.js"></script>
-	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
 </head>
 <body>
 	<nav class="note-nav">
@@ -18,13 +21,13 @@
 		<h1>確率変数の和が従う確率分布と畳み込み</h1>
 
 		<p>
-			\(2\) つの確率変数 \(X_1, X_2\) の演算結果もまた確率変数である．ここでは \(X_1, X_2\) を互いに独立とし，その和 \(Y = X_1 + X_2\) が従う確率分布を求めてみよう．
+			2 つの確率変数 \(X_1, X_2\) の演算結果もまた確率変数である。ここでは \(X_1, X_2\) を互いに独立とし，その和 \(Y = X_1 + X_2\) が従う確率分布を求めてみよう。
 		</p>
 
-		<h2>ポアソン分布の場合</h2>
+		<h2 id="poisson">ポアソン分布の場合</h2>
 
 		<p>
-			\(2\) つの確率変数 \(X_1, X_2\) を以下で定義する：
+			2 つの確率変数 \(X_1, X_2\) を以下で定義する：
 		</p>
 
 		\[
@@ -32,13 +35,13 @@
 		\]
 
 		<p>
-			レートパラメータの値はそれぞれ異なってよい．\(X_1 = k_1\) となる確率，および \(X_2 = k_2\) となる確率は，それぞれ
+			レートパラメータの値はそれぞれ異なってよい。 \(X_1 = k_1\) となる確率，および \(X_2 = k_2\) となる確率は，それぞれ
 		</p>
 
 		\[
 		\begin{aligned}
-		P(X_1 = k_1; \lambda_1) &= \frac{\lambda_1^{k_1}}{k_1!} e^{-\lambda_1} \quad (k_1 \geq 0), \\[6pt]
-		P(X_2 = k_2; \lambda_2) &= \frac{\lambda_2^{k_2}}{k_2!} e^{-\lambda_2} \quad (k_2 \geq 0).
+		P(X_1 = k_1; \lambda_1) &= \frac{\lambda_1^{k_1}}{k_1!} e^{-\lambda_1} \qquad (k_1 = 0, 1, 2, \ldots), \\[6pt]
+		P(X_2 = k_2; \lambda_2) &= \frac{\lambda_2^{k_2}}{k_2!} e^{-\lambda_2} \qquad (k_2 = 0, 1, 2, \ldots).
 		\end{aligned}
 		\]
 
@@ -51,11 +54,11 @@
 		\]
 
 		<p>
-			のように \(2\) つの確率の掛け算で表せそうである．
+			のように 2 つの確率の掛け算で表せそうである。
 		</p>
 
 		<p>
-			しかし，たとえば \(k = 2\) の場合，可能な \((k_1, k_2)\) の組み合わせは \((0, 2), (1, 1), (2, 0)\) の \(3\) 通り存在する．それぞれについて①を全部足し合わせた確率が，実際に \(Y = 2\) になる確率となる．これを式で表すと
+			しかし，たとえば \(k = 2\) の場合，可能な \((k_1, k_2)\) の組み合わせは \((0, 2), (1, 1), (2, 0)\) の 3 通り存在する。それぞれについて①を全部足し合わせた確率が，実際に \(Y = 2\) になる確率となる。これを式で表すと
 		</p>
 
 		\[
@@ -71,11 +74,11 @@
 		\]
 
 		<p>
-			このように，\(2\) つの関数の積をずらしながら足し合わせる（あるいは積分する）形を <strong>畳み込み</strong> (convolution) と呼ぶ．
+			このように，2 つの関数の積をずらしながら足し合わせる（あるいは積分する）形を <strong>畳み込み</strong> (convolution) と呼ぶ。
 		</p>
 
 		<p>
-			具体的な形を求めてみよう．まず①を書き下すと
+			具体的な形を求めてみよう。まず①を書き下すと
 		</p>
 
 		\[
@@ -96,8 +99,8 @@
 		P(Y = k)
 		&= \sum_{k_1 = 0}^{k} \frac{\lambda_1^{k_1} \lambda_2^{k - k_1}}{k_1! (k - k_1)!} e^{-(\lambda_1 + \lambda_2)} \\[6pt]
 		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \frac{k!}{k_1! (k - k_1)!} \lambda_1^{k_1} \lambda_2^{k - k_1} \\[6pt]
-		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \binom{k}{k_1} \lambda_1^{k_1} \lambda_2^{k - k_1} && \text{※二項定理} \\[6pt]
-		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} (\lambda_1 + \lambda_2)^k \\[6pt]
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \binom{k}{k_1} \lambda_1^{k_1} \lambda_2^{k - k_1} \\[6pt]
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} (\lambda_1 + \lambda_2)^k && \text{※二項定理} \\[6pt]
 		&= \frac{\lambda^k}{k!} e^{-\lambda} && (\lambda := \lambda_1 + \lambda_2).
 		\end{aligned}
 		\]
@@ -111,17 +114,17 @@
 		\]
 
 		<p>
-			このように，確率変数の和が再び元と同じ形の確率分布に従うような確率分布を <strong>再生的</strong> (reproductive) な確率分布と呼ぶ．
+			このように，独立な確率変数の和が再び元と同じ形の確率分布に従うような確率分布を <strong>再生的</strong> (reproductive) な確率分布と呼び，この性質を <strong>再生性</strong> (reproductivity) という。
 		</p>
 
-		<h2>指数分布の場合</h2>
+		<h2 id="exponential">指数分布の場合</h2>
 
 		<p>
-			次に，同じレートパラメータ \(\lambda\) を持つ指数分布に従う \(2\) つの独立な確率変数 \(X_1, X_2\) について，その和が従う確率分布を考えてみよう．
+			次に，同じレートパラメータ \(\lambda\) をもつ指数分布に従う 2 つの独立な確率変数 \(X_1, X_2\) について，その和が従う確率分布を考えてみよう。
 		</p>
 
 		\[
-		X_1 \sim \mathrm{Exp}(\lambda), \qquad X_2 \sim \mathrm{Exp}(\lambda),
+		X_1 \sim \mathrm{Exp}(\lambda), \qquad X_2 \sim \mathrm{Exp}(\lambda)
 		\]
 
 		<p>
@@ -142,12 +145,12 @@
 		&= \int_0^t f_X(x_1) \cdot f_X(t - x_1)\, dx_1 \\[6pt]
 		&= \int_0^t \lambda e^{-\lambda x_1} \cdot \lambda e^{-\lambda (t - x_1)}\, dx_1 \\[6pt]
 		&= \lambda^2 e^{-\lambda t} \int_0^t dx_1 \\[6pt]
-		&= \lambda^2 t\, e^{-\lambda t}. \qquad \cdots \text{②}
+		&= \lambda^2 t\, e^{-\lambda t}.
 		\end{aligned}
 		\]
 
 		<p>
-			指数分布が待ち時間の確率分布だったことを思い出すと，この分布の意味は「事象の発生間隔 \(2\) 個分」の待ち時間である．同様に \(T_3=X_1+X_2+X_3\) として 3 個分の待ち時間を考えると
+			指数分布が待ち時間の確率分布だったことを思い出すと，この分布の意味は「事象の発生間隔 2 個分」の待ち時間である。同様に \(T_3=X_1+X_2+X_3\) として 3 個分の待ち時間を考えると
 		</p>
 
 		\[
@@ -163,17 +166,17 @@
 		\]
 
 		<p>
-			これは <strong>ガンマ分布</strong> (gamma distribution) と呼ばれる確率密度関数である：
+			これはノート「<a href="../09-event-counts-and-waiting-times-distributions/">発生回数と待ち時間の確率分布</a>」でも触れたガンマ分布の確率密度関数である。<sup>※</sup>指数分布はガンマ分布の \(r=1\) の特殊な場合である。
 		</p>
 
-		\[
-		T_r \sim \mathrm{Gamma}(r, \lambda), \qquad f(t; r, \lambda) = \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t}.
-		\]
+		<div class="note-side">
+			ここでは事象 \(r\) 個分の待ち時間として導いたので \(r\) は正の整数だが，一般のガンマ分布は \((r-1)!\) をガンマ関数 \(\Gamma(r)\) に置き換えることで任意の実数 \(r > 0\) に対して定義される（整数 \(r\) では \(\Gamma(r) = (r-1)!\)）。逆に，\(r\) が整数の場合のガンマ分布は，特に <strong>アーラン分布</strong> (Erlang distribution) とも呼ばれる。
+		</div>
 
-		<h2>発展：ガンマ分布の再生性</h2>
+		<h3 id="gamma-reproductivity">ガンマ分布の再生性</h3>
 
 		<p>
-			直感的に，同じ \(\lambda\) を持つ \(2\) つの独立なガンマ分布
+			さて，同じ \(\lambda\) をもつ指数分布の和はガンマ分布になった。ならば，同じ \(\lambda\) をもつガンマ分布の和もまたガンマ分布に従うのではないかと予想できる。2 つの独立なガンマ分布
 		</p>
 
 		\[
@@ -181,7 +184,7 @@
 		\]
 
 		<p>
-			が与えられたとき，これらの和 \(T_r = T_{r_1} + T_{r_2}\) は \(\mathrm{Gamma}(r_1 + r_2, \lambda)\) に従いそうである．確認してみよう．
+			が与えられたとき，これらの和 \(T_r = T_{r_1} + T_{r_2}\) は \(\mathrm{Gamma}(r_1 + r_2, \lambda)\) に従いそうである。確認してみよう。
 		</p>
 
 		\[
@@ -197,7 +200,7 @@
 		\]
 
 		<p>
-			3 行目から 4 行目への積分の計算は面食らうかもしれないが，この積分はベータ関数<sup>※</sup>としてよく知られた形である．たしかに再びガンマ分布
+			3 行目から 4 行目への積分の計算は面食らうかもしれないが，この積分はベータ関数<sup>※</sup>としてよく知られた形である。たしかに再びガンマ分布
 		</p>
 
 		\[
@@ -205,12 +208,51 @@
 		\]
 
 		<p>
-			が得られた．つまり，ガンマ分布もまた再生的である．
+			が得られた。つまり，ガンマ分布もまた再生的である。
 		</p>
 
 		<div class="note-side">
-			\(B(r_1, r_2) = \int_0^1 t^{r_1 - 1}(1-t)^{r_2-1}\, dt = \frac{(r_1-1)!(r_2-1)!}{(r_1 + r_2 - 1)!}\)
+			<p>
+				ベータ関数は以下の形で定義される：
+			</p>
+
+			\[B(r_1, r_2) = \int_0^1 u^{r_1 - 1}(1-u)^{r_2-1}\, du = \frac{(r_1-1)!(r_2-1)!}{(r_1 + r_2 - 1)!}.\]
+
+			<p>
+				本文 3 行目の積分は \(t\) を定数とみなして，新しい変数 \(u\) で \(t_1 = tu\) と置換する。すると \(dt_1 = t\, du\) より，
+			</p>
+
+			\[
+				\int_0^t t_1^{r_1-1}(t-t_1)^{r_2-1}\, dt_1 = \int_0^1 (tu)^{r_1-1} (t - tu)^{r_2-1} t\, du = t^{r_1+r_2-1} B(r_1, r_2)
+			\]
+
+			<p>
+				となり，この形に帰着する。
+			</p>
+
 		</div>
+
+		<h2 id="reproductivity-vs-clt">再生性と中心極限定理は矛盾しないのか？</h2>
+
+		<p>
+			この付録では，ポアソン分布もガンマ分布も再生的であることを見た。つまり，ポアソン分布の和はやはりポアソン分布に従い，同じ \(\lambda\) を共有するガンマ分布の和はやはりガンマ分布に従う ── 何個足し合わせても，和は同じ種類の分布から出られない。<sup>※</sup>一方，ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」によれば，独立同分布な確率変数の和の分布は，足し合わせる個数を増やすと正規分布に近づいていくはずである。和はいつまでもポアソン分布（あるいはガンマ分布）のままなのに，正規分布に収束するとはどういうことだろうか？
+		</p>
+
+		<div class="note-side">
+			このような「同じ形の式で書ける分布の集まり」を <strong>分布族</strong> (family of distributions) と呼ぶ。再生性は「和が分布族から出ない」性質だと一言でまとめられる。
+		</div>
+
+		<p>
+			両者は矛盾しない。再生性が言っているのは「和をとっても同じ種類の分布から出ない」というだけで，母数は変化する ── 同じ分布を \(n\) 個足せば，ポアソン分布なら \(\mathrm{Po}(n\lambda)\)，ガンマ分布なら \(\mathrm{Gamma}(nr,\ \lambda)\) になる。その結果，和はポアソン分布（ガンマ分布）のまま形状を変えていき，正規分布の形に近づいていくのである。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			厳密には，和そのものは平均も分散も増え続けるので，正規分布には収束しない。「母平均からのズレを標準化した量が標準正規分布に分布収束する」が正確な言い方である。ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」の「発展的な内容」を参照。
+		</div>
+
+		<p>
+			実際の様子は，同ノートのデモで指数分布を選んで \(n\) を増やしていくと確かめられる。デモが描くのは和 \(T_n\sim\mathrm{Gamma}(n,\lambda)\) そのものではなく標本平均 \(\bar{X}_n=T_n/n\) だが，横軸のスケールが \(1/n\) 倍になるだけで，形は同じガンマ分布である。
+		</p>
 
 		<hr>
 

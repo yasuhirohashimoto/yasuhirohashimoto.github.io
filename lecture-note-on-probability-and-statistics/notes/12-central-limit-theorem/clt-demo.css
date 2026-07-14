@@ -1,0 +1,148 @@
+.clt-demo {
+	margin: 1.5em auto;
+	max-width: 680px;
+}
+.clt-figure {
+	margin: 1.4em auto;
+	max-width: 720px;
+}
+.clt-figure.clt-figure-wide {
+	max-width: var(--default-width);
+}
+.clt-figure.clt-n3-static-figure {
+	width: 60%;
+}
+.clt-figure svg {
+	width: 100%;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+.clt-panel-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0 14px;
+}
+.clt-panel-grid svg {
+	height: auto;
+}
+@media (max-width: 640px) {
+	.clt-panel-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+.clt-panel-title {
+	font-size: 15px; /* 実効 ≈15px（パネル題は本文相当を狙う） */
+	font-weight: 700;
+	fill: var(--text-color);
+}
+.clt-panel-note {
+	font-size: 13px; /* 実効 ≈13px（注記は本文の80%を狙う） */
+	fill: var(--viz-tick);
+}
+.clt-demo .clt-controls {
+	margin: 0 auto .7em;
+	display: grid;
+	grid-template-columns: minmax(13em, 1.35fr) minmax(7em, .72fr) minmax(8em, .78fr) auto;
+	gap: .55em;
+	align-items: center;
+	max-width: 620px;
+	font-size: .92rem;
+}
+.clt-demo select {
+	width: 100%;
+	min-width: 0;
+}
+.clt-demo .icon-btn {
+	justify-self: start;
+}
+.clt-demo .clt-chart-wrap {
+	position: relative;
+	width: 100%;
+	max-width: 620px;
+	margin: 0 auto;
+}
+.clt-demo #clt-svg {
+	width: 100%;
+	display: block;
+	user-select: none;
+}
+@media (max-width: 640px) {
+	.clt-demo .clt-controls {
+		grid-template-columns: 1fr auto;
+	}
+	.clt-demo .clt-controls #clt-dist,
+	.clt-demo .clt-controls #clt-n {
+		grid-column: 1 / -1;
+	}
+}
+
+/* === n=3 雑談セクション：対話的な立方体 === */
+.clt-n3-demo {
+	margin: 1.2em auto 1.6em;
+	max-width: var(--default-width);
+	text-align: center;
+}
+.clt-n3-panels {
+	display: grid;
+	grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+	gap: 0.45rem;
+	align-items: center;
+}
+.clt-n3-panel svg {
+	width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+.clt-n3-panel:nth-child(2) {
+	transform: translateY(-0.4rem);
+}
+.clt-n3-controls {
+	margin: 0.8em auto 0.4em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.7em;
+	font-size: 0.92rem;
+}
+.clt-n3-controls input[type=range] {
+	width: 60%;
+	max-width: 520px;
+	min-width: 240px;
+}
+.clt-n3-controls output {
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+	color: var(--text-color);
+	min-width: 3.4em;
+	display: inline-block;
+	text-align: left;
+}
+.clt-n3-readout {
+	margin: 0.4em auto 0.7em;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.4em 0.9em;
+	font-size: 0.85rem;
+	color: var(--viz-label);
+	font-variant-numeric: tabular-nums;
+}
+.clt-n3-readout strong {
+	color: var(--viz-label);
+	font-weight: 600;
+	margin-left: 2px;
+}
+@media (max-width: 760px) {
+	.clt-figure.clt-n3-static-figure {
+		width: 100%;
+	}
+	.clt-n3-panels {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.clt-n3-panel:nth-child(2) {
+		transform: none;
+	}
+}

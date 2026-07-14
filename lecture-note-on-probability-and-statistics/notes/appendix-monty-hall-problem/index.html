@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="モンティ・ホール問題 ── ドアを選び直すべきか？ 結果ではなく手続きが確率を決めることを体感する読み物。">
+	<title>モンティ・ホール問題 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>モンティ・ホール問題</h1>
+
+		<p>
+			アメリカのテレビ番組の司会者モンティ・ホールが行ったゲームに由来する，有名な確率論の問題がある。
+		</p>
+
+		<p>
+			3 つのドアのうち 1 つに賞品があり，あなたが 1 つ選んだあと，司会者が残りのうちハズレのドアを 1 つ開けてみせる。ドアを選び直せるなら，あなたは選んだドアを変えますか？ という問題が <strong>モンティ・ホール問題</strong> (Monty Hall problem) である。直感では「今のドアのままでも，別のドアを選んでも，二者択一だから当たる確率は 1/2 だろう」と思いがちだが，そこに落とし穴がある。
+		</p>
+
+		<p>
+			実は，ここで選び直すと当たる確率は 2/3 になる。選び直さなければ 1/3 のままだ。鍵は「司会者は答えを知っていて，必ずハズレを開ける」という手続きを計算に入れること。「司会者がドアを 1 つ開いて，それはハズレである」という同じ結果でも，裏の手続きが違えば確率は変わるのだ。計算してみよう：
+		</p>
+
+		<ul>
+			<li>最初に選んだドアが当たりの確率は 1/3，ハズレの確率は 2/3。</li>
+			<li>ドアを選び直さない場合 ── 最初に選んだドアが当たりなら，ドアを選び直さないのは大正解。当たりの確率は 1/3。最初に選んだドアがハズレなら，司会者は必ずハズレを開けるので，残ったドアが当たりで，選び直さないのは大失敗。結局，当たりの確率は 1/3。</li>
+			<li>ドアを選び直す場合 ── 最初に選んだドアが当たりなら，ドアを選び直すのは大失敗。最初に選んだドアがハズレなら，司会者は必ずハズレを開けるので，残ったドアが当たりで，ドアを選び直すのは大正解。つまり，最初にハズレを選びさえすれば必ず当たりを引けるので，結局，当たりの確率は最初にハズレを選ぶ確率と同じ 2/3。</li>
+		</ul>
+
+		<p>
+			結果そのものではなく，それを生んだ手続き全体を考慮に入れて初めて確率の意味が決まるという点で，<a href="../16-hypothesis-testing/">p 値ハッキング</a>と同じ構図である。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

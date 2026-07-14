@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="最適停止問題 ── 最初の 37% をパスせよ。最良の候補者を採用する確率を最大にする戦略を導出する読み物。">
+	<title>最適停止問題 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="./optimal-stopping.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="./optimal-stopping-diagram.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>最適停止問題</h1>
+
+		<p>
+			確率計算の応用例として，以下のような実践的な状況を考えてみよう。
+		</p>
+
+		<p>
+			あなたが面接官だとして，多数の候補者（総数は決まっている）の中から最も能力が高い人物（以後 \(\mathcal{A}\)）を採用したいとする。採用面接の進め方は以下のとおり：
+		</p>
+
+		<ul>
+			<li>候補者は一人ずつ，ランダムな順序でやってくる。</li>
+			<li>面接した候補者の能力の相対的な順位はわかるが，絶対的な順位はわからない。</li>
+			<li>面接した候補者は即座に採用か不採用かを決め，決定は覆せない。</li>
+		</ul>
+
+		<p>
+			ここではひとつの作戦として，最初に面接した何人かはパスして（能力のチェックはするがあえて不採用にして），その後に面接した候補者の中で，パスした候補者よりも能力が高い候補者が来れば即座に採用することにする。<strong>最初に何人の候補者をパスすれば，\(\mathcal{A}\) を採用する確率を最大にできるだろうか？</strong>
+		</p>
+
+		<p>
+			つまり，パスした中に \(\mathcal{A}\) が混じっていれば作戦は失敗だし，またパスした後，\(\mathcal{A}\) の面接を行う前に，パスした候補者よりも能力が高い 2 番手以降の候補者が来てしまっては失敗である。
+		</p>
+
+		<p>
+			この種の「どこで探すのをやめて決断するか」という問題には <strong>最適停止問題</strong> (optimal stopping problem) という名前がついている。今回の採用面接のほかにも，たとえば家探しでどの物件に決めるか，株をいつ売るか，といった意思決定が同じ構造をもつ。
+		</p>
+
+		<p>
+			仮に候補者が 1 万人いるとして，その中から \(\mathcal{A}\) を採用できる可能性はどれくらいだろうか？
+		</p>
+
+		<p>1% 未満？</p>
+
+		<p>もっと少ない？</p>
+
+		<details>
+			<summary>答えを知りたい場合はクリック</summary>
+			<p>
+				<strong>約 37%</strong>（候補者が十分に多ければ，この割合は人数によらずほぼ一定である。思った以上に高かっただろうか？）
+			</p>
+		</details>
+
+		<p>
+			以下ではこの確率を具体的に求めてみよう。
+		</p>
+
+		<h2 id="success-probability">成功確率を求める</h2>
+
+		<p>
+			全候補者の人数を \(n\) 人，最初に採用をパスする人数を \(m\) 人とする。最初に面接に来る人物を 1 番目として，\(k\) 番目に面接に来る候補者が \(\mathcal{A}\) だとしよう。
+		</p>
+
+		<p>
+			作戦が成功する条件は以下である：
+		</p>
+
+		<ol>
+			<li>パスした候補者の中に \(\mathcal{A}\) は含まれず \((m&lt;k)\)，</li>
+			<li>\(m\) 人パス後，\(\mathcal{A}\) が来るまでの間に，パスした候補者よりも能力が高い人物が来ない。</li>
+		</ol>
+
+		<p>
+			ここで，2. は以下のように言い換えることができる：
+		</p>
+
+		<p>
+			\(\mathcal{A}\) の直前までの候補者 \(k-1\) 人の中で最も能力が高い人物が，パスした \(m\) 人に含まれる（その人物は \(\mathcal{A}\) よりは能力が低く，またパスした後 \(\mathcal{A}\) の直前までのどの候補者よりも能力が高い）。
+		</p>
+
+		<p>
+			以下の図を見ながら整理してみよう：
+		</p>
+
+		<figure class="os-figure">
+			<svg id="os-timeline-diagram" viewBox="0 0 900 240" role="img" aria-label="候補者を左から面接順に並べ，灰色の先頭 m 人をパスし，先頭 k−1 人の中で最も能力が高い候補（青丸）がパス区間にいれば，k 番目に来る最良の候補 A（橙）を採用できることを示す図"></svg>
+			<figcaption>
+				作戦の模式図。先頭の \(m\) 人はパスし，\(k\) 番目に \(\mathcal{A}\) が来るとする。先頭 \(k-1\) 人の中で最も能力が高い人物（青丸）がパス区間に含まれていれば，パス後から \(\mathcal{A}\) の直前まで誰も採用されず，\(\mathcal{A}\) にたどり着ける。
+			</figcaption>
+		</figure>
+
+		<p>
+			2. の確率は単純に \(m/(k-1)\) である。以上を総合すると，\(\mathcal{A}\) が \(k\) 番目に面接に来て（確率 \(1/n\)），その上で採用される確率 \(P_{m,k}\) は
+		</p>
+
+		\[
+		P_{m,k}=\frac{1}{n}\cdot\frac{m}{k-1}
+		\]
+
+		<p>
+			であり，\(k\) を考えられるすべての場合について足し合わせた確率が，\(m\) 人パスしたときに \(\mathcal{A}\) が選ばれる確率 \(P_m\) である。すなわち
+		</p>
+
+		\[
+		P_{m}=\sum_{k=m+1}^n\frac{1}{n}\cdot\frac{m}{k-1}.
+		\]
+
+		<p>
+			これを解くと，
+		</p>
+
+		\[
+		\begin{aligned}
+		P_{m}&=\sum_{k=m+1}^n\frac{1}{n}\cdot\frac{m}{k-1}\\[4pt]
+		&=\frac{m}{n}\sum_{k=m+1}^n\frac{1}{k-1}\\[4pt]
+		&=\frac{m}{n}\sum_{k=m}^{n-1}\frac{1}{k}.
+		\end{aligned}
+		\]
+
+		<p>
+			ここで，全候補者の中から最初にパスする候補者の割合を \(p=m/n\) とおいて，\(n\to\infty\) とすると，区分求積法により
+		</p>
+
+		\[
+		P_{m} \;\to\; p\int_{p}^1\frac{1}{x}dx \;=\; -p\ln p
+		\]
+
+		<p>
+			という形が得られる。つまり候補者が十分に多いとき，\(\mathcal{A}\) が選ばれる確率は \(p\) の関数として \(f(p)=-p\ln p\) と表すことができる。これがひとつの重要な結論である。
+		</p>
+
+		<p>
+			次にこの最大値を知りたい。
+		</p>
+
+		<h2 id="maximization">最大値を求める</h2>
+
+		<p>
+			\(p\) のとりうる範囲は \(0\leq p\leq 1\) で，\(f(p)\) は以下のような形になる：
+		</p>
+
+		<figure class="os-figure os-figure-narrow">
+			<svg id="os-curve-diagram" viewBox="0 0 560 330" role="img" aria-label="横軸を最初にパスする割合 p，縦軸を成功確率 f(p) とし，青い曲線が p equals 1 over e で最大値 1 over e をとるグラフ"></svg>
+			<figcaption>
+				\(f(p)=-p\ln p\) のグラフ。 \(p=e^{-1}\approx 0.368\) で最大値 \(e^{-1}\) をとる。
+			</figcaption>
+		</figure>
+
+		<p>
+			つまり，\(f(0)=0\) かつ \(f(1)=0\)。さらに \(0&lt;p&lt;1\) で \(f(p)>0\) である。したがって，
+		</p>
+
+		\[
+		\begin{aligned}
+		\frac{d f(p)}{d p}&=-\ln p+(-p)\frac{1}{p}\\[4pt]
+		&=-\ln p-1\\[4pt]
+		&=0
+		\end{aligned}
+		\]
+
+		<p>
+			より \(p=e^{-1}\) であり，このとき最大値は \(f(e^{-1})=e^{-1}\approx 0.367879\ldots\) となる。
+		</p>
+
+		<p>
+			つまり，候補者が 1 万人いれば，最初の 3,679 人をパスすることで，能力が最も高い人物を採用できる確率が最大（約 0.3679）となる。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

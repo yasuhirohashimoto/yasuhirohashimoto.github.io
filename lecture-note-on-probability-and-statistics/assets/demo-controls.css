@@ -1,0 +1,237 @@
+/* 共通の操作UI（スライダー・ボタン・数値入力・select・トグル・チップ）。
+   各ノートの demo CSS に重複していた定義を集約したもの（原型はノート14・12）。
+   幅・グリッド等のレイアウトは各ノート側に残す。トークンは assets/style.css の :root を参照。 */
+
+/* --- スライダー --- */
+main input[type="range"] {
+	-webkit-appearance: none;
+	appearance: none;
+	height: 20px;
+	margin: 0;
+	background: transparent;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+main input[type="range"]::-webkit-slider-runnable-track {
+	height: 4px;
+	background: var(--ui-track);
+	border-radius: 2px;
+}
+
+main input[type="range"]::-moz-range-track {
+	height: 4px;
+	background: var(--ui-track);
+	border-radius: 2px;
+}
+
+main input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	background: var(--viz-blue);
+	border: 2px solid #fff;
+	border-radius: 50%;
+	margin-top: -6px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	cursor: pointer;
+	transition: transform .12s;
+}
+
+main input[type="range"]:active::-webkit-slider-thumb {
+	transform: scale(1.15);
+}
+
+main input[type="range"]::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	background: var(--viz-blue);
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	cursor: pointer;
+	transition: transform .12s;
+}
+
+main input[type="range"]:active::-moz-range-thumb {
+	transform: scale(1.15);
+}
+
+main input[type="range"]:focus-visible {
+	outline: 2px solid var(--viz-blue);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+/* --- 数値入力（スピナー除去 + tabular-nums） --- */
+main .num-input {
+	width: 4.4em;
+	padding: 4px 8px;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	font-size: inherit;
+	font-family: inherit;
+	border: 1px solid var(--ui-border);
+	border-radius: 6px;
+	background: #fff;
+	box-sizing: border-box;
+	transition: border-color .12s, box-shadow .12s;
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+main .num-input:focus {
+	outline: none;
+	border-color: var(--viz-blue);
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .15);
+}
+
+main .num-input::-webkit-outer-spin-button,
+main .num-input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* --- select --- */
+main select {
+	padding: 5px 9px;
+	font-size: inherit;
+	font-family: inherit;
+	border: 1px solid var(--ui-border);
+	border-radius: 6px;
+	background: #fff;
+	color: var(--viz-label);
+	box-sizing: border-box;
+}
+
+main select:focus {
+	outline: none;
+	border-color: var(--viz-blue);
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .15);
+}
+
+/* --- ボタン --- */
+main button {
+	padding: .45em 1.15em;
+	font-size: .9rem;
+	font-family: inherit;
+	font-weight: 500;
+	cursor: pointer;
+	background: #fff;
+	border: 1px solid var(--ui-border);
+	border-radius: 6px;
+	color: var(--viz-label);
+	transition: background .12s, border-color .12s, box-shadow .12s;
+}
+
+main button:hover {
+	background: #f3f6f9;
+	border-color: #a8b0ba;
+}
+
+main button:active {
+	background: #e6ebf0;
+}
+
+main button:focus-visible {
+	outline: none;
+	border-color: var(--viz-blue);
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .18);
+}
+
+main .icon-btn {
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+main .icon-btn svg {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+
+/* --- トグルスイッチ（ノート14から移設） --- */
+main .toggle {
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	gap: .5em;
+	user-select: none;
+}
+
+main .toggle-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+	pointer-events: none;
+}
+
+main .toggle-track {
+	position: relative;
+	display: inline-block;
+	width: 38px;
+	height: 22px;
+	background: var(--ui-border);
+	border-radius: 11px;
+	transition: background-color .2s ease;
+	flex-shrink: 0;
+}
+
+main .toggle-thumb {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 18px;
+	height: 18px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+	transition: transform .2s ease;
+}
+
+main .toggle-input:checked + .toggle-track {
+	background: var(--viz-green);
+}
+
+main .toggle-input:checked + .toggle-track .toggle-thumb {
+	transform: translateX(16px);
+}
+
+main .toggle-input:focus-visible + .toggle-track {
+	box-shadow: 0 0 0 3px rgba(44, 110, 166, .25);
+}
+
+main .toggle-label {
+	font-size: .9rem;
+	color: var(--viz-label);
+	font-weight: 500;
+}
+
+/* --- readout チップ --- */
+main .readout-chip {
+	padding: 3px 9px;
+	background: var(--ui-chip-bg);
+	border-radius: 4px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- コントロール行の汎用コンテナ --- */
+main .demo-controls {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: .5em 1.4em;
+	font-size: .92rem;
+	margin: 1em auto .6em;
+}
+
+main .demo-controls .val {
+	font-variant-numeric: tabular-nums;
+}

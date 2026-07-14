@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="指数関数の定義 ── 級数と極限，2 つの定義が同じものであることを二項展開とテイラー展開で確かめる付録。">
+	<title>指数関数の定義 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>指数関数の定義</h1>
+
+		\[
+		\begin{aligned}
+		(1)\qquad e^x&=\sum_{n=0}^\infty\frac{x^n}{n!}=\frac{1}{0!}+\frac{x}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+\ldots\\[15pt]
+		\left[e\vphantom{\frac{1}{1}}\right. &= \sum_{n=0}^\infty\frac{1}{n!}=\left.\frac{1}{0!}+\frac{1}{1!}+\frac{1}{2!}+\frac{1}{3!}+\ldots\right]\\[20pt]
+		(2)\qquad e^x &= \lim_{n\to\infty}\left(1+\frac{x}{n}\right)^n\\[15pt]
+		\left[e\vphantom{\frac{1}{1}}\right. &= \left.\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n\right]
+		\end{aligned}
+		\]
+
+		<p>
+			右辺の形が出てきたときに「これは指数関数 \(e^x\) だ！」と気が付くとうれしいことが多い。
+		</p>
+
+		<h2 id="equivalence">\((1)\) と \((2)\) が等しいことの解説</h2>
+
+		<p>
+			二項展開の式
+		</p>
+
+		\[
+		(p+q)^n = \sum_{m=0}^n\binom{n}{m}p^{n-m}q^{m}
+		\]
+
+		<p>
+			を使って \((2)\) 式を展開する。
+		</p>
+
+		\[
+		\begin{aligned}
+		\lim_{n\to\infty}\left(1+\frac{x}{n}\right)^n &= \lim_{n\to\infty}\sum_{m=0}^n\binom{n}{m}(1)^{n-m}\left(\frac{x}{n}\right)^m\\
+		&= \lim_{n\to\infty}\sum_{m=0}^n \frac{\overbrace{n(n-1)(n-2)\cdots (n-m+1)}^{m\text{個}}}{m!}\left(\frac{x}{n}\right)^m\\
+		&= \lim_{n\to\infty}\sum_{m=0}^n \overbrace{\left(\frac{n}{n\vphantom{n-1}}\right)\left(\frac{n-1}{n}\right)\left(\frac{n-2}{n}\right)\cdots\left(\frac{n-m+1}{n}\right)}^{m\text{個}}\ \frac{x^m}{m!}.
+		\end{aligned}
+		\]
+
+		<p>
+			\(n\to\infty\) のとき，各項に掛かっている \(m\) 個の因子 \(\left(\frac{n}{n}\right)\left(\frac{n-1}{n}\right)\cdots\) は全部 1 に近づくので，\(x^m/m!\) だけが残って \((1)\) 式が得られる。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			\(\sum\) の計算で \(m\) が \(n\) に近づいたとき（極めて大きな値になるとき）に「\(m\) 個の因子が全部 1 に近づく」とはいえないのではないか，と思うだろうが，それはそのとおり。しかし，そのような大きな \(m\) では後ろの \(x^m/m!\) が 0 に近づくので，和の結果には影響しない。
+		</div>
+
+		<h2 id="taylor-expansion">\(e^x\) のテイラー展開</h2>
+
+		<p>
+			\(e^x\) をテイラー展開<sup>※</sup>すると
+		</p>
+
+		\[
+		\begin{aligned}
+		e^x &= \frac{e^x|_{x=0}}{0!}x^0+\frac{(e^x)'|_{x=0}}{1!}x^1+\frac{(e^x)''|_{x=0}}{2!}x^2+\frac{(e^x)'''|_{x=0}}{3!}x^3+\ldots\\[4pt]
+		&=\frac{1}{0!}+\frac{x}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+\ldots
+		\end{aligned}
+		\]
+
+		<p>
+			となり，やはり \((1)\) 式が得られる。
+		</p>
+
+		<div class="note-side">
+			関数を \(x=0\) のまわりで展開したものは，とくに <strong>マクローリン展開</strong> (Maclaurin expansion) と呼ぶ（テイラー展開の特別な場合）。
+		</div>
+
+		<p>
+			関数の振る舞いを調べるとき，
+		</p>
+
+		<ol>
+			<li>テイラー展開等を用いて多項式で表現する</li>
+			<li>高次の項を落として粗く近似する（1 次の項まで考えることを線形近似と呼ぶ）</li>
+		</ol>
+
+		<p>
+			ということはよく行われる。たとえば，\(e^x\) と \(1+x\) の誤差はおよそ \(x^2/2\) なので，着目したいスケールが \(|x| < 0.01\) ならば，線形近似 \(e^x \approx 1+x\) の誤差は \(5\times10^{-5}\)（約 0.005%）程度にとどまる。近似のセンスは科学のセンスなのだ。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

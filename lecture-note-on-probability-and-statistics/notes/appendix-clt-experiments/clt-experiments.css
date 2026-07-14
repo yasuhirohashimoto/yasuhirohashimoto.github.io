@@ -1,0 +1,25 @@
+/* histogram figures */
+.clt-figure {
+	margin: 1em auto 1.4em;
+	max-width: 680px; /* .fig-default 相当（3 段階規格） */
+}
+
+.clt-figure.clt-figure-wide {
+	max-width: var(--default-width);
+}
+
+.clt-figure.clt-figure--loglog {
+	max-width: 440px; /* .fig-narrow 相当（3 段階規格） */
+}
+
+.clt-figure svg {
+	width: 100%;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+
+.clt-panel-note {
+	font-size: 13px; /* 実効 ≈13px（注記は本文の80%を狙う） */
+	fill: var(--viz-tick);
+}

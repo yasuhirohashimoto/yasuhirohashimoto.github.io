@@ -3,15 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="確率変数・確率分布・PMF・PDF・CDF の基礎を初学者向けにやさしく解説。">
 	<title>確率変数 — 確率統計学 講義ノート</title>
-	<link href="//fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
 	<link rel="stylesheet" href="random-variables-demo.css">
 	<script src="../../assets/mathjax-config.js"></script>
-	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 	<script src="../../assets/diagram-helpers.js"></script>
 	<script src="random-variables-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
 </head>
 <body>
 	<nav class="note-nav">
@@ -23,50 +27,50 @@
 	<main>
 		<h1>確率変数</h1>
 
-		<h2>確率変数とは関数である</h2>
+		<h2 id="random-variable-as-function">確率変数とは関数である</h2>
 
 		<p>
-			<strong>確率変数</strong> (random variable) とは <strong>標本点を数値に結びつける関数</strong> である．
+			<strong>確率変数</strong> (random variable) とは <strong>標本点を数値に結びつける関数</strong> である。
 		</p>
 
 		<p>
-			たとえばサイコロを振って「1 の目」が出たとしよう．「1 の目」というのは <strong>標本点</strong> のひとつであって，数値の「\(1\)」そのものではない．この標本点に数値の「\(1\)」を割り当てるのが確率変数である<sup>※</sup>．同じように，コイントスの「表 \(\to 0\)，裏 \(\to 1\)」も，アンケートの「男 \(\to 0\)，女 \(\to 1\)」も，どれも観察結果を数値に結びつけている．すなわち確率変数をひとつ定めている例だ．
+			たとえばサイコロをふって「1 の目」が出たとしよう。「1 の目」というのは <strong>標本点</strong> のひとつであって，数値の「\(1\)」そのものではない。この標本点に数値の「\(1\)」を割り当てるのが確率変数である。<sup>※</sup>同じように，コイントスの「表 \(\to 0\)，裏 \(\to 1\)」も，アンケートの「男 \(\to 0\)，女 \(\to 1\)」も，どれも観察結果を数値に結びつけている。すなわち確率変数をひとつ定めている例だ。
 		</p>
 
 		<p>
-			つまり，確率変数の値とは，標本空間からランダムに選ばれた標本点に結びつけられた値のことである．
-		</p>
-
-		<div class="note-side">
-			「1 の目」という標本点に対して，数値の「\(2\)」を割り当てても別に構わない．混乱するので普通はそんなことしないが．
-		</div>
-
-		<h2>大文字と小文字の使い分けについて</h2>
-
-		<p>
-			ここではクラスからランダムに選び出した学生のテストの得点を確率変数 \(X\) としよう．確率変数は大文字で表記するのが慣例で，小文字 \(x\) は具体的な測定値（たとえば \(70\)<sup>※</sup>）を表す．「容れ物」が \(X\)，「中身として今回入ってきた値」が \(x\)，という使い分けと思えばよい．小文字 \(x\) のことを，特に <strong>実現値</strong> (realization) と呼ぶこともある．
+			つまり，確率変数の値とは，標本空間からランダムに選ばれた標本点に結びつけられた値のことである。
 		</p>
 
 		<div class="note-side">
-			ここでの単位は「得点」だが，あくまでも単なる数値としての「\(70\)」であることに注意．
+			「1 の目」という標本点に対して，数値の「\(2\)」を割り当てても別に構わない。混乱するので普通はそんなことしないが。
+		</div>
+
+		<h2 id="uppercase-lowercase">大文字と小文字の使い分けについて</h2>
+
+		<p>
+			ここではクラスからランダムに選び出した学生のテストの得点を確率変数 \(X\) としよう。確率変数は大文字で表記するのが慣例で，小文字 \(x\) は具体的な測定値（たとえば \(70\)<sup>※</sup>）を表す。「容れ物」が \(X\)，「中身として今回入ってきた値」が \(x\)，という使い分けと思えばよい。小文字 \(x\) のことを，特に <strong>実現値</strong> (realization) と呼ぶこともある。
+		</p>
+
+		<div class="note-side">
+			ここでの単位は「得点」だが，あくまでも単なる数値としての「\(70\)」であることに注意。
 		</div>
 
 		<p>
-			\(X\) は「（ランダムに選ばれた）ある個人の得点 \(\to\) 数値」という対応を表す関数であり，\(x\) はその出力値にあたる．したがって \(P(X = 70)\) は「規則 \(X\) を働かせた結果がたまたま \(70\) になる確率」を意味する．ノート「<a href="../01-sample-space-and-events/">標本空間，事象，確率の初歩</a>」で事象 \(A\) の確率を \(P(A)\) と書いたのと同様，ここでは \(X=70\) という <strong>条件式が事象を表している</strong>．
+			\(X\) は「（ランダムに選ばれた）ある個人の得点 \(\to\) 数値」という対応を表す関数であり，\(x\) はその出力値にあたる。したがって \(P(X = 70)\) は「規則 \(X\) を働かせた結果がたまたま \(70\) になる確率」を意味する。ノート「<a href="../01-sample-space-and-events/">標本空間，事象，確率の初歩</a>」で事象 \(A\) の確率を \(P(A)\) と書いたのと同様，ここでは \(X=70\) という <strong>条件式が事象を表している</strong>。
 		</p>
 
 		<p>
-			確率変数が文脈上明らかな場合は「\(X=\)」を省略し，小文字で \(p(70)\) や \(p(x)\) と略すこともある．意味は \(P(X = 70)\) や \(P(X = x)\) とまったく同じ．大文字 \(P\) は事象に，小文字 \(p\) は実現値に対して使うのが慣例である．
+			選び出した学生の別の量（別の科目の得点や出席日数など）に着目したいときは，別の大文字（\(Y, Z, \ldots\)）を割り当てる。同じ試行を繰り返したり複数人を選んだりするときには，添字をつけて \(X_1, \ldots, X_n\) と並べ，対応する実現値は \(x_1, \ldots, x_n\) と書く。
+		</p>
+
+		<h2 id="probability-distribution">確率分布</h2>
+
+		<p>
+			確率変数 \(X\) がどの値（の範囲）を，どれくらいの確率でとるかを定めた規則全体を <strong>確率分布</strong> (probability distribution) と呼ぶ。
 		</p>
 
 		<p>
-			別の量（別の科目の得点や出席日数など）に着目したいときは，別の大文字（\(Y, Z, \ldots\)）を割り当てる．同じ試行を繰り返したり複数人を選んだりするときには，添字をつけて \(X_1, \ldots, X_n\) と並べ，対応する実現値は \(x_1, \ldots, x_n\) と書く．
-		</p>
-
-		<h2>確率分布</h2>
-
-		<p>
-			いま，確率変数 \(X\) が値 \(x\) をとる確率を
+			\(X\) のとりうる値が飛び飛びの <strong>離散型確率変数</strong> (discrete random variable) の場合は，とりうるすべての値 \(x\) について確率
 		</p>
 
 		\[
@@ -74,56 +78,60 @@
 		\]
 
 		<p>
-			と表記し，\(X\) のとりうるすべての値 \(x\) について確率 \(P(X = x)\) を定めた規則全体を <strong>確率分布</strong> (probability distribution) と呼ぶ．離散型の場合，値 \(x\) に確率を割り当てる関数 \(p_X(x)=P(X=x)\) を，後述する確率密度関数との対比で <strong>確率質量関数</strong> (probability mass function; <strong>PMF</strong>) と呼ぶ<sup>※</sup>．
+			を定めれば，確率分布が決まる。この，値 \(x\) に確率を割り当てる関数 \(p_X(x)=P(X=x)\) を，後述する確率密度関数との対比で <strong>確率質量関数</strong> (probability mass function; <strong>PMF</strong>) と呼ぶ。<sup>※</sup>
 		</p>
 
 		<div class="note-side">
-			\(p_{\color{#d97a52}X}(x)\) のように，\(p\) に下付きの \(X\) を付ける理由は，複数の確率変数 \(X, Y, Z, \ldots\) を扱うときに，それぞれの確率質量関数を区別するためである．変数名を \(p(x) \)，\(p(y)\)，\(p(z)\) のように使い分けたり，関数名を \(p(x)\)，\(q(x)\)，\(r(x)\) と使い分けて区別がつく文脈では，下付きを省略する場合も多い．
+			\(p_X(x)\) のように，\(p\) に下付きの \(X\) を付ける理由は，複数の確率変数 \(X, Y, Z, \ldots\) を扱うときに，それぞれの確率質量関数を区別するためである。文脈によっては，\(p(x)\)，\(q(x)\)，\(r(x)\) のように関数名自体を変えて区別することもある。
 		</div>
+
+		<p>
+			この確率質量関数は，確率変数が文脈上明らかな場合，下付きの \(X\) を省いて \(p(x)\) と書くこともある。このとき \(p(x)=P(X=x)\) であり，たとえば \(p(70)=P(X=70)\) である。
+		</p>
 
 		<p>
 			\(X\) がある値 \(a\) と \(b\) の間に入る確率は
 		</p>
 
 		\[
-		P(a \le X \le b)
+		P(a \leq X \leq b)
 		\]
 
 		<p>
-			のように表記する．
+			のように表記する。
 		</p>
 
 		<p>
-			同様に，たとえば「合格である」という事象を \(A\) とおき，\(A\) を \(X \ge x_{\mathrm{pass}}\)（仮に \(x_{\mathrm{pass}} = 60\)）と定義するなら，ランダムに選んだ学生が合格である確率は
+			同様に，たとえば「合格である」という事象を \(A\) とおき，\(A\) を \(X \geq x_{\mathrm{pass}}\)（仮に \(x_{\mathrm{pass}} = 60\)）と定義するなら，ランダムに選んだ学生が合格である確率は
 		</p>
 
 		\[
-		P(A) \quad \text{または} \quad P(X \ge x_{\mathrm{pass}})
+		P(A) \quad \text{または} \quad P(X \geq x_{\mathrm{pass}})
 		\]
 
 		<p>
-			のように表記する．
+			のように表記する。
 		</p>
 
 		<p>
-			また，確率変数 \(X\) が正規分布 \(\mathcal{N}(\mu, \sigma^2)\) や二項分布 \(\mathrm{Bin}(n, p)\) のような代表的な確率分布に従うことを表したいときには，
+			また，確率変数 \(X\) が<a href="../12-central-limit-theorem/">正規分布</a> \(\mathcal{N}(\mu, \sigma^2)\) や<a href="../09-event-counts-and-waiting-times-distributions/">二項分布</a> \(\mathrm{Bin}(n, p)\) のような代表的な確率分布に従うことを表したいときには，
 		</p>
 
 		\[
 		\begin{aligned}
-		X &\sim \mathcal{N}(\mu, \sigma^2),\\
+		X &\sim \mathcal{N}(\mu, \sigma^2),\\[6pt]
 		X &\sim \mathrm{Bin}(n, p)
 		\end{aligned}
 		\]
 
 		<p>
-			のように表記する．たとえば「\(X \sim \mathcal{N}(\mu, \sigma^2)\)」は「\(X\) は正規分布 \(\mathcal{N}(\mu, \sigma^2)\) に従う」と読む．具体的にどんな分布なのかは後の回で出会う．今は記号だけ覚えておけばよい．
+			のように表記する。たとえば「\(X \sim \mathcal{N}(\mu, \sigma^2)\)」は「\(X\) は正規分布 \(\mathcal{N}(\mu, \sigma^2)\) に従う」と読む。 \(\mathcal{N}\) や \(\mathrm{Bin}\) の具体的な形には後のノートで出会う。今は記号だけ覚えておけばよい。
 		</p>
 
-		<h2>確率密度</h2>
+		<h2 id="probability-density">確率密度</h2>
 
 		<p>
-			確率変数 \(X\) が連続型（実数値）の場合，常に
+			確率変数 \(X\) が値を連続的にとる <strong>連続型確率変数</strong> (continuous random variable) の場合，常に
 		</p>
 
 		\[
@@ -131,24 +139,24 @@
 		\]
 
 		<p>
-			となる点に注意しよう．\(X\) の値が厳密に実数 \(x\) に一致する確率はゼロだ．奇妙に感じるかもしれないが，連続的につながった実数の世界では，「ちょうど \(x\)」という 1 点には幅がない．確率を面積とみなせば，その面積がゼロになるのは自然だろう．
+			となる点に注意しよう。 \(X\) の値が厳密に実数 \(x\) に一致する確率はゼロだ。奇妙に感じるかもしれないが，連続的につながった実数の世界では，「ちょうど \(x\)」という 1 点には幅がない。確率を面積とみなせば，その面積がゼロになるのは自然だろう。
 		</p>
 
 		<p>
-			そこで連続型では <strong>確率密度</strong> (probability density) という考えを用いて起こりやすさの程度を扱う．確率変数 \(X\) についての <strong>確率密度関数</strong> (probability density function; <strong>PDF</strong>) を \(f_X(x)\) と表記する．密度それ自体は確率ではなく，<strong>ある範囲で積分してはじめて確率になる</strong>：
+			そこで連続型では <strong>確率密度</strong> (probability density) という考えを用いて起こりやすさの程度を扱う。確率変数 \(X\) についての <strong>確率密度関数</strong> (probability density function; <strong>PDF</strong>) を \(f_X(x)\) と表記する。密度それ自体は確率ではなく，<strong>ある範囲で積分してはじめて確率になる</strong>：
 		</p>
 
 		\[
-		P(a \le X \le b) = \int_a^b f_X(x)\, dx.
+		P(a \leq X \leq b) = \int_a^b f_X(x)\, dx.
 		\]
 
 		<p>
-			つまり，密度関数のグラフの下の面積が確率に相当する．
+			つまり，密度関数のグラフの下の面積が確率に相当する。
 		</p>
 
 		<figure class="density-fig">
-			<svg id="density-area-svg" viewBox="0 0 500 200" role="img" aria-label="確率密度関数の下の面積として確率を表す模式図"></svg>
-			<figcaption>密度関数のグラフの下，\([a, b]\) 区間の面積が \(P(a \le X \le b)\)．</figcaption>
+			<svg id="density-area-svg" viewBox="0 0 500 200" role="img" aria-label="横軸を確率変数 x，縦軸を確率密度とし，区間 a から b の確率を橙の面積で示す図"></svg>
+			<figcaption>密度関数のグラフの下，\([a, b]\) 区間の面積が \(P(a \leq X \leq b)\)。</figcaption>
 		</figure>
 
 		<p>
@@ -160,53 +168,53 @@
 		\]
 
 		<p>
-			言い換えれば，グラフ全体の下の面積（\(=1\)）に対する \([a, b]\) 区間の面積比が，まさに \(P(a \le X \le b)\) である．ノート「<a href="../01-sample-space-and-events/">標本空間，事象，確率の初歩</a>」で解説した <strong>全体に対する部分の面積比</strong> のイメージそのままだ．
+			言い換えれば，グラフ全体の下の面積（\(=1\)）に対する \([a, b]\) 区間の面積比が，まさに \(P(a \leq X \leq b)\) である。ノート「<a href="../01-sample-space-and-events/">標本空間，事象，確率の初歩</a>」で解説した <strong>全体に対する部分の面積比</strong> のイメージそのままだ。
 		</p>
 
 		<p>
-			条件付き確率も同様に，たとえば \(x \ge 0\) として \(P(X \le x \mid X \ge 0)\) は，条件 \(X \ge 0\) を満たす範囲の面積に対する \(X \le x\) かつ \(X \ge 0\) を満たす範囲の面積比として表せる：
+			条件付き確率も同様に，たとえば \(x \geq 0\) として \(P(X \leq x \mid X \geq 0)\) は，条件 \(X \geq 0\) を満たす範囲の面積に対する \(X \leq x\) かつ \(X \geq 0\) を満たす範囲の面積比として表せる：
 		</p>
 
 		\[
-		P(X \le x \mid X \ge 0) = \frac{P(X \le x, X \ge 0)}{P(X \ge 0)} = \frac{\int_0^x f_X(s)\, ds}{\int_0^{\infty} f_X(s)\, ds}
+		P(X \leq x \mid X \geq 0) = \frac{P(X \leq x, X \geq 0)}{P(X \geq 0)} = \frac{\int_0^x f_X(s)\, ds}{\int_0^{\infty} f_X(s)\, ds}.
 		\]
 
 		<figure class="density-fig">
-			<svg id="conditional-area-svg" viewBox="0 0 500 200" role="img" aria-label="条件付き確率を密度関数の面積として表す模式図"></svg>
+			<svg id="conditional-area-svg" viewBox="0 0 500 200" role="img" aria-label="横軸を確率変数 x，縦軸を確率密度とし，条件となる面積（橙と青を合わせた X ≥ 0 の部分）に対する対象の橙の面積（0 ≤ X ≤ x の部分）の比で条件付き確率を示す図"></svg>
 			<figcaption>
-				\(P(X \le x \mid X \ge 0)\) は，条件となる面積（\(X \ge 0\) の部分，橙＋青）で，<br>
-				対象となる面積（\(0 \le X \le x\) の部分，橙）を割った値になる．
+				\(P(X \leq x \mid X \geq 0)\) は，条件となる面積（\(X \geq 0\) の部分，橙＋青）で，<br>
+				対象となる面積（\(0 \leq X \leq x\) の部分，橙）を割った値になる。
 			</figcaption>
 		</figure>
 
 		<p>
-			もうひとつちなみに，確率の最大値は 1 だが，<strong>確率密度関数の値は 1 を超えることもある</strong> 点に注意しよう．確率密度関数は積分して（面積として計算して）初めて確率になるのであって，関数の値そのものは確率ではない．
+			もうひとつちなみに，確率の最大値は 1 だが，<strong>確率密度関数の値は 1 を超えることもある</strong> 点に注意しよう。確率密度関数は積分して（面積として計算して）はじめて確率になるのであって，関数の値そのものは確率ではない。
 		</p>
 
-		<h2>累積確率</h2>
+		<h2 id="cumulative-probability">累積確率</h2>
 
 		<p>
-			確率変数 \(X\) がある値 \(x\) 以下になる確率 \(P(X \le x)\) を <strong>累積確率</strong> (cumulative probability) と呼ぶ．これを \(x\) についての関数とみなしたものを <strong>累積分布関数</strong> (cumulative distribution function; <strong>CDF</strong>) と呼び，
-		</p>
-
-		\[
-		F_X(x) = P(X \le x)
-		\]
-
-		<p>
-			と表記する．これを使えば
+			確率変数 \(X\) がある値 \(x\) 以下になる確率 \(P(X \leq x)\) を <strong>累積確率</strong> (cumulative probability) と呼ぶ。これを \(x\) についての関数とみなしたものを <strong>累積分布関数</strong> (cumulative distribution function; <strong>CDF</strong>) と呼び，
 		</p>
 
 		\[
-		P(a \le X \le b) = F_X(b) - F_X(a)
+		F_X(x) = P(X \leq x)
 		\]
 
 		<p>
-			のように書ける<sup>※</sup>．
+			と表記する。これを使えば
+		</p>
+
+		\[
+		P(a \leq X \leq b) = F_X(b) - F_X(a)
+		\]
+
+		<p>
+			のように書ける。<sup>※</sup>
 		</p>
 
 		<div class="note-side">
-			連続型のとき厳密．離散型では端点の扱いに微妙な差が出るが，ここでは深入りはしない．
+			連続型のとき厳密。離散型では端点の扱いに微妙な差が出るが，ここでは深入りはしない。
 		</div>
 
 		<p>
@@ -214,7 +222,7 @@
 		</p>
 
 		\[
-		F_X(x) = \sum_{s \le x} P(X = s).
+		F_X(x) = \sum_{s \leq x} P(X = s).
 		\]
 
 		<p>
@@ -237,7 +245,7 @@
 		\]
 
 		<p>
-			である．
+			である。
 		</p>
 
 		<p>
@@ -249,7 +257,7 @@
 		\]
 
 		<p>
-			「積み上げ」が累積，「増分」が密度である．
+			「積み上げ」が累積，「増分」が密度である。
 		</p>
 
 		<p>
@@ -261,17 +269,17 @@
 		\]
 
 		<p>
-			を用いて表す．「左から積み上げた分」が CDF，「右にどれだけ残っているか」が CCDF．
+			を用いて表す。「左から積み上げた分」が CDF，「右にどれだけ残っているか」が CCDF。
 		</p>
 
 		<p>
-			確率分布や確率密度が分かれば，累積確率（や補累積確率）なんて要らないのでは？と思うかもしれない．しかし「\(X\) が \(x\) より大きくなる確率」を求めるなら補累積確率を見るのが手っ取り早いし，「区間 \([a, b]\) に入る確率」も \(F_X(b) - F_X(a)\) と簡潔に書ける．問題に応じた表現の使い分けは有用だ．
+			確率分布や確率密度が分かれば，累積確率（や補累積確率）なんて要らないのでは？ と思うかもしれない。しかし「\(X\) が \(x\) より大きくなる確率」を求めるなら補累積確率を見るのが手っ取り早いし，「区間 \([a, b]\) に入る確率」も \(F_X(b) - F_X(a)\) と簡潔に書ける。問題に応じた表現の使い分けは有用だ。
 		</p>
 
-		<h2>PDF と CDF/CCDF を見比べる</h2>
+		<h2 id="pdf-cdf-demo">PDF/PMF と CDF/CCDF を見比べる</h2>
 
 		<p>
-			以下のデモで，分布を切り替えて境界 \(x\) を動かしてみよう．PDF（上）では \(x\) の左側の面積が CDF（青），右側の面積が CCDF（橙）に対応する．CDF（下）では，CDF と CCDF の値は縦のバーの高さとして表示される．サイコロのように離散分布のときは階段状の CDF/CCDF が見える．
+			以下のデモで，分布を切り替えて境界 \(x\) を動かしてみよう。PDF/PMF（上）では \(x\) の左側の面積が CDF（青），右側の面積が CCDF（橙）に対応する。CDF（下）では，CDF と CCDF の値は縦のバーの高さとして表示される。サイコロのような離散分布のときは階段状の CDF が見える。
 		</p>
 
 		<div class="rv-viz">
@@ -283,10 +291,11 @@
 						<option value="bimodal">二峰分布</option>
 					</select>
 				</label>
-				<label>\(x =\)<span class="val" id="rv-x-val">0.00</span><input type="range" id="rv-x" min="-5" max="5" step="0.05" value="0"></label>
+				<label>\(x =\)<span class="readout-chip" id="rv-x-val">0.00</span><input type="range" id="rv-x" min="-5" max="5" step="0.05" value="0"></label>
 			</div>
-			<svg id="rv-svg" viewBox="0 0 560 400" role="img" aria-label="確率分布の PDF/PMF と CDF/CCDF を並べたグラフ"></svg>
+			<svg id="rv-svg" viewBox="0 0 560 400" role="img" aria-label="横軸を確率変数 x とし，上段の PDF または PMF では境界 x の左側の面積を青（CDF），右側の面積を橙（CCDF）で塗り分け，下段の CDF 曲線上に青と橙の縦バーで CDF と CCDF の値を示すグラフ"></svg>
 			<div id="rv-result" class="venn-result"></div>
+			<div id="rv-live" class="visually-hidden" aria-live="polite"></div>
 		</div>
 
 		<hr>

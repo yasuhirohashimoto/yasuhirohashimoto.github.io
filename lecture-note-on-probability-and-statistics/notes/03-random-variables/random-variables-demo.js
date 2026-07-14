@@ -27,7 +27,7 @@
 	g.append("line")
 		.attr("x1", 0).attr("x2", innerW)
 		.attr("y1", innerH).attr("y2", innerH)
-		.attr("stroke", "#888").attr("stroke-width", 1);
+		.attr("stroke", PROB_COLORS.line).attr("stroke-width", 1);
 
 	// shaded area between a and b
 	const seg = pts.filter(p => p.x >= a && p.x <= b);
@@ -37,7 +37,8 @@
 		.y1(d => yScale(d.p));
 	g.append("path")
 		.datum(seg)
-		.attr("fill", "rgba(217,121,4,0.30)")
+		.attr("fill", PROB_COLORS.D)
+		.attr("fill-opacity", 0.30)
 		.attr("d", areaGen);
 
 	// PDF curve
@@ -48,7 +49,7 @@
 	g.append("path")
 		.datum(pts)
 		.attr("fill", "none")
-		.attr("stroke", "#333")
+		.attr("stroke", PROB_COLORS.text)
 		.attr("stroke-width", 1.5)
 		.attr("d", lineGen);
 
@@ -57,16 +58,16 @@
 		g.append("line")
 			.attr("x1", xScale(xv)).attr("x2", xScale(xv))
 			.attr("y1", innerH - 3).attr("y2", innerH + 5)
-			.attr("stroke", "#333").attr("stroke-width", 1);
+			.attr("stroke", PROB_COLORS.text).attr("stroke-width", 1);
 	});
 
 	texFO(g, xScale(a), innerH + 6, 28, 22, "\\(a\\)", { anchor: "topcenter", size: "13px" });
 	texFO(g, xScale(b), innerH + 6, 28, 22, "\\(b\\)", { anchor: "topcenter", size: "13px" });
 
 	const labelX = 3.0;
-	texFO(g, xScale(labelX) + 20, yScale(pdf(labelX)) - 24, 56, 22, "\\(f_X(x)\\)", { anchor: "topcenter", color: "#444", size: "13px" });
+	texFO(g, xScale(labelX) + 20, yScale(pdf(labelX)) - 24, 56, 22, "\\(f_X(x)\\)", { anchor: "topcenter", color: PROB_COLORS.text, size: "13px" });
 
-	texFO(g, xScale((a + b) / 2), innerH - 60, 170, 24, "\\(P(a \\le X \\le b)\\)", { anchor: "topcenter", color: "#a06800", size: "12px" });
+	texFO(g, xScale((a + b) / 2), innerH - 60, 170, 24, "\\(P(a \\leq X \\leq b)\\)", { anchor: "topcenter", color: PROB_COLORS.DText, size: "13px" });
 
 	await typesetSvg(svg);
 })();
@@ -97,7 +98,7 @@
 			pdf: x => phiN(x, 0, 1),
 			cdf: x => PhiN(x, 0, 1),
 			pdfMaxHint: phiN(0, 0, 1),
-			pdfLabel: "\\(f_X(x)\\) ── PDF",
+			pdfLabel: "\\(f_X(x)\\,\\) ── PDF",
 		},
 		dice: {
 			kind: "discrete",
@@ -112,7 +113,7 @@
 				return Math.floor(x) / 6;
 			},
 			pdfMaxHint: 1 / 6,
-			pdfLabel: "\\(P(X=k)\\) ── PMF",
+			pdfLabel: "\\(P(X=x)\\,\\) ── PMF",
 		},
 		bimodal: {
 			kind: "continuous",
@@ -122,19 +123,27 @@
 			pdf: x => 0.5 * phiN(x, -2, 0.7) + 0.5 * phiN(x, 2, 0.7),
 			cdf: x => 0.5 * PhiN(x, -2, 0.7) + 0.5 * PhiN(x, 2, 0.7),
 			pdfMaxHint: 0.5 * phiN(0, 0, 0.7),
-			pdfLabel: "\\(f_X(x)\\) ── PDF",
+			pdfLabel: "\\(f_X(x)\\,\\) ── PDF",
 		},
 	};
 
-	const CDF_FILL = "rgba(44,110,166,0.36)";
-	const CDF_STROKE = "#2c6ea6";
-	const CCDF_FILL = "rgba(217,121,4,0.30)";
-	const CCDF_STROKE = "#d97904";
+	const CDF_FILL = d3.color(PROB_COLORS.DC).copy({ opacity: 0.36 }).formatRgb();
+	const CDF_STROKE = PROB_COLORS.DCText;
+	const CCDF_FILL = d3.color(PROB_COLORS.D).copy({ opacity: 0.30 }).formatRgb();
+	const CCDF_STROKE = PROB_COLORS.DText;
 
 	const distSelect = document.getElementById("rv-dist-select");
 	const xSlider = document.getElementById("rv-x");
 	const xLabel  = document.getElementById("rv-x-val");
 	const resultDiv = document.getElementById("rv-result");
+	const liveDiv = document.getElementById("rv-live");
+	let liveTimer = null;
+	// スクリーンリーダー向けの通知。スライダー連続操作で読み上げが氾濫しないよう，操作が止まってから書き込む
+	function announce(text) {
+		if (!liveDiv) return;
+		clearTimeout(liveTimer);
+		liveTimer = setTimeout(() => { liveDiv.textContent = text; }, 600);
+	}
 
 	const svg = d3.select("#rv-svg");
 	const W = 560, H = 400;
@@ -151,22 +160,22 @@
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 	const pdfAxisX = pdfG.append("g").attr("transform", `translate(0, ${panelH})`);
 	const pdfAxisY = pdfG.append("g");
-	const pdfTitleFO = texFO(pdfG, 4, 2, 200, 20, "", { color: "#555", align: "left" });
+	const pdfTitleFO = texFO(pdfG, 14, 2, 200, 20, "", { color: PROB_COLORS.sub, size: "14px", align: "left" });
 	const pdfShade = pdfG.append("g");   // continuous shaded area
 	const pdfDraw  = pdfG.append("g");   // curve OR bars
 
 	const pdfX = pdfG.append("line")
-		.attr("stroke", "#a06800").attr("stroke-width", 1.2)
+		.attr("stroke", PROB_COLORS.sub).attr("stroke-width", 1.2)
 		.attr("stroke-dasharray", "4 3")
 		.attr("y1", 0).attr("y2", panelH);
-	const pdfXLabel = texFO(pdfG, 0, -18, 28, 18, "\\(x\\)", { color: "#a06800" });
+	const pdfXLabel = texFO(pdfG, 0, -18, 28, 18, "\\(x\\)", { color: PROB_COLORS.sub });
 
 	// CDF panel: persistent containers
 	const cdfG = svg.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top + panelH + 30})`);
 	const cdfAxisX = cdfG.append("g").attr("transform", `translate(0, ${panelH})`);
 	const cdfAxisY = cdfG.append("g");
-	texFO(cdfG, 4, 2, 160, 20, "\\(F_X(x)\\) ── CDF", { color: "#555", align: "left" });
+	texFO(cdfG, 14, 2, 180, 20, "\\(F_X(x)\\,\\) ── CDF", { color: PROB_COLORS.sub, size: "14px", align: "left" });
 	const cdfDraw = cdfG.append("g");
 	const cdfMarkers = cdfG.append("g");
 
@@ -177,17 +186,17 @@
 		yPdf.domain([0, dist.pdfMaxHint * 1.25]);
 
 		if (dist.kind === "discrete") {
-			pdfAxisX.call(d3.axisBottom(xScale).tickValues(dist.values).tickFormat(d3.format("d")).tickSizeOuter(0));
-			cdfAxisX.call(d3.axisBottom(xScale).tickValues(dist.values).tickFormat(d3.format("d")).tickSizeOuter(0));
+			pdfAxisX.call(d3.axisBottom(xScale).tickValues(dist.values).tickFormat(d3.format("d")).tickSizeOuter(0)).call(styleAxis);
+			cdfAxisX.call(d3.axisBottom(xScale).tickValues(dist.values).tickFormat(d3.format("d")).tickSizeOuter(0)).call(styleAxis);
 			const N = dist.values.length;
 			const fracFmt = v => v === 0 ? "0" : `${Math.round(v * N)}/${N}`;
-			pdfAxisY.call(d3.axisLeft(yPdf).tickValues([0, dist.pmf]).tickFormat(fracFmt).tickSizeOuter(0));
-			cdfAxisY.call(d3.axisLeft(yCdf).tickValues(dist.values.map(k => k / N)).tickFormat(fracFmt).tickSizeOuter(0));
+			pdfAxisY.call(d3.axisLeft(yPdf).tickValues([0, dist.pmf]).tickFormat(fracFmt).tickSizeOuter(0)).call(styleAxis);
+			cdfAxisY.call(d3.axisLeft(yCdf).tickValues(dist.values.map(k => k / N)).tickFormat(fracFmt).tickSizeOuter(0)).call(styleAxis);
 		} else {
-			pdfAxisX.call(d3.axisBottom(xScale).ticks(7).tickSizeOuter(0));
-			cdfAxisX.call(d3.axisBottom(xScale).ticks(7).tickSizeOuter(0));
-			pdfAxisY.call(d3.axisLeft(yPdf).ticks(4).tickSizeOuter(0));
-			cdfAxisY.call(d3.axisLeft(yCdf).ticks(5).tickSizeOuter(0));
+			pdfAxisX.call(d3.axisBottom(xScale).ticks(7).tickSizeOuter(0)).call(styleAxis);
+			cdfAxisX.call(d3.axisBottom(xScale).ticks(7).tickSizeOuter(0)).call(styleAxis);
+			pdfAxisY.call(d3.axisLeft(yPdf).ticks(4).tickSizeOuter(0)).call(styleAxis);
+			cdfAxisY.call(d3.axisLeft(yCdf).ticks(5).tickSizeOuter(0)).call(styleAxis);
 		}
 
 		pdfTitleFO.select("div").html(dist.pdfLabel);
@@ -205,7 +214,7 @@
 			pdfDraw.append("path")
 				.datum(pts)
 				.attr("fill", "none")
-				.attr("stroke", "#333")
+				.attr("stroke", PROB_COLORS.text)
 				.attr("stroke-width", 1.5)
 				.attr("d", lineGen);
 
@@ -215,7 +224,7 @@
 			cdfDraw.append("path")
 				.datum(pts)
 				.attr("fill", "none")
-				.attr("stroke", "#333")
+				.attr("stroke", PROB_COLORS.text)
 				.attr("stroke-width", 1.5)
 				.attr("d", cdfLine);
 		} else {
@@ -229,9 +238,10 @@
 				.attr("y", () => yPdf(dist.pmf))
 				.attr("width", k => xScale(k + barW / 2) - xScale(k - barW / 2))
 				.attr("height", () => panelH - yPdf(dist.pmf))
-				.attr("fill", "white")
-				.attr("stroke", "#333")
-				.attr("stroke-width", 1.2);
+				.attr("rx", 1.5)
+				.attr("fill", PROB_COLORS.node)
+				.attr("stroke", PROB_COLORS.sub)
+				.attr("stroke-width", 1);
 
 			// step CDF
 			const stepPts = [{ x: dist.xMin, F: 0 }]
@@ -244,14 +254,19 @@
 			cdfDraw.append("path")
 				.datum(stepPts)
 				.attr("fill", "none")
-				.attr("stroke", "#333")
+				.attr("stroke", PROB_COLORS.text)
 				.attr("stroke-width", 1.5)
 				.attr("d", cdfLine);
 			// small open/filled circles at jump points
 			dist.values.forEach(k => {
+				// 左極限（ジャンプ直前の値）は白抜き丸で表す
+				cdfDraw.append("circle")
+					.attr("cx", xScale(k)).attr("cy", yCdf(dist.cdf(k) - dist.pmf))
+					.attr("r", 3.5).attr("fill", PROB_COLORS.node)
+					.attr("stroke", PROB_COLORS.text).attr("stroke-width", 1.2);
 				cdfDraw.append("circle")
 					.attr("cx", xScale(k)).attr("cy", yCdf(dist.cdf(k)))
-					.attr("r", 2.5).attr("fill", "#333");
+					.attr("r", 3.5).attr("fill", PROB_COLORS.text);
 			});
 		}
 	}
@@ -299,16 +314,16 @@
 		cdfMarkers.append("line")
 			.attr("x1", 0).attr("x2", xPos)
 			.attr("y1", yCdf(F)).attr("y2", yCdf(F))
-			.attr("stroke", "#999").attr("stroke-width", 1)
+			.attr("stroke", PROB_COLORS.line).attr("stroke-width", 1)
 			.attr("stroke-dasharray", "3 3");
 		cdfMarkers.append("line")
 			.attr("x1", xPos).attr("x2", xPos)
 			.attr("y1", panelH).attr("y2", yCdf(1))
-			.attr("stroke", "#999").attr("stroke-width", 1)
+			.attr("stroke", PROB_COLORS.line).attr("stroke-width", 1)
 			.attr("stroke-dasharray", "3 3");
 		cdfMarkers.append("circle")
 			.attr("cx", xPos).attr("cy", yCdf(F))
-			.attr("r", 3).attr("fill", "#a06800");
+			.attr("r", 4.5).attr("fill", PROB_COLORS.sub);
 
 		const barW = 12;
 		const barX = Math.max(0, Math.min(innerW - barW, xPos - barW / 2));
@@ -327,19 +342,19 @@
 			.attr("x", barX).attr("y", yTop)
 			.attr("width", barW).attr("height", yBottom - yTop)
 			.attr("fill", "none")
-			.attr("stroke", "#666")
+			.attr("stroke", PROB_COLORS.sub)
 			.attr("stroke-width", 0.8);
 		cdfMarkers.append("line")
 			.attr("x1", barX).attr("x2", barX + barW)
 			.attr("y1", yMid).attr("y2", yMid)
-			.attr("stroke", "#666")
+			.attr("stroke", PROB_COLORS.sub)
 			.attr("stroke-width", 0.8);
 
 		if (yMid - yTop > 14) {
 			cdfMarkers.append("text")
 				.attr("x", barX + barW + 6).attr("y", (yTop + yMid) / 2 + 4)
 				.attr("fill", CCDF_STROKE)
-				.attr("font-size", 11)
+				.attr("font-size", 13)
 				.attr("font-weight", 700)
 				.attr("text-anchor", "start")
 				.text("CCDF");
@@ -348,17 +363,19 @@
 			cdfMarkers.append("text")
 				.attr("x", barX - 6).attr("y", (yMid + yBottom) / 2 + 4)
 				.attr("fill", CDF_STROKE)
-				.attr("font-size", 11)
+				.attr("font-size", 13)
 				.attr("font-weight", 700)
 				.attr("text-anchor", "end")
 				.text("CDF");
 		}
 
+		// 図の塗り（CDF=青，CCDF=橙）と対応する色を値に付ける
 		resultDiv.innerHTML =
 			`\\[\\begin{aligned}` +
-			`F_X(${fmt(xValue)}) &= P(X \\le ${fmt(xValue)}) = ${F.toFixed(3)},\\\\` +
-			`\\bar{F}_X(${fmt(xValue)}) &= P(X > ${fmt(xValue)}) = ${Fbar.toFixed(3)}` +
+			`F_X(${fmt(xValue)}) &= P(X \\leq ${fmt(xValue)}) \\approx \\color{${PROB_COLORS.DCText}}{${F.toFixed(3)}}\\\\` +
+			`\\bar{F}_X(${fmt(xValue)}) &= P(X > ${fmt(xValue)}) \\approx \\color{${PROB_COLORS.DText}}{${Fbar.toFixed(3)}}` +
 			`\\end{aligned}\\]`;
+		announce(`x = ${fmt(xValue)} のとき，累積確率はおよそ ${F.toFixed(3)}，補累積確率はおよそ ${Fbar.toFixed(3)}`);
 		typesetSvg([resultDiv, pdfTitleFO]);
 	}
 
@@ -412,7 +429,7 @@
 	g.append("line")
 		.attr("x1", 0).attr("x2", innerW)
 		.attr("y1", innerH).attr("y2", innerH)
-		.attr("stroke", "#888").attr("stroke-width", 1);
+		.attr("stroke", PROB_COLORS.line).attr("stroke-width", 1);
 
 	const areaGen = d3.area()
 		.x(d => xScale(d.x))
@@ -423,14 +440,16 @@
 	const targetSeg = pts.filter(p => p.x >= 0 && p.x <= xc);
 	g.append("path")
 		.datum(targetSeg)
-		.attr("fill", "rgba(217,121,4,0.38)")
+		.attr("fill", PROB_COLORS.D)
+		.attr("fill-opacity", 0.38)
 		.attr("d", areaGen);
 
 	// 条件 X >= 0 のうち，対象に入らない X > x の面積。
 	const blueOnly = pts.filter(p => p.x >= xc);
 	g.append("path")
 		.datum(blueOnly)
-		.attr("fill", "rgba(44,110,166,0.36)")
+		.attr("fill", PROB_COLORS.DC)
+		.attr("fill-opacity", 0.36)
 		.attr("d", areaGen);
 
 	// PDF カーブ outline
@@ -441,7 +460,7 @@
 	g.append("path")
 		.datum(pts)
 		.attr("fill", "none")
-		.attr("stroke", "#333")
+		.attr("stroke", PROB_COLORS.text)
 		.attr("stroke-width", 1.5)
 		.attr("d", lineGen);
 
@@ -450,7 +469,7 @@
 		g.append("line")
 			.attr("x1", xScale(xv)).attr("x2", xScale(xv))
 			.attr("y1", innerH - 3).attr("y2", innerH + 5)
-			.attr("stroke", "#333").attr("stroke-width", 1);
+			.attr("stroke", PROB_COLORS.text).attr("stroke-width", 1);
 	});
 
 	texFO(g, xScale(0),  innerH + 6, 28, 22, "\\(0\\)", { anchor: "topcenter", size: "13px" });
@@ -458,7 +477,7 @@
 
 	// f_X(x) ラベル
 	const labelX = 3.0;
-	texFO(g, xScale(labelX) + 20, yScale(pdf(labelX)) - 24, 56, 22, "\\(f_X(x)\\)", { anchor: "topcenter", color: "#444", size: "13px" });
+	texFO(g, xScale(labelX) + 20, yScale(pdf(labelX)) - 24, 56, 22, "\\(f_X(x)\\)", { anchor: "topcenter", color: PROB_COLORS.text, size: "13px" });
 
 	await typesetSvg(svg);
 })();

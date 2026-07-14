@@ -8,6 +8,28 @@
 	--steelblue: #4682B4;
 	--rule: #c8c8c8;
 	--divider: var(--text-color);
+
+	/* 図・デモ用ビジュアルトークン（assets/diagram-helpers.js の PROB_COLORS と同期） */
+	--viz-blue: #2c6ea6;        /* データ・注目対象・UIアクセント */
+	--viz-blue-text: #1d4f7a;   /* 青系の文字用（コントラスト確保） */
+	--viz-orange: #c25b2a;      /* 参照線・近似・強調 */
+	--viz-orange-text: #8a3d1f; /* 橙系の文字用 */
+	--viz-red: #d95f59;         /* 棄却域・下側裾 */
+	--viz-red-text: #9f302b;
+	--viz-green: #2c8a4a;       /* 正解・第3系列 */
+	--viz-green-text: #1d6b38;
+	--viz-n3-red: #df8077;      /* 第12講 n=3 区分色（CVD対応） */
+	--viz-n3-blue: #7c91ca;
+	--viz-n3-green: #6ab5ae;
+	--viz-axis: #98a2b3;        /* 軸線・目盛線 */
+	--viz-tick: #6b7280;        /* 目盛数字 */
+	--viz-label: #2f3a46;       /* 図中ラベル */
+	--viz-grid: #e4e4e4;        /* グリッド線 */
+
+	/* 操作UIトークン（assets/demo-controls.css が参照） */
+	--ui-border: #cfd6dd;
+	--ui-track: #d6dde3;
+	--ui-chip-bg: #ededed;
 }
 
 html {
@@ -84,6 +106,12 @@ h3.cnt::before {
 
 p {
 	margin: .8em 0;
+}
+
+/* セリフ・つぶやきなどを地の文と区別して見せる段落 */
+.dialogue-quote {
+	text-align: center;
+	font-style: italic;
 }
 
 a {
@@ -168,7 +196,33 @@ th, td {
 }
 
 th {
-	background: #e6e6e6;
+	background: #e9eef3;
+}
+
+/* スクリーンリーダー専用テキスト（表の caption 等，視覚的には非表示） */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	clip-path: inset(50%);
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* 数値例などの中央寄せデータ表（notes 6, 7 で共用） */
+table.data-table {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+table.data-table th,
+table.data-table td {
+	padding: 6px 20px;
+	text-align: center;
 }
 
 /* answer / solution block */
@@ -190,12 +244,12 @@ details > summary:hover {
 }
 
 details[open] > summary {
-	color: var(--steelblue);
+	color: var(--viz-blue-text); /* 開いた状態は静的表示のため，コントラスト確保用トークンを使う */
 	margin-bottom: .4em;
 }
 
 .answer {
-	color: var(--steelblue);
+	color: var(--viz-blue-text);
 }
 
 /* nav bar at top of each note */
@@ -240,6 +294,25 @@ mjx-container {
 
 mjx-container[display="true"] {
 	margin: 1em 0 !important;
+	/* 本文幅を超える長い数式は，ページ全体ではなく数式の中で横スクロールさせる（モバイル対策） */
+	overflow-x: auto;
+	overflow-y: hidden;
+	max-width: 100%;
+}
+
+/* MathJax の読み上げ用 MathML（不可視レイヤー）は width:100% で置かれ，
+   モバイル幅で数 px の幽霊横スクロールを作ることがある。visually-hidden と
+   同じ 1px ボックスに畳む（スクリーンリーダーへの露出は変わらない） */
+mjx-assistive-mml {
+	width: 1px !important;
+}
+
+/* モバイルで本文幅を超える表も同様に，表の中で横スクロールさせる */
+@media (max-width: 600px) {
+	table {
+		display: block;
+		overflow-x: auto;
+	}
 }
 
 /* 3-column aligned definition list (集合演算 etc.) */
@@ -291,12 +364,38 @@ ul.set-ops li > span:nth-child(3) {
 	}
 }
 
-/* shared: result/output box used by venn (note 1) and bayes (note 3) */
+/* shared: result/output box used by the demos in notes 1–3 */
 .venn-result {
 	text-align: center;
 	margin-top: .4em;
 	min-height: 2.5em;
 }
+
+/* 図の共通ラッパ（各ノートの .os-figure / .ht-figure / .pe-panel 等を集約） */
+.note-figure {
+	margin: 1.4em auto;
+}
+
+.note-figure svg {
+	width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+
+figure figcaption {
+	font-size: .85rem;
+	color: var(--muted);
+	line-height: 1.6;
+	margin-top: .4em;
+	text-align: center;
+}
+
+/* 図の最大幅の3段階規格（新設図用。既存の各図は各ノートCSSの独自クラスで幅を指定している） */
+.fig-narrow { max-width: 440px; }
+.fig-default { max-width: 680px; }
+.fig-wide { max-width: var(--default-width); }
 
 /* side-comment marker used in notes */
 .note-side {
@@ -353,4 +452,21 @@ ul.set-ops li > span:nth-child(3) {
 	main {
 		max-width: 100%;
 	}
+}
+
+/* Term highlight (?hl=…) — see assets/term-highlight.js */
+mark.term-hl {
+	background: #ffe9a8;
+	color: inherit;
+	padding: 0 .12em;
+	border-radius: 3px;
+}
+
+mark.term-hl.term-hl-first {
+	animation: term-hl-pulse 1.6s ease-out 1;
+}
+
+@keyframes term-hl-pulse {
+	0% { background: #ffc94d; box-shadow: 0 0 0 6px #ffc94d55; }
+	100% { background: #ffe9a8; box-shadow: 0 0 0 0 transparent; }
 }

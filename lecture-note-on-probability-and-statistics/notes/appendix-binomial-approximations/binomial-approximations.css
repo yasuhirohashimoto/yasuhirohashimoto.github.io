@@ -1,0 +1,122 @@
+.ba-demo {
+	margin: 1.5em auto;
+	max-width: 680px;
+}
+
+/* 図（関係図など） */
+.ba-figure {
+	margin: 1em auto 1.4em;
+}
+.ba-figure-triangle {
+	max-width: 620px;
+}
+.ba-figure svg {
+	width: 100%;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+
+/* コントロール */
+.ba-controls {
+	max-width: 460px;
+	margin: 0 auto .8em;
+	font-size: .92rem;
+}
+
+.ba-mode {
+	border: 1px solid var(--viz-grid);
+	border-radius: 8px;
+	padding: .35em .8em .5em;
+	margin: 0 0 .7em;
+}
+.ba-mode legend {
+	font-size: .82rem;
+	color: var(--viz-tick);
+	padding: 0 .4em;
+}
+.ba-mode label {
+	display: inline-flex;
+	align-items: center;
+	gap: .3em;
+	margin-right: 1.1em;
+	cursor: pointer;
+}
+
+.ba-slider-row {
+	display: grid;
+	grid-template-columns: 2.6em 1fr 4.4em;
+	gap: .6em;
+	align-items: center;
+	margin: .35em 0;
+}
+.ba-slider-row[hidden] {
+	display: none;
+}
+.ba-slider-row output {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	color: var(--viz-label);
+	font-weight: 600;
+}
+
+/* スライダーの見た目は assets/demo-controls.css の共有スタイルに任せる */
+.ba-controls input[type=range] {
+	width: 100%;
+}
+
+/* 理論値 */
+.ba-readout {
+	margin: .15em auto .6em;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: .5em .9em;
+	font-size: .9rem;
+	font-variant-numeric: tabular-nums;
+	color: var(--viz-label);
+}
+/* チップの見た目は demo-controls.css の共有クラス .readout-chip に任せる（span に付与済み） */
+
+/* 凡例 */
+.ba-legend {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: .4em 1.1em;
+	margin: 0 auto .3em;
+	font-size: .85rem;
+	color: var(--viz-label);
+}
+.ba-key {
+	display: inline-flex;
+	align-items: center;
+	gap: .4em;
+}
+.ba-swatch {
+	display: inline-block;
+	width: 20px;
+	height: 0;
+	border-top-width: 3px;
+	border-top-style: solid;
+}
+.ba-sw-binom {
+	height: 12px;
+	border: none;
+	background: var(--viz-blue);
+	opacity: .72;
+	border-radius: 2px;
+}
+.ba-sw-poisson { border-top-color: var(--viz-orange); }
+.ba-sw-normal { border-top-color: var(--viz-label); opacity: .7; }
+
+.ba-chart-wrap {
+	width: 100%;
+	max-width: 640px;
+	margin: 0 auto;
+}
+.ba-chart-wrap svg {
+	width: 100%;
+	display: block;
+	user-select: none;
+}

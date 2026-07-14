@@ -45,7 +45,7 @@
 		const mx = (x1 + x2) / 2;
 		const my = (y1 + y2) / 2 + yoff;
 
-		texFO(svg, mx, my, 110, 16, label, { anchor: "center", color: C.sub, size: "10.5px" });
+		texFO(svg, mx, my, 110, 16, label, { anchor: "center", color: C.sub, size: "11.5px" });
 	}
 
 	// 枝
@@ -121,8 +121,9 @@
 		texFO(svg, x + 44, mid, w, 16, label, { anchor: "center", color, size: "12.5px", align: "left" });
 	}
 
-	groupLineToNodes(428, nodes.D1,  nodes.D2,  C.D,  "\\(P(D)\\)",   44);
-	groupLineToNodes(438, nodes.Dc1, nodes.Dc2, C.DC, "\\(P(D^c)\\)", 44);
+	// 括弧 x は経路積ラベル（x=265 起点・左寄せ）の実文字列と交差しないよう右へ逃がす
+	groupLineToNodes(443, nodes.D1,  nodes.D2,  C.D,  "\\(P(D)\\)",   44);
+	groupLineToNodes(453, nodes.Dc1, nodes.Dc2, C.DC, "\\(P(D^c)\\)", 44);
 
 	await typesetSvg(svg);
 })();
@@ -135,6 +136,14 @@
 	const pdhVal = document.getElementById("bayes-pdh-val");
 	const pdnhVal = document.getElementById("bayes-pdnh-val");
 	const resultDiv = document.getElementById("bayes-result");
+	const liveDiv = document.getElementById("bayes-live");
+	let liveTimer = null;
+	// スクリーンリーダー向けの通知。スライダー連続操作で読み上げが氾濫しないよう，操作が止まってから書き込む
+	function announce(text) {
+		if (!liveDiv) return;
+		clearTimeout(liveTimer);
+		liveTimer = setTimeout(() => { liveDiv.textContent = text; }, 600);
+	}
 
 	const svg = d3.select("#bayes-svg");
 	const W = 240, H = 240;
@@ -149,6 +158,7 @@
 	const COLOR_HND  = PROB_COLORS.DC;       // 濃い青: P(H ∩ D^c)
 	const COLOR_NHD  = PROB_COLORS.DLight;   // 薄い橙: P(H^c ∩ D)
 	const COLOR_NHND = PROB_COLORS.DCLight;  // 薄い青: P(H^c ∩ D^c)
+	const TEXT_NHD   = PROB_COLORS.DText;    // 式中の P(H^c ∩ D) 項の文字用（薄橙は可読性不足）
 
 	const cellHD   = g.append("rect").attr("fill", COLOR_HD);
 	const cellHND  = g.append("rect").attr("fill", COLOR_HND);
@@ -158,16 +168,16 @@
 	const outerBorder = g.append("rect")
 		.attr("x", 0).attr("y", 0)
 		.attr("width", chartW).attr("height", chartH)
-		.attr("fill", "none").attr("stroke", "#333").attr("stroke-width", 1.5);
+		.attr("fill", "none").attr("stroke", PROB_COLORS.text).attr("stroke-width", 1.5);
 	const vDivider = g.append("line")
 		.attr("y1", 0).attr("y2", chartH)
-		.attr("stroke", "#333").attr("stroke-width", 1);
+		.attr("stroke", PROB_COLORS.sub).attr("stroke-width", 1);
 	const hDividerL = g.append("line")
 		.attr("x1", 0)
-		.attr("stroke", "#333").attr("stroke-width", 1);
+		.attr("stroke", PROB_COLORS.sub).attr("stroke-width", 1);
 	const hDividerR = g.append("line")
 		.attr("x2", chartW)
-		.attr("stroke", "#333").attr("stroke-width", 1);
+		.attr("stroke", PROB_COLORS.sub).attr("stroke-width", 1);
 
 	const labelH  = texFO(g, 0, -22, 32, 18, "\\(H\\)",   { size: "12px" });
 	const labelNH = texFO(g, 0, -22, 40, 18, "\\(H^c\\)", { size: "12px" });
@@ -195,8 +205,8 @@
 		row.forEach((item, colIdx) => {
 			const swatchX = colIdx * itemWidth;
 			g.append("rect").attr("x", swatchX).attr("y", y).attr("width", 12).attr("height", 10)
-				.attr("fill", item.color).attr("stroke", "#333").attr("stroke-width", 0.8);
-			texFO(g, swatchX + 16, y - 4, itemWidth - 18, 18, item.label, { color: "#333", size: "10.5px" });
+				.attr("fill", item.color).attr("stroke", PROB_COLORS.text).attr("stroke-width", 0.8);
+			texFO(g, swatchX + 16, y - 4, itemWidth - 18, 18, item.label, { color: PROB_COLORS.text, size: "10.5px" });
 		});
 	});
 
@@ -225,18 +235,21 @@
 		hDividerL.attr("x2", wL).attr("y1", hTL).attr("y2", hTL);
 		hDividerR.attr("x1", wL).attr("y1", hTR).attr("y2", hTR);
 
-		labelH.attr("x", wL / 2 - 16);
-		labelNH.attr("x", wL + wR / 2 - 20);
+		// 列幅が狭いときはラベルを消し，x は図の外へはみ出さないようクランプ
+		labelH.attr("x", Math.max(0, wL / 2 - 16)).attr("opacity", wL < 24 ? 0 : 1);
+		labelNH.attr("x", Math.max(0, wL + wR / 2 - 20)).attr("opacity", wR < 24 ? 0 : 1);
 
 		const pD = pDH * pH + pDnH * (1 - pH);
 		if (pD === 0) {
-			resultDiv.innerHTML = `<p>\\(P(D)=0\\) のため，\\(P(H \\mid D)\\) は定義されない．</p>`;
+			resultDiv.innerHTML = `<p>\\(P(D)=0\\) のため，\\(P(H \\mid D)\\) は定義されない。</p>`;
+			announce("P(D) = 0 のため，陽性的中率 P(H|D) は定義されない");
 		} else {
 			const pHD = (pDH * pH) / pD;
+			announce(`陽性的中率 P(H|D) はおよそ ${pHD.toFixed(3)}`);
 			resultDiv.innerHTML = `\\[
 				P(H \\mid D)
-				\\;=\\; \\frac{\\color{${COLOR_HD}}{P(D \\mid H)\\,P(H)}}{\\color{${COLOR_HD}}{P(D \\mid H)\\,P(H)} + \\color{${COLOR_NHD}}{P(D \\mid H^c)\\,P(H^c)}}
-				\\;=\\; \\frac{\\color{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\color{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\color{${COLOR_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
+				\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)}}{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)} + \\textcolor{${TEXT_NHD}}{P(D \\mid H^c)\\,P(H^c)}}
+				\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\textcolor{${TEXT_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
 				\\;\\approx\\; ${pHD.toFixed(3)}
 			\\]`;
 		}

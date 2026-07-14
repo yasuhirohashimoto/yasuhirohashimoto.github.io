@@ -1,0 +1,71 @@
+/* Marginal cells (last column = "行の和", last row = "列の和") rendered
+	   as if they were notes in the margin: faded, no outer borders.
+	   (Base table.data-table styling lives in assets/style.css.) */
+	table.data-table tr > th:last-child,
+	table.data-table tr > td:last-child,
+	table.data-table tbody tr:last-child > th,
+	table.data-table tbody tr:last-child > td {
+		background: transparent;
+		color: var(--muted);
+		font-weight: normal;
+		border: none;
+	}
+
+	/* marginal probability demo */
+	.marginal-demo {
+		margin: 1.2em 0 1.5em;
+	}
+	.marginal-controls {
+		margin: .8em auto .6em;
+		display: grid;
+		grid-template-columns: max-content max-content 1fr;
+		gap: .25em .35em;
+		align-items: center;
+		max-width: 340px;
+		font-size: .9rem;
+	}
+	.marginal-controls label {
+		text-align: right;
+		white-space: nowrap;
+		margin: 0;
+	}
+	/* width only; the shared look lives in assets/demo-controls.css */
+	.marginal-controls .num-input {
+		width: 5em;
+	}
+	.marginal-controls input[type=range] {
+		width: 100%;
+		max-width: 180px;
+		margin: 0;
+	}
+	.marginal-viz {
+		position: relative;
+		width: 100%;
+		max-width: 640px;
+		aspect-ratio: 1 / 1;
+		margin: 0 auto;
+		user-select: none;
+	}
+	.marginal-viz canvas {
+		position: absolute;
+		display: block;
+		z-index: 1;
+		background: transparent;
+	}
+	.marginal-viz svg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		pointer-events: none;
+	}
+	.marginal-viz svg .hist-hit {
+		pointer-events: auto;
+		cursor: pointer;
+	}
+	.marginal-viz svg:focus-visible {
+		outline: 2px solid var(--viz-orange-text);
+		outline-offset: 2px;
+	}

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="線形回帰と最小二乗法 ── 決定係数・残差から疑似相関の注意点まで。">
+	<title>線形回帰 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="linear-regression-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="linear-regression-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../13-unbiased-variance/">← 前へ：母分散，標本分散，不偏分散</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../15-interval-estimation/">次へ：区間推定 →</a>
+	</nav>
+
+	<main>
+		<h1>線形回帰</h1>
+
+		<p>
+			「勉強時間と試験の得点」「年齢と血圧」「広告予算と売上」「SNS 利用時間と幸福度」── 2 つの変数の間にゆるい関係がありそうなとき，「両者の関係を定量的に捉えられないだろうか？」と問うのは自然な発想だ。これを系統的に行う手法が <strong>線形回帰</strong> (linear regression) である。<sup>※</sup>本ノートでは，1 つの変数からもう 1 つの変数を予測する最も基本的な形 ── <strong>単回帰</strong> (simple linear regression) ── に絞って，その関係性を推定する方法を見ていく。
+		</p>
+
+		<div class="note-side">
+			「回帰」（＝元に戻る）という呼び方には最初戸惑いを覚えるだろう。由来は，19 世紀の英国で Francis Galton が親の身長から子の身長を予測する直線 ── まさに本ノートで学ぶ回帰直線 ── を当てはめたとき，「非常に高身長の親の子は，平均よりは高いが親ほどは高くない」，つまり予測が平均の方へ寄る傾向を見つけ，これを <strong>平均への回帰</strong> (regression to the mean) と呼んだことにある。この直線の予測が必ず「平均へ戻る」理由については「相関係数との関係」の節で明らかにする。
+		</div>
+
+		<h2 id="variables">説明変数と目的変数</h2>
+
+		<p>
+			線形回帰では，扱う 2 つの変数のうち予測したい方を <strong>目的変数</strong> (response variable; 被説明変数) と呼び，予測のもとにする方を <strong>説明変数</strong> (explanatory variable; 独立変数) と呼ぶ。たとえば「勉強時間 \(\to\) 試験の得点」を考えるなら，得点が目的変数で勉強時間が説明変数。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			「試験の得点 \(\to\) 勉強時間」としても構わない。得点から勉強時間を推定したい場合もあるだろう。この場合は，得点が説明変数で勉強時間が目的変数となる。
+		</div>
+
+		<p>
+			慣習として説明変数を \(x\)，目的変数を \(y\) で書くことが多い。<sup>※</sup> \(n\) 個の標本 \((x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\) を散布図にプロットしたとき，その「全体の傾向」を直線で近似できれば，新しい \(x\) の値からそれに対応する \(y\) の値を予測できる ── これが線形回帰の最終ゴールだ。
+		</p>
+
+		<div class="note-side">
+			これまで標本を確率変数として \(X_i\) など大文字で書いてきたが，本ノートでは <strong>実際に観測された値（実現値，観測値）として扱う</strong> ため小文字 \(x_i\) を使う。確率分布から「これからサンプリングされる量」ではなく，「すでに手元にある量」として議論する場面と思えばよい。
+		</div>
+
+		<h2 id="linear-model-and-residuals">線形モデルと残差</h2>
+
+		<p>
+			そもそも，データを <strong>何らかの関数で近似する</strong> 統計手法を <strong>回帰</strong> (regression) と総称する。どのような関数を仮定するかによって分類され，本ノートが扱う線形回帰はその名のとおり <strong>直線（1 次関数）</strong> を使うケースだ。曲線で近似するなら多項式回帰や非線形回帰になる。非常に柔軟な関数の形をもつ <strong>ニューラルネットワーク</strong> (neural network; <strong>NN</strong>) など，現代の <strong>機械学習</strong> (machine learning; <strong>ML</strong>) の手法の多くも，本質的には「関数近似」の枠組みで理解できる。
+		</p>
+
+		<p>
+			直線で近似したいとき，仮定するモデルは
+		</p>
+
+		\[
+		y = a x + b
+		\]
+
+		<p>
+			の形である。 \(a\) を <strong>傾き</strong> (slope)，\(b\) を <strong>切片</strong> (intercept) と呼び，まとめて <strong>回帰係数</strong> (regression coefficient) と総称する。回帰係数は，直線の形を決める母数である。<strong>観測値</strong> (observed value; 実現値) \(x_i\) に対し，この直線が予測する \(y\) の値を <strong>予測値</strong> (predicted value) と呼んで
+		</p>
+
+		\[
+		\hat{y}_i = a x_i + b
+		\]
+
+		<p>
+			と書く。もちろん観測値 \(y_i\) が予測値 \(\hat{y}_i\) にぴったり乗ることはまずない。両者のずれ
+		</p>
+
+		\[
+		e_i = y_i - \hat{y}_i = y_i - (a x_i + b)
+		\]
+
+		<p>
+			を <strong>残差</strong> (residual) と呼ぶ。データ全体について残差が小さく抑えられるほど，直線がデータをよく近似しているといえる。
+		</p>
+
+		<h2 id="least-squares">最小二乗法</h2>
+
+		<p>
+			問題はもちろん「\(a\) と \(b\) をどう決めるか」だ。方針は「残差を全部足し合わせた量が最小になるよう選ぶ」こと。ただし単に「全部足す」だと，正の残差と負の残差が打ち消し合い，当てはまりが悪くても和は 0 になりうる ── たとえば重心を通る直線は傾きによらず残差の和が 0 になる。<sup>※</sup>そこで二乗してから足し合わせる：
+		</p>
+
+		\[
+		\mathrm{RSS}(a, b) = \sum_{i=1}^n e_i^2 = \sum_{i=1}^n (y_i - \hat{y}_i)^2 = \sum_{i=1}^n (y_i - a x_i - b)^2.
+		\]
+
+		<div class="note-side">
+			「絶対値の和でもよさそうだが」と思った人へ。確かに \(\sum |e_i|\) を最小化する方法もある。これは <strong>最小絶対偏差法</strong> (least absolute deviations; <strong>LAD</strong>) と呼ばれ，外れ値に強いことで知られている。ただし絶対値関数は折れ点で微分できないので解析的な扱いが面倒なのが難点。二乗にすると微分しやすく，しかも残差が大きい点ほど強くペナルティをかけられるという利点がある。
+		</div>
+
+		<p>
+			この <strong>残差二乗和</strong> (residual sum of squares; <strong>RSS</strong>) を最小化する \(a, b\) を求める手法を <strong>最小二乗法</strong> (ordinary least squares; <strong>OLS</strong>) と呼ぶ。
+		</p>
+
+		<h2 id="demo">動かして体感しよう</h2>
+
+		<p>
+			下の散布図には，ある未知の直線 \(y = ax + b\) からノイズ付きで生成された 10 個のデータ点が配置されている。直線の傾きや切片を変えて，残差二乗和 \(\mathrm{RSS}\) ができるだけ小さくなる直線を探してみよう。「正解を表示」をオンにすると，傾きと切片の横にこの標本に対する <strong>最小二乗解</strong> (least squares solution) \(\hat{a}, \hat{b}\) が表示され，散布図には対応する回帰直線が緑の破線で描かれる。下部には，その直線における \(\mathrm{RSS}\) も表示される。スライダーのほかに，散布図の直線は本体をドラッグして上下に動かし，両端の丸いハンドルをドラッグして傾きを変えることもできる。左の更新ボタンを押すと，別のサンプルを生成できる。
+		</p>
+
+		<div class="regression-demo">
+			<div class="controls">
+				<label for="reg-a">傾き \(a =\)</label>
+				<input type="range" id="reg-a" min="-1.5" max="3" step="0.01" value="0.30">
+				<input type="number" class="num-input" id="reg-a-num" min="-1.5" max="3" step="0.01" value="0.30" aria-label="傾き a の数値入力">
+				<span class="truth-cell" id="reg-a-true-cell" hidden>正解 \(\hat{a}=\) <span class="truth-num" id="reg-a-true">0.00</span></span>
+
+				<label for="reg-b">切片 \(b =\)</label>
+				<input type="range" id="reg-b" min="-3" max="8" step="0.01" value="3.00">
+				<input type="number" class="num-input" id="reg-b-num" min="-3" max="8" step="0.01" value="3.00" aria-label="切片 b の数値入力">
+				<span class="truth-cell" id="reg-b-true-cell" hidden>正解 \(\hat{b}=\) <span class="truth-num" id="reg-b-true">0.00</span></span>
+			</div>
+			<div class="button-row">
+				<button id="reg-reroll" type="button" class="icon-btn" aria-label="更新" title="更新">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="23 4 23 10 17 10"></polyline>
+						<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+					</svg>
+				</button>
+				<label class="toggle">
+					<input type="checkbox" id="reg-reveal" class="toggle-input">
+					<span class="toggle-track"><span class="toggle-thumb"></span></span>
+					<span class="toggle-label">正解を表示</span>
+				</label>
+			</div>
+			<svg id="regression-svg" viewBox="0 0 520 380" role="img" aria-label="横軸 x，縦軸 y の線形回帰デモ。青い点がデータ，黒い実線が自分で動かす直線，橙の点線が残差。正解を表示すると最小二乗解を緑の破線で示す"></svg>
+			<div class="readout">
+				残差二乗和 \(\mathrm{RSS} =\) <span class="rss-num" id="reg-rss">--</span><span class="truth-rss-cell" id="reg-truth-rss-cell" hidden>正解の \(\mathrm{RSS} =\) <span class="rss-num truth-rss" id="reg-rss-true">--</span></span>
+			</div>
+			<p id="reg-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+		</div>
+
+		<h2 id="derivation">最小二乗解の導出</h2>
+
+		<p>
+			\(\mathrm{RSS}(a, b)\) を最小化する \((a, b)\) は，\(a\) と \(b\) それぞれで偏微分してゼロになる連立方程式を解けばよい。 \(\mathrm{RSS}\) は \(a, b\) について下に凸の二次関数なので，傾きが 0 になる点で最小になる。
+		</p>
+
+		\[
+		\begin{aligned}
+		\frac{\partial \mathrm{RSS}}{\partial a} &= -2 \sum_{i=1}^n x_i (y_i - a x_i - b) = 0, \\[4pt]
+		\frac{\partial \mathrm{RSS}}{\partial b} &= -2 \sum_{i=1}^n (y_i - a x_i - b) = 0.
+		\end{aligned}
+		\]
+
+		<p>
+			これを解くと（途中の式変形は付録「<a href="../appendix-linear-regression-coefficients/">線形回帰における回帰係数の計算と式変形</a>」を参照）：
+		</p>
+
+		\[
+		\hat{a} = \frac{S_{X,Y}}{S_X^2}, \qquad \hat{b} = \bar{y} - \hat{a}\, \bar{x}.
+		\]
+
+		<p>
+			ここで \(S_{X,Y}\) は標本共分散，\(S_X^2\) は標本分散である（ノート「<a href="../06-correlation-and-independence/">相関と独立</a>」参照）。また，\(a, b\) ではなく \(\hat{a}, \hat{b}\) と「ハット」を付けているのは，真の値 \(a, b\) と区別するためである。真の \(a, b\) は通常は直接観測できる量ではなく，データから求められるのは，あくまでそれらの <strong>推定値</strong> (estimate) に過ぎない。ハット記号は，「真値そのものではなく，データから推定された値」であることを表す慣習である。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			回帰直線の予測値 \(\hat{y}_i\) にもハットを付けたのは，同様に真の値と区別するためである。ただし，\(\hat{y}_i\) は観測された \(x_i\) から算出される値であり，\(\hat{a}, \hat{b}\) は未知の母数をデータから推定した値であるため，前者を <strong>予測値</strong>，後者を <strong>推定値</strong> と呼び分ける。
+		</div>
+
+		<p>
+			式 \(\hat{b} = \bar{y} - \hat{a}\, \bar{x}\) を書き直せば \(\bar{y} = \hat{a}\, \bar{x} + \hat{b}\) ── つまり <strong>最小二乗解の直線は必ずデータの重心 \((\bar{x}, \bar{y})\) を通る</strong>。データ全体に対する誤差を最小化する直線が重心を通るというのは，直感的にも納得しやすい性質だ。
+		</p>
+
+		<p>
+			また，最小二乗解を代入したときの \(\mathrm{RSS}\) も書いておこう。 \(\mathrm{RSS}\) の式に \(\hat{a}=S_{X,Y}/S_X^2\) と \(\hat{b} = \bar{y} - \hat{a}\bar{x}\) を代入して，
+		</p>
+
+		\[
+		\begin{aligned}
+		\mathrm{RSS}
+		&= \sum_{i=1}^n \left\{(y_i - \bar{y}) - \frac{S_{X,Y}}{S_X^2}(x_i - \bar{x})\right\}^2 \\[4pt]
+		&= n\left(S_Y^2 - \frac{S_{X,Y}^2}{S_X^2}\right).
+		\end{aligned}
+		\]
+
+		<p>
+			この式は次の節で使う。
+		</p>
+
+		<h2 id="relation-to-correlation">相関係数との関係</h2>
+
+		<p>
+			ノート「<a href="../06-correlation-and-independence/">相関と独立</a>」で見た相関係数 \(r_{X,Y} = S_{X,Y} / (S_X S_Y)\) を使うと，傾き \(\hat{a}\) は
+		</p>
+
+		\[
+		\hat{a} = \frac{S_{X,Y}}{S_X^2} = \frac{S_{X,Y}}{S_X S_Y} \cdot \frac{S_Y}{S_X} = r_{X,Y} \cdot \frac{S_Y}{S_X}
+		\]
+
+		<p>
+			と書ける。つまり傾きは「相関係数 × \(y\) のばらつき / \(x\) のばらつき」の形をしている。特に \(\hat{a}\) の符号は \(r_{X,Y}\) の符号と完全に一致する ── 正の相関なら正の傾き，負の相関なら負の傾き。
+		</p>
+
+		<p>
+			逆向きに見ると，<strong>両軸をそれぞれ標準化（平均を引いて標準偏差で割る）した散布図</strong> での回帰直線の傾きが相関係数 \(r_{X,Y}\) そのものになる。相関係数と単回帰の傾きは，スケールを揃えるかどうかだけが違う，表裏の関係にあるわけだ。
+		</p>
+
+		<p>
+			この標準化した傾きが，冒頭の「回帰」という名前の種明かしになっている。標準化した散布図では，\(x\) が平均から標準偏差 \(k\) 個分離れていても，予測値 \(\hat{y}\) は平均から \(|r_{X,Y}| \cdot k\) 個分しか離れない。相関が完全（\(\pm 1\)）でない限り，回帰直線の予測はつねに入力のズレより平均寄りになる ── Galton が親子の身長に見た「平均への回帰」は，この \(|r_{X,Y}| < 1\) の現れである。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			「平均への回帰」は，何かを平均へ引き戻す力がはたらいていることを意味しない。逆向きに子の身長から親の身長を予測しても，同じように平均へ回帰する。相関が完全でないことの統計的な帰結にすぎず，これを実在の力と取り違える誤りには <strong>回帰の誤謬</strong> (regression fallacy) という名前までついている。
+		</div>
+
+		<p>
+			この関係は，回帰直線による予測のよさともつながっている。まず基準として，「どんな \(x\) が来ても \(y\) の平均値 \(\bar{y}\) で予測する」という素朴な方法を考えよう。このときの二乗誤差の合計は
+		</p>
+
+		\[
+		\mathrm{TSS} = \sum_{i=1}^n (y_i - \bar{y})^2
+		\]
+
+		<p>
+			である。これを <strong>総平方和</strong> (total sum of squares; <strong>TSS</strong>) と呼び，「平均値だけでは説明できずに残っている \(y\) のばらつき」と解釈できる。一方，回帰直線 \(\hat{y}_i = \hat{a}x_i + \hat{b}\) で予測したときの二乗誤差の合計は
+		</p>
+
+		\[
+		\mathrm{RSS} = \sum_{i=1}^n (y_i - \hat{y}_i)^2.
+		\]
+
+		<p>
+			つまり，回帰直線によって減った二乗誤差は \(\mathrm{TSS} - \mathrm{RSS}\) である。この減った分が，もとの誤差 \(\mathrm{TSS}\) の何割にあたるかを表したものが <strong>決定係数</strong> (coefficient of determination) \(R^2\) である：
+		</p>
+
+		\[
+		\begin{aligned}
+		R^2
+		&= \frac{\mathrm{TSS} - \mathrm{RSS}}{\mathrm{TSS}} \\[4pt]
+		&= 1 - \frac{\mathrm{RSS}}{\mathrm{TSS}} \\[4pt]
+		&= 1 - \frac{n\left(S_Y^2 - \frac{S_{X,Y}^2}{S_X^2}\right)}{nS_Y^2} \\[4pt]
+		&= \frac{S_{X,Y}^2}{S_X^2 S_Y^2} \\[4pt]
+		&= r_{X,Y}^2.
+		\end{aligned}
+		\]
+
+		<p>
+			このように，<strong>説明変数が 1 つだけの単回帰では</strong> 決定係数が \(R^2 = r_{X,Y}^2\) と一致する。つまり，相関係数の二乗は，直線による予測が平均値予測からどれだけ改善したかの目安にもなっている。たとえば \(R^2 = 0.64\) （相関係数 0.8）なら，このデータ上では，平均値だけで予測する場合に比べて，二乗誤差を 64% 減らせたという読み方ができる。
+		</p>
+
+		<h2 id="summary">まとめ</h2>
+
+		<p>
+			線形回帰モデル \(y = ax + b\) は単純なモデルだが，<strong>線形近似</strong> (linear approximation) は数学的に非常に強力な考え方である。実際，微分可能な関数は局所的には直線で近似できる（Taylor 展開の 1 次近似）。複雑な関係であっても，「まず直線で近似してみる」という発想が広く使われる理由のひとつはここにある。
+		</p>
+
+		<p>
+			さらに，①関数の形を仮定し，②データからそのパラメータを推定し，③新しい入力に対する予測を行う，という流れは，機械学習全般に共通する基本構造でもある。直線を使えば線形回帰，多項式を使えば多項式回帰，さらにカーネル法・決定木・ニューラルネットワークへと発展させていけば，現代の機械学習の主要手法につながっていく。その意味で，<strong>線形回帰は機械学習の最も基本的な入り口のひとつ</strong> と言ってよい。
+		</p>
+
+		<p>
+			最後に，線形回帰を使うときの注意点を押さえておこう：
+		</p>
+
+		<ul>
+			<li>
+				<strong>そもそも関係が直線でない</strong>：薬の用量と効果のように，少なすぎれば効かず多すぎれば毒になる ── そんな逆 U 字型の関係に無理に直線を当てはめても正しい予測は得られない。注目するデータの範囲内では直線でも，その範囲外でも続いてくれる保証はないので，<strong>外挿</strong> (extrapolation) は控えめにしておくのが無難だろう。<sup>※</sup>
+			</li>
+			<li>
+				<strong>相関は因果ではない</strong>：よい当てはまりが得られても，\(x\) が \(y\) の原因とは限らない。アイスクリームの売上と水難事故件数は強く正の相関を示すが，もちろんアイスを売ったから事故が起こったわけではなく，どちらも気温という共通因子 ── <strong>交絡変数</strong> (confounding variable) に影響されているだけである。
+			</li>
+		</ul>
+
+		<div class="note-side">
+			「カントリーマアムはステルス値上げで年々小さくなっているので，このペースで縮み続けるといつか大きさが負になってしまう」という冗談があるが，もちろんサイズが \(0\) 未満になることはない。（公式には，実は重量変更は過去 2 回しか行われていないという情報もある。）
+		</div>
+
+		<hr>
+
+		<h2 id="advanced">発展的な内容</h2>
+
+		<p>
+			<strong>最小二乗法は実はすでに学んだ最尤法の一種である</strong>。線形回帰を確率モデルとして見ると，観測値 \(y_i\) は
+		</p>
+
+		\[
+		Y_i = a x_i + b + \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+		\]
+
+		<p>
+			の実現値だと考えられる。ここで \(\varepsilon_i\) は，直線だけでは説明しきれないずれをモデルの側にあらかじめ組み込んだランダムな <strong>誤差項</strong> (error term) である。線形回帰で登場した <strong>残差</strong> と似た形をしているが，残差は推定した直線モデルと観測データの誤差を表す量である。一方，誤差項は「観測データが真のモデルからどれだけ外れるか」を表す量である。
+		</p>
+
+		<p>
+			この仮定のもとで，与えられた \(x_i\) と母数 \((a, b, \sigma)\) に対して \(y_i\) が観測される確率密度は
+		</p>
+
+		\[
+		f(y_i; x_i, a, b, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(y_i - a x_i - b)^2}{2\sigma^2} \right)
+		\]
+
+		<p>
+			となる。確率変数 \(\varepsilon_i\) が平均 \(0\)，分散 \(\sigma^2\) の正規分布に従うという仮定から導かれる式だ。いま独立な \(n\) 個のデータ点が観測されたならば，全体の尤度はそれらの積（ノート「<a href="../10-maximum-likelihood-estimation/">統計的推定：最尤法の初歩</a>」の手順 2 と同じ要領）
+		</p>
+
+		\[
+		L(a, b, \sigma) = \prod_{i=1}^n f(y_i; x_i, a, b, \sigma)
+		\]
+
+		<p>
+			で表される。対数尤度をとると，積は和に変わって：
+		</p>
+
+		\[
+		\log L(a, b, \sigma)
+		= -\frac{n}{2} \log (2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i=1}^n (y_i - a x_i - b)^2
+		= -\frac{n}{2} \log (2\pi\sigma^2) - \frac{\mathrm{RSS}(a, b)}{2\sigma^2}
+		\]
+
+		<p>
+			を得る。ここでは，誤差のばらつき \(\sigma\) はひとまず固定されているものとして，「どの \(a, b\) が観測データをもっともよく説明するか」だけに注目しよう。このとき，第一項は \((a, b)\) に依存しないので無視できる。残るのは \(-\mathrm{RSS}(a, b) / (2\sigma^2)\) で，マイナス符号と正の定数 \(1/(2\sigma^2)\) を考えれば，<strong>\(\log L\) を最大化することは \(\mathrm{RSS}(a, b)\) を最小化することと完全に等しい</strong>。つまり最小二乗解 \(\hat{a}, \hat{b}\) は最尤推定値そのものだ。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../13-unbiased-variance/">← 前へ：母分散，標本分散，不偏分散</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../15-interval-estimation/">次へ：区間推定 →</a>
+		</nav>
+	</main>
+</body>
+</html>

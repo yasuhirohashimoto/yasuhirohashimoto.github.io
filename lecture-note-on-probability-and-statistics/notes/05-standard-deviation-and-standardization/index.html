@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="標準偏差と標準化 ── ばらつきの物差しを整え，平均からのズレを「標準偏差何個分」という共通のスケールで測る。">
+	<title>標準偏差と標準化 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../04-population-and-sample/">← 前へ：母集団と標本</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../06-correlation-and-independence/">次へ：相関と独立 →</a>
+	</nav>
+
+	<main>
+		<h1>標準偏差と標準化</h1>
+
+		<p>
+			ノート「<a href="../04-population-and-sample/">母集団と標本</a>」では，分布の位置を表す平均と，ばらつきの大きさを表す分散を導入した。ここで，母分散 \(\sigma_X^2\) や標本分散 \(S_X^2\) はそれぞれ \(\sigma_X\) や \(S_X\) を二乗したものだが，新しい概念がいきなり二乗付きで出てくるのはモヤモヤしないだろうか？ しかも，分散はばらつきの大きさと説明したが，平均からのズレを二乗して平均しているぶん，単位が元の \(X\) と食い違うのだ。 \(X\) の単位が cm なら，分散の単位は cm² である。
+		</p>
+
+		<p>
+			本ノートでは，単位を元に戻してばらつきの物差しとして使えるようにした <strong>標準偏差</strong> と，その物差しで「平均からのズレ」を測り直す操作 ── <strong>標準化</strong> ── を導入する。どちらも後のノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」「<a href="../15-interval-estimation/">区間推定</a>」「<a href="../16-hypothesis-testing/">仮説検定の初歩</a>」で重要な役割を果たす。
+		</p>
+
+		<h2 id="standard-deviation">標準偏差</h2>
+
+		<p>
+			確率変数 \(X\) と母平均との差 \((X - \mu_X)\) を <strong>偏差</strong> (deviation) と呼ぶ。標本の場合は，各標本値と標本平均との差 \((X_i - \bar{X})\) が偏差にあたる。分散はこの偏差の二乗を平均したものだった。そこで分散の平方根をとれば，二乗したぶんが打ち消されて，単位が \(X\) と同じに戻る。これを <strong>標準偏差</strong> (standard deviation; <strong>SD</strong>) と呼ぶ。母分散 \(\sigma_X^2\) から作ったものは <strong>母標準偏差</strong> (population standard deviation) \(\sigma_X\)，標本分散 \(S_X^2\) から作ったものは <strong>標本標準偏差</strong> (sample standard deviation) \(S_X\) である：
+		</p>
+
+		\[
+		\sigma_X = \sqrt{\sigma_X^2}, \qquad S_X = \sqrt{S_X^2}.
+		\]
+
+		<p>
+			標準偏差という名前は「偏差の標準的な大きさ」と読める。たとえばある集団の身長が平均 170 cm，標準偏差 6 cm だったとしよう。平均のまわり \(\pm 6\) cm（164〜176 cm）が「よくあるズレの幅」の目安で，182 cm（平均 \(+2\sigma_X\)）の人はかなり背が高い，という読み方ができる。平均が分布の「位置」を教えてくれるのに対し，標準偏差は平均のまわりのズレを測る物差しになるわけだ。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			「平均から標準偏差 \(k\) 個分より外側に出る確率は \(1/k^2\) 以下」という保証が，<strong>分布の形によらず</strong> 成り立つ。これはノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」に登場するチェビシェフの不等式である。
+		</div>
+
+		<h2 id="standardization">標準化</h2>
+
+		<p>
+			単位が元に戻ったところで，今度は標準偏差そのものを物差しにして，値を測り直してみよう。確率変数 \(X\) から母平均 \(\mu_X\) を引き，母標準偏差 \(\sigma_X\) で割る：
+		</p>
+
+		\[
+		Z = \frac{X - \mu_X}{\sigma_X}.
+		\]
+
+		<p>
+			この操作を <strong>標準化</strong> (standardization) と呼ぶ。 \(\mu_X\) を引くことで分布の位置がそろい，\(\sigma_X\) で割ることでスケールがそろう。すなわち，元の分布がどこにあってどれだけ広がっていても，
+		</p>
+
+		\[
+		E[Z] = 0, \qquad V[Z] = 1
+		\]
+
+		<p>
+			が成り立つ。<sup>※</sup>しかも \(Z\) は「cm ÷ cm」のように単位どうしが打ち消し合うので，単位をもたない純粋な数である。 \(Z\) の値は <strong>平均から標準偏差何個分ズレているか</strong> を表し，<strong>z 値</strong> (z-value) や <strong>z スコア</strong> (z-score) とも呼ばれる。
+		</p>
+
+		<div class="note-side">
+			期待値の線形性と，定数を足し引きしても分散が変わらないこと，定数倍の分散の公式から，\(E[Z] = (E[X] - \mu_X)/\sigma_X = 0\)，\(V[Z] = V[X]/\sigma_X^2 = 1\)。詳しくは付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」を参照。
+		</div>
+
+		<p>
+			標準化のうれしい点は，そのままでは比べられないものを比べられるようにすることにある。たとえばテストで 80 点をとったとしよう。それが「すごい」かどうかは，平均とばらつき次第だ。平均 50 点・標準偏差 10 点のテストなら \(Z = (80 - 50)/10 = 3\) ── 平均より標準偏差 3 個分も上で，かなりの好成績である。一方，平均 75 点・標準偏差 5 点のテストなら \(Z = (80 - 75)/5 = 1\) で，まずまずといったところ。素点の 80 という数字そのものより，標準化した値のほうが「集団の中でどのあたりか」を素直に評価できる。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			受験でおなじみの <strong>偏差値</strong> は，この \(Z\) を \(50 + 10Z\) と置き直しただけのものだ。偏差値 50 が平均ぴったり（\(Z=0\)），60 は標準偏差 1 個分上（\(Z=1\)），70 は 2 個分上（\(Z=2\)）にあたる。「なぜ 50 を足すのか？ なぜ 10 を掛けるのか？」という疑問がわくかもしれないが，これは「だいたい 0〜100 の範囲に収まって，真ん中が 50 になるようにしたい」という単なる慣習である。「偏差値 100 超え」のような話がまれに出てくるが，それは \(Z > 5\) 相当の <strong>外れ値</strong> (outlier) ── 分布の大部分から極端に離れた値 ── であり，定義上は発生しうる。
+		</div>
+
+		<p>
+			ここまでは母数 \(\mu_X, \sigma_X\) による標準化を示したが，手元のデータ列 \(X_1, \ldots, X_n\) に対しては，標本平均 \(\bar{X}\) と標本標準偏差 \(S_X\) を使って同じ操作ができる：
+		</p>
+
+		\[
+		Z_i = \frac{X_i - \bar{X}}{S_X}.
+		\]
+
+		<p>
+			次のノート「<a href="../06-correlation-and-independence/">相関と独立</a>」に登場する標準化ベクトルは，この標本版の標準化をデータ列全体にほどこしたものである。
+		</p>
+
+		<h2 id="applications">標準化の使われ方</h2>
+
+		<p>
+			標準化は，この先のノートで繰り返し重要な役割を果たす。
+		</p>
+
+		<ul>
+			<li>ノート「<a href="../06-correlation-and-independence/">相関と独立</a>」では，2 つの変数をそれぞれ標準化し，その内積から相関係数を作る。</li>
+			<li>ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」では，標本平均 \(\bar{X}\) を標準化した量の分布が，元の分布の形によらず標準正規分布に近づいていくことを見る。</li>
+			<li>ノート「<a href="../15-interval-estimation/">区間推定</a>」では，母数を含む量を標準化し，それが従う分布から逆算して母数の範囲を推定する。</li>
+			<li>ノート「<a href="../16-hypothesis-testing/">仮説検定の初歩</a>」では，仮説のもとで標準化した統計量が「めったに出ない値」かどうかで仮説を判定する。</li>
+		</ul>
+
+		<p>
+			いずれも発想は同じだ。元の量は，単位も平均もばらばらで，そのままでは比べにくい。そこで，その量の平均からのズレを標準偏差を単位として測り直すと，単位のない量になる。すると，身長であれ点数であれ標本平均であれ，「平均から標準偏差何個分離れているか」という共通の物差しで見ることができる。さらに，その標準化された量がどのような分布に従うかがわかれば，分布表を使って確率を読み取り，得られた値がどれくらいめずらしいか，あるいはどの範囲に入りそうかを評価することができる。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../04-population-and-sample/">← 前へ：母集団と標本</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../06-correlation-and-independence/">次へ：相関と独立 →</a>
+		</nav>
+	</main>
+</body>
+</html>

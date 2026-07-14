@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="大数の法則をチェビシェフの不等式による証明とインタラクティブなデモで理解する。">
+	<title>大数の法則 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="lln-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="lln-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../10-maximum-likelihood-estimation/">← 前へ：統計的推定：最尤法の初歩</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../12-central-limit-theorem/">次へ：中心極限定理 →</a>
+	</nav>
+
+	<main>
+		<h1>大数の法則</h1>
+
+		<p>
+			ノート「<a href="../10-maximum-likelihood-estimation/">統計的推定：最尤法の初歩</a>」では，尤度を最大化することでデータから母数を推定する手続きを見た。一方で，もっと素朴に「観測値を平均すれば期待値（＝母平均）に近づくはず」という直感もある。この直感を理論として正当化するのが <strong>大数の法則</strong> (Law of Large Numbers; <strong>LLN</strong>) だ。本ノートではその意味と証明を順に見ていく。
+		</p>
+
+		<h2 id="statement">大数の法則の主張</h2>
+
+		<p>
+			大数の法則は，「分散が有限な独立同分布 (i.i.d.) に従う確率変数の標本平均 \(\bar{X}_n\) は，サンプルサイズが増えると母平均 \(\mu_X\)（＝期待値 \(E[X]\)）の値に収束していく」という事実を述べている。これを統計の言葉では「標本平均 \(\bar{X}_n\) は期待値 \(\mu_X\) の <strong>一致推定量</strong> (consistent estimator) である」と言い換えられる。一致推定量とは，サンプルサイズを大きくすれば，高い確率で真の値にいくらでも近づく推定量のことである。つまり，<strong>標本平均は期待値のよい推定量となっている</strong> ということだ。
+		</p>
+
+		<h2 id="proof-by-chebyshev">チェビシェフの不等式による証明</h2>
+
+		<p>
+			大数の法則は，以下の <strong>チェビシェフの不等式</strong> (Chebyshev's inequality) を用いて証明することができる。
+		</p>
+
+		\[
+		P(|X-\mu_X|\geq k\,\sigma_X) \leq \frac{1}{k^2}.
+		\]
+
+		<p>
+			これは「確率変数 \(X\) が期待値 \(\mu_X\) から標準偏差 \(\sigma_X\) の \(k\) 個分以上離れる確率は \(1/k^2\) 以下である」という，ものすごく「ざっくりとした」関係式だが，この不等式のすごいところは <strong>\(X\) の分布がどんな形であっても</strong> 成り立つところにある。
+		</p>
+
+		<p>
+			いま，期待値 \(\mu_X\)，分散 \(\sigma_X^2\) をもつ独立同分布な確率変数 \(X_1, X_2, \ldots, X_n\) を考える。標本平均を
+		</p>
+
+		\[
+		\bar{X}_n = \frac{1}{n}\sum_{i=1}^{n}X_i
+		\]
+
+		<p>
+			とすると，その期待値と分散は
+		</p>
+
+		\[
+		E[\bar{X}_n] = \mu_X,\qquad
+		V[\bar{X}_n] = \frac{\sigma_X^2}{n}
+		\]
+
+		<p>
+			である。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			この計算の詳しい式変形は，付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」の「標本平均の期待値と分散」を参照。
+		</div>
+
+		<p>
+			したがってチェビシェフの不等式より，任意の \(\varepsilon>0\) について
+		</p>
+
+		\[
+		P(|\bar{X}_n-\mu_X|\geq \varepsilon)
+		\leq
+		\frac{V[\bar{X}_n]}{\varepsilon^2}
+		=
+		\frac{\sigma_X^2}{n\varepsilon^2}
+		\]
+
+		<p>
+			が成り立つ。ここでは \(X\to\bar{X}_n\)，\(\sigma_X\to\sigma_{\bar{X}_n}\)，\(k\to\varepsilon/\sigma_{\bar{X}_n}\) と置き換えている。
+			右辺は \(n\to\infty\) で \(0\) に近づく。つまり，どんなに小さな誤差幅 \(\varepsilon\) を決めても，標本平均がその範囲から外れる確率は，サンプルサイズを大きくすればいくらでも小さくできる。これが大数の（弱）法則である。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			大数の法則には確率変数に関する前提条件や収束のしかたの違いで <strong>大数の強法則</strong> (Strong Law of Large Numbers; <strong>SLLN</strong>) と <strong>大数の弱法則</strong> (Weak Law of Large Numbers; <strong>WLLN</strong>) の 2 種類がある。チェビシェフの不等式から証明できるのは大数の弱法則である。
+		</div>
+
+		<h2 id="demo">動かして体感しよう</h2>
+
+		<p>
+			0 から 1 の間の値がどれも同じ確からしさで出る <strong>一様分布</strong> (uniform distribution) \(X \sim \mathrm{U}(0, 1)\) から \(n\) 個の標本を取り出し，その標本平均 \(\bar{X}_n\) を計算してみよう。以下の図は横軸がサンプルサイズ \(n\)（対数軸），縦軸が標本平均 \(\bar{X}_n\)（青線）。橙の水平線が期待値 \(0.5\) を示している。左図は通常の縦軸，右図は \(0.5\) 付近を拡大した縦軸で，同じサンプル列から計算した同一の標本平均の系列を表示している。 \(n\) を大きくしていくと青線が橙線に張り付いていく様子が分かる ── 一方，右図を見ると，大きな \(n\) でも期待値のまわりで小さくゆらいでいる様子が分かる。更新ボタンを押して，毎回違うサンプル列で同じ収束が起こることも確かめてみよう。
+		</p>
+
+		<div class="lln-demo">
+			<div class="lln-controls">
+				<button id="lln-reroll" type="button" class="icon-btn" aria-label="更新" title="更新">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="23 4 23 10 17 10"></polyline>
+						<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+					</svg>
+				</button>
+			</div>
+			<div class="lln-compare">
+				<figure class="lln-compare-panel">
+					<svg id="lln-svg" viewBox="0 0 520 340" role="img" aria-label="横軸はサンプルサイズ n の対数軸，縦軸は標本平均の線形軸。青い標本平均が橙の母平均へ近づく様子を示すグラフ"></svg>
+					<figcaption>通常の縦軸</figcaption>
+				</figure>
+				<figure class="lln-compare-panel">
+					<svg id="lln-svg-c" viewBox="0 0 520 340" role="img" aria-label="横軸はサンプルサイズ n の対数軸，縦軸は標本平均を母平均 0.5 付近で拡大した対称対数軸。青い標本平均が橙の母平均 0.5 へ近づく様子を示すグラフ"></svg>
+					<figcaption>対称対数 (symlog) で \(E[X] = 0.5\) 付近を拡大した縦軸</figcaption>
+				</figure>
+			</div>
+		</div>
+
+		<hr>
+
+		<h2 id="advanced">発展的な内容</h2>
+		<p>
+			チェビシェフの不等式で見たように，\(n\to\infty\) の極限において
+		</p>
+
+		\[
+		P(|\bar{X}_n-\mu_X|\geq \varepsilon) \to 0
+		\]
+
+		<p>
+			である。このように，目標値から外れる確率が \(0\) に収束するという振る舞いを <strong>確率収束</strong> (convergence in probability) と呼び，
+		</p>
+
+		\[
+		\bar{X}_n \xrightarrow{p} \mu_X
+		\]
+
+		<p>
+			と表記する。「\(\xrightarrow{p}\)」は「確率収束」を表す記法である。ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」で登場する「分布収束」と対比される概念である。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../10-maximum-likelihood-estimation/">← 前へ：統計的推定：最尤法の初歩</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../12-central-limit-theorem/">次へ：中心極限定理 →</a>
+		</nav>
+	</main>
+</body>
+</html>

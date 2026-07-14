@@ -12,14 +12,6 @@
 	user-select: none;
 }
 
-.density-fig figcaption {
-	font-size: .9rem;
-	color: var(--muted, #6b7280);
-	line-height: 1.7;
-	margin-top: .6em;
-	text-align: center;
-}
-
 .rv-viz {
 	margin: 1.2em 0 1.5em;
 }
@@ -31,6 +23,7 @@
 	flex-wrap: wrap;
 	font-size: .9rem;
 	align-items: center;
+	justify-content: center; /* 分布図（中央寄せ）と揃える */
 }
 
 .rv-controls label {
@@ -44,7 +37,7 @@
 	margin-left: .4em;
 }
 
-.rv-controls .val {
+.rv-controls .readout-chip {
 	display: inline-block;
 	min-width: 2.6em;
 	text-align: right;

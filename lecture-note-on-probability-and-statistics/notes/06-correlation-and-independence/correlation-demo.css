@@ -1,0 +1,11 @@
+/* Datasaurus visualization (note 6 only) */
+	.datasaurus-fig {
+		max-width: 400px;
+		margin: 1.2em auto;
+	}
+	.datasaurus-fig svg {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	/* figcaption は assets/style.css の figure figcaption 共通規格に任せる */

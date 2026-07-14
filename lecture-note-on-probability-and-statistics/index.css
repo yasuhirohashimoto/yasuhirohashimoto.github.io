@@ -1,8 +1,9 @@
-.index-intro { font-size: .88rem; color: #666; margin: .4em 0 1em; }
+.index-intro { font-size: .88rem; color: var(--muted); margin: .4em 0 1em; }
 .appendix-list { list-style: none; counter-reset: appendix; padding-left: 1.2em; }
 .appendix-list li { counter-increment: appendix; }
 .appendix-list li::before { content: "[A" counter(appendix) "] "; font-weight: bold; }
-.term-index h3 { font-size: 1rem; margin: 1em 0 .3em; color: #444; }
+.appendix-list.reading-list li::before { content: "[R" counter(appendix) "] "; }
+.term-index h3 { font-size: 1rem; margin: 1em 0 .3em; color: var(--accent); }
 .term-index ul { list-style: none; padding-left: 1em; margin: 0; columns: 2; column-gap: 1.6em; }
 .term-index li { break-inside: avoid; margin: .15em 0; font-size: .92rem; line-height: 1.5; }
 .term-index a { text-decoration: none; }

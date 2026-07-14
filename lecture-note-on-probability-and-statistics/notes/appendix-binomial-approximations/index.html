@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="二項分布のポアソン近似と正規近似 ── 二項分布はポアソン分布でも正規分布でも近似できる。どちらがいつ効くのかをインタラクティブに確かめる付録。">
+	<title>二項分布のポアソン近似と正規近似 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="./binomial-approximations.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script defer src="./binomial-approximations.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>二項分布のポアソン近似と正規近似</h1>
+
+		<p>
+			ノート「<a href="../09-event-counts-and-waiting-times-distributions/">発生回数と待ち時間の確率分布</a>」で見た二項分布 \(\mathrm{Bin}(n,p)\) は，成功確率 \(p\) の独立な試行を \(n\) 回繰り返したときの成功回数を表す分布だった。その確率質量関数は
+		</p>
+
+		\[
+		P(X=k;\, n,p)=\binom{n}{k}p^k(1-p)^{n-k}\qquad(k=0,1,\ldots,n)
+		\]
+
+		<p>
+			で，期待値は \(np\)，分散は \(np(1-p)\) である。ところが \(n\) が大きくなると，二項分布の厳密な計算は多数の組合せや総和を含んで煩雑になる。<sup>※</sup>ちょうどその「\(n\) が大きい」ところで，二項分布は 2 つの有名な分布でよく近似できる：
+		</p>
+
+		<ul>
+			<li>ポアソン分布 \(\mathrm{Po}(np)\) ── \(p\) が小さいとき（めったに起きない事象）</li>
+			<li>正規分布 \(\mathcal{N}\bigl(np,\, np(1-p)\bigr)\) ── \(n\) が大きく \(p\) が極端でないとき</li>
+		</ul>
+
+		<p>
+			この 2 つの近似はどちらが優れているというわけではない。どちらがいつ効くのかを以下で確かめてみよう。
+		</p>
+
+		<div class="note-side">
+			離散的な厳密式より，連続的な近似の方が扱いやすいことも多い。たとえば区間確率を求めたいときなどは，二項分布の場合は
+			\(P(a\leq X\leq b)=\sum_{k=a}^{b}\binom{n}{k}p^k(1-p)^{n-k}\) のように多数の項を足し合わせる必要があるが，連続分布では，積分から得られた累積確率の差 \(F(b)-F(a)\) として表すことができる。
+		</div>
+
+		<h2 id="where-approximations-come-from">2 つの近似はどこから来るのか</h2>
+
+		<p>
+			出発点は，二項分布が <a href="../09-event-counts-and-waiting-times-distributions/">ベルヌーイ試行</a>（成功か失敗かの 1 回の試行）の和だという事実である。1 回ごとの結果を「成功なら \(1\)，失敗なら \(0\)」で表す確率変数を \(X_i\)（成功の確率は \(p\)）とすると，成功回数は
+		</p>
+
+		\[
+		X = X_1 + X_2 + \cdots + X_n
+		\]
+
+		<p>
+			と書ける。ここから \(n\) を大きくするやり方によって 2 つの近似が導ける。
+		</p>
+
+		<h3 id="normal-approximation">正規近似 ── ド・モアブル＝ラプラスの定理</h3>
+
+		<p>
+			\(X\) は独立同分布な確率変数の和なのだから，ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」がそのまま効く。 \(p\) を固定したまま \(n\) を大きくすると，二項分布は
+		</p>
+
+		\[
+		\mathrm{Bin}(n,p)\ \approx\ \mathcal{N}\bigl(np,\, np(1-p)\bigr)
+		\]
+
+		<p>
+			という正規分布で近似できる。これは <strong>ド・モアブル＝ラプラスの定理</strong> (de Moivre–Laplace theorem) と呼ばれ，中心極限定理が歴史上はじめて証明された特別な場合である。近似がよく効くのは，山が左右の壁（\(k=0\) と \(k=n\)）から十分に離れているとき ── すなわち \(np\) と \(n(1-p)\) がともに大きいときである。
+		</p>
+
+		<h3 id="poisson-approximation">ポアソン近似 ── 少数の法則</h3>
+
+		<p>
+			もうひとつは，\(n\) を大きくすると同時に \(p\) を小さくし，積 \(\lambda = np\) を一定に保つやり方である。ノート「<a href="../09-event-counts-and-waiting-times-distributions/">発生回数と待ち時間の確率分布</a>」で触れたように，この極限で二項分布はポアソン分布に近づく：
+		</p>
+
+		\[
+		\mathrm{Bin}\!\left(n,\, \frac{\lambda}{n}\right)\ \to\ \mathrm{Po}(\lambda)\qquad(n\to\infty).
+		\]
+
+		<p>
+			1 回あたりの成功はめったに起きない（\(p\) は小さい）が，試行回数が大きい（\(n\) が大きい）ので，全体では平均 \(\lambda=np\) 回くらいは起きる ── この状況を <strong>少数の法則</strong> (law of small numbers; law of rare events とも) と呼ぶ。事故や故障のように「1 件あたりの確率は小さいが，件数が多いのでときどきは起きる」事象がポアソン分布でモデル化できるのは，このためである。
+		</p>
+
+		<details>
+			<summary>少数の法則を式で確かめる</summary>
+
+			<p>
+				\(p=\lambda/n\) を代入し，確率質量関数を \(n\) によらない部分と \(n\) に依存する部分に分けて整理する。まず 4 つの因子に分解すると
+			</p>
+
+			\[
+			\binom{n}{k}\left(\frac{\lambda}{n}\right)^{k}\left(1-\frac{\lambda}{n}\right)^{n-k}
+			=\frac{n!}{(n-k)!\,n^{k}}\cdot\frac{\lambda^{k}}{k!}\cdot\left(1-\frac{\lambda}{n}\right)^{n}\cdot\left(1-\frac{\lambda}{n}\right)^{-k}
+			\]
+
+			<p>
+				となる。それぞれの因子の \(n\to\infty\) での極限は
+			</p>
+
+			\[
+			\begin{array}{ccccccc}
+			\dfrac{n!}{(n-k)!\,n^{k}} & \cdot & \dfrac{\lambda^{k}}{k!} & \cdot & \left(1-\dfrac{\lambda}{n}\right)^{n} & \cdot & \left(1-\dfrac{\lambda}{n}\right)^{-k} \\[6pt]
+			\big\downarrow & & \big\downarrow & & \big\downarrow & & \big\downarrow \\[4pt]
+			1 & \cdot & \dfrac{\lambda^{k}}{k!} & \cdot & e^{-\lambda} & \cdot & 1
+			\end{array}
+			\]
+
+			<p>
+				であり，積をとると \(\dfrac{\lambda^{k}}{k!}e^{-\lambda}\) ── ポアソン分布 \(\mathrm{Po}(\lambda)\) の確率質量関数が得られる。
+			</p>
+
+			<p>
+				最初の因子が \(1\) になる理由を見ておこう。 \(\dfrac{n!}{(n-k)!}\) は，\(n\) から \(1\) ずつ小さくした数を \(k\) 個かけた積 \(n(n-1)(n-2)\cdots(n-k+1)\) である ── \(n!\) の後ろ \((n-k)\) 個の因子が分母の \((n-k)!\) と打ち消し合い，前半の \(k\) 個が残るのだ。これを分母の \(n^{k}=\underbrace{n\cdot n\cdots n}_{k\ \text{個}}\) で 1 個ずつ割ると
+			</p>
+
+			\[
+			\frac{n!}{(n-k)!\,n^{k}}
+			=\underbrace{\frac{n}{n}\cdot\frac{n-1}{n}\cdot\frac{n-2}{n}\cdots\frac{n-k+1}{n}}_{k\ \text{個}}
+			\ \to\ \underbrace{1\cdot 1\cdot 1\cdots 1}_{k\ \text{個}}=1\qquad(n\to\infty)
+			\]
+
+			<p>
+				となる。 \(k\) を固定して \(n\) だけを大きくすれば，どの分数も \(1\) に近づくからである。 \(\left(1-\frac{\lambda}{n}\right)^{-k}\) が \(1\) に近づくのも同じ理屈だ。残る \(\left(1-\frac{\lambda}{n}\right)^{n}\to e^{-\lambda}\) は，\(e^{x}=\lim_{n\to\infty}\left(1+\frac{x}{n}\right)^{n}\)（付録「<a href="../appendix-exponential-function/">指数関数の定義</a>」）で \(x=-\lambda\) とおいた形である。
+			</p>
+		</details>
+
+		<h2 id="when-each-works">どちらがいつ効くか</h2>
+
+		<p>
+			下のデモは，二項分布 \(\mathrm{Bin}(n,p)\)（青の棒），そのポアソン近似 \(\mathrm{Po}(np)\)（橙の線），正規近似 \(\mathcal{N}(np,\,np(1-p))\)（黒の曲線）を重ねて描く。<sup>※</sup>「\(n\) を大きくするとき何を固定するか」を切り替えて，2 つの近似の振る舞いを観察してほしい。
+		</p>
+
+		<div class="note-side">
+			二項分布・ポアソン分布は確率質量（各 \(k\) での確率），正規分布は確率密度で本来は別物だが，横幅 \(1\) ごとに区切って比べているので，密度と質量をそのまま重ねて見比べてよい。
+		</div>
+
+		<div class="ba-demo" data-init-mode="gaussian" data-init-n="10" data-init-p="0.2" data-init-lambda="5">
+			<div class="ba-controls">
+				<fieldset class="ba-mode">
+					<legend>\(n\) を大きくするとき固定する量</legend>
+					<label><input type="radio" name="ba-mode" value="gaussian" checked> \(p\)（→ 正規近似を見る）</label>
+					<label><input type="radio" name="ba-mode" value="poisson"> \(\lambda=np\)（→ ポアソン近似を見る）</label>
+				</fieldset>
+
+				<div class="ba-slider-row">
+					<label for="ba-n">\(n\)</label>
+					<input type="range" id="ba-n" min="0.7" max="4" step="any">
+					<output id="ba-n-out" for="ba-n">10</output>
+				</div>
+
+				<div class="ba-slider-row" id="ba-p-row">
+					<label for="ba-p">\(p\)</label>
+					<input type="range" id="ba-p" min="-1.7" max="-0.30103" step="any">
+					<output id="ba-p-out" for="ba-p">0.2</output>
+				</div>
+
+				<div class="ba-slider-row" id="ba-lambda-row" hidden>
+					<label for="ba-lambda">\(\lambda\)</label>
+					<input type="range" id="ba-lambda" min="0" max="1.9" step="any">
+					<output id="ba-lambda-out" for="ba-lambda">5</output>
+				</div>
+			</div>
+
+			<div class="ba-readout" role="group" aria-label="現在のパラメータと理論値">
+				<span class="readout-chip">\(n =\) <strong id="ba-r-n">--</strong></span>
+				<span class="readout-chip">\(p =\) <strong id="ba-r-p">--</strong></span>
+				<span class="readout-chip">\(\lambda=np =\) <strong id="ba-r-lambda">--</strong></span>
+				<span class="readout-chip">\(\sqrt{np(1-p)} =\) <strong id="ba-r-sd">--</strong></span>
+			</div>
+			<p id="ba-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+
+			<div class="ba-legend" aria-hidden="true">
+				<span class="ba-key"><span class="ba-swatch ba-sw-binom"></span>二項分布 \(\mathrm{Bin}(n,p)\)</span>
+				<span class="ba-key"><span class="ba-swatch ba-sw-poisson"></span>ポアソン近似 \(\mathrm{Po}(np)\)</span>
+				<span class="ba-key"><span class="ba-swatch ba-sw-normal"></span>正規近似 \(\mathcal{N}(np,np(1-p))\)</span>
+			</div>
+
+			<div class="ba-chart-wrap">
+				<svg id="ba-chart" viewBox="0 0 640 320" role="img" aria-label="横軸を成功回数 k，縦軸を確率とした近似の比較。二項分布を青い棒，ポアソン近似を橙の折れ線，正規近似を黒い曲線で示す"></svg>
+			</div>
+		</div>
+
+		<p>
+			<strong>\(p\) を固定して \(n\) を増やすと</strong>（正規近似モード），正規近似（黒）は二項分布（青）によく乗ってくる。 \(p\) が \(1/2\) に近いほど早く，\(0\) や \(1\) に近いほど大きな \(n\) でよく重なる。一方，ポアソン近似（橙）は，\(p\) が小さくないかぎり二項分布より幅広で，ぴたりとは重ならない。ポアソン近似は「\(p\) が小さい」ことを使う道具だからだ。
+		</p>
+
+		<p>
+			<strong>\(\lambda=np\) を固定して \(n\) を増やすと</strong>（ポアソン近似モード），\(p\) は小さくなっていき，ポアソン近似（橙）は二項分布（青）によく乗る。正規近似（黒）が合うかどうかは \(\lambda\) の大きさで決まる。 \(\lambda\) が小さいうちは，二項分布は \(0\) の近くに寄った，右に裾を引く非対称な形になる。左右対称な正規分布ではこの非対称さを捉えられず，左の裾が負の値まではみ出してしまう。 \(\lambda\) を大きくしていくと，ポアソン分布自身が正規分布に近づき，正規近似もだんだんよく合ってくる。
+		</p>
+
+		<h2 id="three-distributions">三者の関係</h2>
+
+		<div class="ba-figure ba-figure-triangle">
+			<svg id="ba-triangle" viewBox="0 0 620 300" role="img" aria-label="二項分布から正規分布とポアソン分布への近似関係。二項分布を青，ポアソン分布を橙，正規分布をグレーで示し，各分布を矢印で結ぶ"></svg>
+		</div>
+
+		<p>
+			まとめると，二項分布からは 2 本の道が伸びている。 \(p\) を保って \(n\) を増やせば正規分布へ，\(\lambda=np\) を保って \(n\) を増やせばポアソン分布へ。そしてポアソン分布自身も，\(\lambda\) が大きくなると正規分布に近づく（\(\mathrm{Po}(\lambda)\approx\mathcal{N}(\lambda,\lambda)\)）。つまり \(\lambda\) が大きく，かつ \(p\) が小さい（\(n\) が \(\lambda\) よりずっと大きい）領域では，三者の形がよく重なる。
+		</p>
+
+		<p>
+			実務的な使い分けはシンプルだ。<strong>めったに起きない事象（\(p\) が小さい）ならポアソン近似</strong>。このとき \(n\) は大きくなくてよい ── 効き目を決めるのは \(n\) の大きさではなく \(p\) の小ささだからだ。<strong>そうでなく \(n\) が大きいなら正規近似</strong>。目安は，山の中心 \(np\) が両側の壁（\(k=0\) と \(k=n\)）から標準偏差 \(\sigma=\sqrt{np(1-p)}\) の \(2\)〜\(3\) 倍以上離れていること ── 左の壁までの距離が \(np\)，右の壁までが \(n(1-p)\) なので，結局この 2 つがともに \(\sigma\) の数倍あればよい。
+		</p>
+
+		<p>
+			たとえば \(n=50,\ p=0.2\) なら \(np=10,\ n(1-p)=40,\ \sigma\approx2.8\) で，山は近い側の壁（\(k=0\)）からでも約 \(3.5\sigma\) 離れており，正規近似がよく効く。逆に，同じ \(n=50\) でも \(p=0.02\) だと \(np=1,\ n(1-p)=49,\ \sigma\approx0.99\) で山が左の壁に張り付いてしまい，正規近似は苦しい ── こちらは \(p\) が小さいので，ポアソン近似の出番だ。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

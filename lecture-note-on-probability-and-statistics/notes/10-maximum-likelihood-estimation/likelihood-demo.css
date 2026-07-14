@@ -1,0 +1,19 @@
+figure.likelihood-fig {
+	margin: 1.4em auto;
+	max-width: 640px;
+}
+figure.likelihood-fig .likelihood-panels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	justify-content: center;
+}
+figure.likelihood-fig .likelihood-panels svg {
+	flex: 1 1 260px;
+	max-width: 310px;
+	min-width: 0;
+	height: auto;
+	display: block;
+	user-select: none;
+}
+/* figcaption は assets/style.css の figure figcaption 共通規格に任せる */

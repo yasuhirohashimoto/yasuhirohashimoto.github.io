@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Cube Camera Explorer</title>
+<!--
+  立方体フレームの投影パラメータをブラウザ上で対話的に探索する調整用ツール
+  （公開ページからは参照されない。同ディレクトリの _cube_reference.png と対で使う）。
+  決めたパラメータは notes/12-central-limit-theorem/clt-demo.js の
+  「投影パラメータ」ブロックに手で反映する。
+-->
+<style>
+  body {
+    font-family: system-ui, -apple-system, "Hiragino Sans", sans-serif;
+    max-width: 1400px;
+    margin: 1em auto;
+    padding: 0 1em;
+    color: #222;
+  }
+  h1 { font-size: 1.3em; margin: 0 0 .3em; }
+  .intro { font-size: .9rem; color: #555; margin-bottom: 1em; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.5em;
+    align-items: start;
+  }
+
+  .controls { font-size: .9rem; }
+  .ctrl-group {
+    margin-bottom: 0.9em;
+    padding: 0.7em 0.8em;
+    background: #f5f6f8;
+    border-radius: 6px;
+  }
+  .ctrl-group h3 {
+    margin: 0 0 .55em;
+    font-size: .92rem;
+    font-weight: 600;
+    color: #444;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 30px 1fr 70px;
+    gap: .45em;
+    align-items: center;
+    margin-bottom: .3em;
+  }
+  .row label { font-variant-numeric: tabular-nums; color: #555; }
+  .row input[type=range] { width: 100%; height: 18px; }
+  .row input[type=number] {
+    width: 100%;
+    padding: 3px 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-variant-numeric: tabular-nums;
+    font-family: inherit;
+    font-size: .85rem;
+  }
+  select {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: .85rem;
+  }
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: .5em;
+    margin-top: .4em;
+    font-size: .85rem;
+  }
+  button {
+    padding: .5em 1em;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: .85rem;
+    margin-right: .4em;
+  }
+  button:hover { background: #f0f0f0; }
+
+  .viewport {
+    position: relative;
+    width: 700px;
+    max-width: 100%;
+  }
+  .viewport svg {
+    width: 700px;
+    height: 700px;
+    border: 1px solid #ddd;
+    background: white;
+    display: block;
+  }
+
+  pre {
+    background: #f5f6f8;
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: .82em;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    line-height: 1.5;
+  }
+  .params-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1.5em 0 .4em;
+  }
+  .params-header h3 { margin: 0; font-size: 1rem; }
+  .note { font-size: .8rem; color: #777; margin-top: .3em; }
+</style>
+</head>
+<body>
+
+<h1>Cube Frame Camera Explorer</h1>
+<p class="intro">
+  視点 (eye) ・ターゲット ・ ビュー鉛直 (view vertical) ・スケールを動かして、参照画像のフレームと一致させる。決まった値は下部の snippet をコピー。
+</p>
+
+<div class="layout">
+  <div class="controls">
+    <div class="ctrl-group">
+      <h3>Camera (球座標, 立方体中心基準)</h3>
+      <div class="row"><label>r</label><input type="range" id="camR" min="1.5" max="10" step="0.05" value="4"><input type="number" id="camR-num" step="0.05" value="4"></div>
+      <div class="row"><label>θ°</label><input type="range" id="camTheta" min="-180" max="180" step="1" value="-30"><input type="number" id="camTheta-num" step="1" value="-30"></div>
+      <div class="row"><label>φ°</label><input type="range" id="camPhi" min="-89" max="89" step="1" value="20"><input type="number" id="camPhi-num" step="1" value="20"></div>
+      <div class="note" style="font-size:.75rem; color:#777; margin-top:.3em">
+        θ: Z軸まわりの方位 / φ: XY平面からの仰角
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <h3>Cube rotation (立方体中心まわり, 順序 Z→Y→X)</h3>
+      <div class="row"><label>αZ°</label><input type="range" id="rotZ" min="-180" max="180" step="1" value="0"><input type="number" id="rotZ-num" step="1" value="0"></div>
+      <div class="row"><label>αY°</label><input type="range" id="rotY" min="-180" max="180" step="1" value="0"><input type="number" id="rotY-num" step="1" value="0"></div>
+      <div class="row"><label>αX°</label><input type="range" id="rotX" min="-180" max="180" step="1" value="0"><input type="number" id="rotX-num" step="1" value="0"></div>
+    </div>
+
+    <div class="ctrl-group">
+      <h3>View vertical (screen up direction)</h3>
+      <select id="vvPreset">
+        <option value="0,0,1" selected>(0, 0, 1) Z軸</option>
+        <option value="1,1,1">(1, 1, 1) 対角線</option>
+        <option value="0,1,0">(0, 1, 0) Y軸</option>
+        <option value="custom">カスタム</option>
+      </select>
+      <div class="row" style="margin-top: .4em"><label>Vx</label><input type="range" id="vvX" min="-1" max="1" step="0.01" value="0"><input type="number" id="vvX-num" step="0.01" value="0"></div>
+      <div class="row"><label>Vy</label><input type="range" id="vvY" min="-1" max="1" step="0.01" value="0"><input type="number" id="vvY-num" step="0.01" value="0"></div>
+      <div class="row"><label>Vz</label><input type="range" id="vvZ" min="-1" max="1" step="0.01" value="1"><input type="number" id="vvZ-num" step="0.01" value="1"></div>
+    </div>
+
+    <div class="ctrl-group">
+      <h3>Render</h3>
+      <div class="row"><label>Scale</label><input type="range" id="scale" min="100" max="3000" step="10" value="1800"><input type="number" id="scale-num" step="10" value="1800"></div>
+      <div class="row"><label>CX</label><input type="range" id="cx" min="0" max="700" step="1" value="350"><input type="number" id="cx-num" step="1" value="350"></div>
+      <div class="row"><label>CY</label><input type="range" id="cy" min="0" max="700" step="1" value="350"><input type="number" id="cy-num" step="1" value="350"></div>
+
+      <div class="toggle-row">
+        <input type="checkbox" id="showRef" checked>
+        <label for="showRef">参照画像を重ねる</label>
+      </div>
+      <div class="row" style="margin-top:.2em"><label>opa</label><input type="range" id="refOpacity" min="0" max="1" step="0.02" value="0.45"><input type="number" id="refOpacity-num" step="0.02" value="0.45"></div>
+
+      <div class="toggle-row">
+        <input type="checkbox" id="showVerts">
+        <label for="showVerts">頂点をマーク（ラベル付き）</label>
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="showAxes">
+        <label for="showAxes">原点の軸 (X赤/Y緑/Z青)</label>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <h3>Cross-section</h3>
+      <select id="sectionMode">
+        <option value="slider" selected>スライダーで一枚</option>
+        <option value="all">全断面を重ね描き</option>
+        <option value="none">表示しない</option>
+      </select>
+      <div class="row" style="margin-top:.4em">
+        <label>x</label>
+        <input type="range" id="sliderX" min="0" max="1" step="0.005" value="0.5">
+        <input type="number" id="sliderX-num" step="0.005" value="0.5">
+      </div>
+      <div class="toggle-row" style="font-size:.78rem; color:#555">
+        <span id="sliderInfo"></span>
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="showDiagonal" checked>
+        <label for="showDiagonal">対角線と点 P=(x,x,x) を表示</label>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <button id="preset-orig">プリセット：対角線を上に</button>
+      <button id="preset-iso">プリセット：標準iso</button>
+      <button id="reset">リセット</button>
+    </div>
+  </div>
+
+  <div class="viewport">
+    <svg id="cube-svg" viewBox="0 0 700 700"></svg>
+  </div>
+</div>
+
+<div class="params-header">
+  <h3>現在のパラメータ（コピー用）</h3>
+  <button id="copy">スニペットをコピー</button>
+</div>
+<pre id="snippet"></pre>
+<p class="note">「参照画像を重ねる」がオンの場合、参照画像の左の cube が cube center に合うように内部で配置・スケール調整しています（reference image は 1878×625 で左 cube 領域 ~625×625）。</p>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+(() => {
+  const svg = d3.select("#cube-svg");
+  const W = 700, H = 700;
+
+  // ===== 参照画像の配置 =====
+  // 元画像は 1878×625（cube 3枚並び）。左 cube だけを切り出して表示。
+  // 左 cube パネルは 0..625 横、0..625 縦。中心は (296, 287)。
+  // SVG (700×700) の中心 (350, 350) に左 cube 中心を合わせるため、
+  // 画像を配置: scaleFactor = (好きな描画サイズ) / 625
+  // 例として left cube を 600px に表示 → scaleFactor = 600/625 = 0.96
+  // 画像左上を SVG (350 - 0.96*296, 350 - 0.96*287) ≈ (66, 75) に置く
+
+  const refScale = 0.96;
+  const refImgX = 350 - refScale * 296;
+  const refImgY = 350 - refScale * 287;
+
+  // clip path で左 cube のみ表示
+  const defs = svg.append("defs");
+  defs.append("clipPath").attr("id", "leftCubeClip").append("rect")
+    .attr("x", refImgX).attr("y", refImgY)
+    .attr("width", refScale * 625).attr("height", refScale * 625);
+
+  const refImage = svg.append("image")
+    .attr("href", "_cube_reference.png")
+    .attr("x", refImgX).attr("y", refImgY)
+    .attr("width", refScale * 1878).attr("height", refScale * 625)
+    .attr("clip-path", "url(#leftCubeClip)")
+    .attr("opacity", 0.45);
+
+  // ===== 立方体描画用グループ =====
+  const cubeG = svg.append("g");
+
+  // ===== 立方体頂点・辺 =====
+  const vertices = [];
+  for (let x = 0; x < 2; x++)
+    for (let y = 0; y < 2; y++)
+      for (let z = 0; z < 2; z++)
+        vertices.push([x, y, z]);
+
+  const edges = [];
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = i + 1; j < vertices.length; j++) {
+      const diff = vertices[i].filter((v, k) => v !== vertices[j][k]).length;
+      if (diff === 1) edges.push([vertices[i], vertices[j]]);
+    }
+  }
+
+  // ===== 立方体断面 (s = x+y+z) を計算 =====
+  function cubeSection(s) {
+    const cubeVerts = vertices;
+    const cubeEdges = [];
+    for (let i = 0; i < cubeVerts.length; i++)
+      for (let j = i + 1; j < cubeVerts.length; j++) {
+        const diff = cubeVerts[i].filter((v, k) => v !== cubeVerts[j][k]).length;
+        if (diff === 1) cubeEdges.push([cubeVerts[i], cubeVerts[j]]);
+      }
+    const pts = [];
+    cubeEdges.forEach(([a, b]) => {
+      const sa = a[0] + a[1] + a[2];
+      const sb = b[0] + b[1] + b[2];
+      const denom = sb - sa;
+      if (denom === 0) return;
+      const t = (s - sa) / denom;
+      if (t < -1e-9 || t > 1 + 1e-9) return;
+      pts.push([a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), a[2] + t * (b[2] - a[2])]);
+    });
+    const unique = Array.from(new Map(pts.map(p => [p.map(v => v.toFixed(6)).join(","), p])).values());
+    if (unique.length < 3) return [];
+    const c = [d3.mean(unique, p => p[0]), d3.mean(unique, p => p[1]), d3.mean(unique, p => p[2])];
+    const e1 = [1/Math.sqrt(2), -1/Math.sqrt(2), 0];
+    const e2 = [1/Math.sqrt(6), 1/Math.sqrt(6), -2/Math.sqrt(6)];
+    return unique.sort((a, b) => {
+      const da = [a[0]-c[0], a[1]-c[1], a[2]-c[2]];
+      const db = [b[0]-c[0], b[1]-c[1], b[2]-c[2]];
+      const aa = Math.atan2(da[0]*e2[0]+da[1]*e2[1]+da[2]*e2[2], da[0]*e1[0]+da[1]*e1[1]+da[2]*e1[2]);
+      const ab = Math.atan2(db[0]*e2[0]+db[1]*e2[1]+db[2]*e2[2], db[0]*e1[0]+db[1]*e1[1]+db[2]*e1[2]);
+      return aa - ab;
+    });
+  }
+
+  const sectionsByRegion = [
+    { color: "#df8077", ss: [0.25, 0.55, 0.85] },
+    { color: "#7c91ca", ss: [1.15, 1.35, 1.5, 1.65, 1.85] },
+    { color: "#7cc094", ss: [2.15, 2.45, 2.75] }
+  ];
+
+  // ===== 投影計算 =====
+  const sub = (a, b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+  const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  const cross = (a, b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  const norm = v => { const l = Math.hypot(v[0], v[1], v[2]); return [v[0]/l, v[1]/l, v[2]/l]; };
+
+  function makeProjector(params) {
+    const fwd = norm(sub(params.target, params.eye));
+    const vv = norm(params.viewVert);
+    const pf = dot(vv, fwd);
+    const upRaw = sub(vv, [pf*fwd[0], pf*fwd[1], pf*fwd[2]]);
+    if (Math.hypot(...upRaw) < 1e-6) return null; // degenerate
+    const up = norm(upRaw);
+    const right = norm(cross(fwd, up));
+    return (p) => {
+      const we = sub(p, params.eye);
+      const vsx = dot(right, we);
+      const vsy = dot(up, we);
+      const vsz = dot(fwd, we);
+      if (vsz <= 1e-6) return null;
+      return [params.cx + (vsx/vsz) * params.scale, params.cy - (vsy/vsz) * params.scale];
+    };
+  }
+
+  // ===== UI ハンドリング =====
+  function pair(rangeId, numId) {
+    const r = document.getElementById(rangeId);
+    const n = document.getElementById(numId);
+    r.addEventListener("input", () => { n.value = r.value; update(); });
+    n.addEventListener("input", () => { r.value = n.value; update(); });
+  }
+  pair("camR", "camR-num");
+  pair("camTheta", "camTheta-num");
+  pair("camPhi", "camPhi-num");
+  pair("rotX", "rotX-num");
+  pair("rotY", "rotY-num");
+  pair("rotZ", "rotZ-num");
+  pair("vvX", "vvX-num");
+  pair("vvY", "vvY-num");
+  pair("vvZ", "vvZ-num");
+  pair("scale", "scale-num");
+  pair("cx", "cx-num");
+  pair("cy", "cy-num");
+  pair("refOpacity", "refOpacity-num");
+  pair("sliderX", "sliderX-num");
+
+  document.getElementById("vvPreset").addEventListener("change", (e) => {
+    const v = e.target.value;
+    if (v === "custom") return;
+    const parts = v.split(",").map(Number);
+    document.getElementById("vvX").value = parts[0];
+    document.getElementById("vvX-num").value = parts[0];
+    document.getElementById("vvY").value = parts[1];
+    document.getElementById("vvY-num").value = parts[1];
+    document.getElementById("vvZ").value = parts[2];
+    document.getElementById("vvZ-num").value = parts[2];
+    update();
+  });
+
+  document.getElementById("showRef").addEventListener("change", update);
+  document.getElementById("showVerts").addEventListener("change", update);
+  document.getElementById("showAxes").addEventListener("change", update);
+  document.getElementById("sectionMode").addEventListener("change", update);
+  document.getElementById("showDiagonal").addEventListener("change", update);
+
+  document.getElementById("reset").addEventListener("click", () => {
+    setParams({ camR: 4, camTheta: -30, camPhi: 20, rotX: 0, rotY: 0, rotZ: 0, viewVert: [0,0,1], scale: 1800, cx: 350, cy: 350 });
+  });
+  document.getElementById("preset-orig").addEventListener("click", () => {
+    // 立方体の (1,1,1) 対角線を画面上向きに揃える Z→Y→X 回転
+    // αZ = -45°, αY = -54.7356° (= -atan(√2)), αX = 0
+    setParams({ camR: 4, camTheta: -90, camPhi: 0, rotX: 0, rotY: -54.7356, rotZ: -45, viewVert: [0,0,1], scale: 1800, cx: 350, cy: 350 });
+  });
+  document.getElementById("preset-iso").addEventListener("click", () => {
+    setParams({ camR: 4, camTheta: -45, camPhi: 30, rotX: 0, rotY: 0, rotZ: 0, viewVert: [0,0,1], scale: 1800, cx: 350, cy: 350 });
+  });
+
+  document.getElementById("copy").addEventListener("click", () => {
+    const text = document.getElementById("snippet").innerText;
+    navigator.clipboard.writeText(text);
+    const btn = document.getElementById("copy");
+    const original = btn.innerText;
+    btn.innerText = "コピーしました";
+    setTimeout(() => btn.innerText = original, 1200);
+  });
+
+  function setParams(p) {
+    const setVal = (id, v) => { document.getElementById(id).value = v; document.getElementById(id+"-num").value = v; };
+    setVal("camR", p.camR); setVal("camTheta", p.camTheta); setVal("camPhi", p.camPhi);
+    setVal("rotX", p.rotX); setVal("rotY", p.rotY); setVal("rotZ", p.rotZ);
+    setVal("vvX", p.viewVert[0]); setVal("vvY", p.viewVert[1]); setVal("vvZ", p.viewVert[2]);
+    setVal("scale", p.scale); setVal("cx", p.cx); setVal("cy", p.cy);
+    update();
+  }
+
+  // 立方体中心
+  const cubeCenter = [0.5, 0.5, 0.5];
+
+  // 球座標 → デカルト座標（立方体中心基準）
+  function sphericalToEye(r, thetaDeg, phiDeg) {
+    const t = thetaDeg * Math.PI / 180;
+    const p = phiDeg * Math.PI / 180;
+    return [
+      cubeCenter[0] + r * Math.cos(p) * Math.cos(t),
+      cubeCenter[1] + r * Math.cos(p) * Math.sin(t),
+      cubeCenter[2] + r * Math.sin(p)
+    ];
+  }
+
+  // Z→Y→X 順で回転（立方体中心まわり）
+  function rotatePoint(p, axDeg, ayDeg, azDeg) {
+    const ax = axDeg * Math.PI / 180;
+    const ay = ayDeg * Math.PI / 180;
+    const az = azDeg * Math.PI / 180;
+    let x = p[0] - cubeCenter[0];
+    let y = p[1] - cubeCenter[1];
+    let z = p[2] - cubeCenter[2];
+    // Z
+    const cz = Math.cos(az), sz = Math.sin(az);
+    [x, y] = [x*cz - y*sz, x*sz + y*cz];
+    // Y
+    const cy = Math.cos(ay), sy = Math.sin(ay);
+    [x, z] = [x*cy + z*sy, -x*sy + z*cy];
+    // X
+    const cx = Math.cos(ax), sx = Math.sin(ax);
+    [y, z] = [y*cx - z*sx, y*sx + z*cx];
+    return [x + cubeCenter[0], y + cubeCenter[1], z + cubeCenter[2]];
+  }
+
+  function getParams() {
+    const v = (id) => parseFloat(document.getElementById(id).value);
+    const camR = v("camR"), camTheta = v("camTheta"), camPhi = v("camPhi");
+    const rotX = v("rotX"), rotY = v("rotY"), rotZ = v("rotZ");
+    return {
+      camR, camTheta, camPhi,
+      rotX, rotY, rotZ,
+      eye: sphericalToEye(camR, camTheta, camPhi),
+      target: cubeCenter.slice(),
+      viewVert: [v("vvX"), v("vvY"), v("vvZ")],
+      scale: v("scale"),
+      cx: v("cx"),
+      cy: v("cy")
+    };
+  }
+
+  function update() {
+    const params = getParams();
+    const projRaw = makeProjector(params);
+    // 立方体回転を適用してから投影
+    const project = (p) => projRaw ? projRaw(rotatePoint(p, params.rotX, params.rotY, params.rotZ)) : null;
+
+    cubeG.selectAll("*").remove();
+    refImage.attr("display", document.getElementById("showRef").checked ? null : "none");
+    refImage.attr("opacity", parseFloat(document.getElementById("refOpacity").value));
+
+    if (!projRaw) {
+      cubeG.append("text").attr("x", 20).attr("y", 30)
+        .attr("fill", "red").text("[Degenerate] view_vert と forward が平行です");
+      writeSnippet(params);
+      return;
+    }
+
+    // 軸（原点の RGB）
+    if (document.getElementById("showAxes").checked) {
+      const O = project([0,0,0]);
+      const ax = project([0.3, 0, 0]);
+      const ay = project([0, 0.3, 0]);
+      const az = project([0, 0, 0.3]);
+      if (O && ax) cubeG.append("line").attr("x1",O[0]).attr("y1",O[1]).attr("x2",ax[0]).attr("y2",ax[1]).attr("stroke","#e44").attr("stroke-width",2);
+      if (O && ay) cubeG.append("line").attr("x1",O[0]).attr("y1",O[1]).attr("x2",ay[0]).attr("y2",ay[1]).attr("stroke","#3a3").attr("stroke-width",2);
+      if (O && az) cubeG.append("line").attr("x1",O[0]).attr("y1",O[1]).attr("x2",az[0]).attr("y2",az[1]).attr("stroke","#36c").attr("stroke-width",2);
+    }
+
+    // ワイヤフレーム
+    edges.forEach(([a, b]) => {
+      const pa = project(a), pb = project(b);
+      if (!pa || !pb) return;
+      cubeG.append("line")
+        .attr("x1", pa[0]).attr("y1", pa[1])
+        .attr("x2", pb[0]).attr("y2", pb[1])
+        .attr("stroke", "#000")
+        .attr("stroke-width", 1.2)
+        .attr("fill", "none");
+    });
+
+    // 断面
+    const colors = { red: "#df8077", blue: "#7c91ca", green: "#7cc094" };
+    const colorForX = (x) => x < 1/3 ? colors.red : (x < 2/3 ? colors.blue : colors.green);
+
+    const mode = document.getElementById("sectionMode").value;
+    const sliderX = parseFloat(document.getElementById("sliderX").value);
+
+    if (mode === "all") {
+      sectionsByRegion.forEach(region => {
+        region.ss.forEach(s => {
+          const polyPts = cubeSection(s).map(project).filter(p => p);
+          if (polyPts.length < 3) return;
+          cubeG.append("polygon")
+            .attr("points", polyPts.map(p => p.join(",")).join(" "))
+            .attr("fill", region.color)
+            .attr("fill-opacity", 0.22)
+            .attr("stroke", region.color)
+            .attr("stroke-width", 1)
+            .attr("stroke-opacity", 0.7);
+        });
+      });
+    } else if (mode === "slider") {
+      const s = 3 * sliderX; // 平面 X+Y+Z = s = 3x
+      const polyPts = cubeSection(s).map(project).filter(p => p);
+      const col = colorForX(sliderX);
+      if (polyPts.length >= 3) {
+        cubeG.append("polygon")
+          .attr("points", polyPts.map(p => p.join(",")).join(" "))
+          .attr("fill", col)
+          .attr("fill-opacity", 0.45)
+          .attr("stroke", col)
+          .attr("stroke-width", 1.4)
+          .attr("stroke-opacity", 0.9);
+      }
+    }
+
+    // 対角線と点 P=(x,x,x)
+    if (document.getElementById("showDiagonal").checked) {
+      const a = project([0, 0, 0]);
+      const b = project([1, 1, 1]);
+      if (a && b) {
+        cubeG.append("line")
+          .attr("x1", a[0]).attr("y1", a[1])
+          .attr("x2", b[0]).attr("y2", b[1])
+          .attr("stroke", "#666")
+          .attr("stroke-dasharray", "4 3")
+          .attr("stroke-width", 1);
+      }
+      if (mode === "slider") {
+        const p = project([sliderX, sliderX, sliderX]);
+        if (p) {
+          cubeG.append("circle")
+            .attr("cx", p[0]).attr("cy", p[1]).attr("r", 4)
+            .attr("fill", colorForX(sliderX))
+            .attr("stroke", "#000").attr("stroke-width", 1);
+          cubeG.append("text")
+            .attr("x", p[0] + 8).attr("y", p[1] + 4)
+            .attr("font-size", 11)
+            .attr("fill", "#222")
+            .text(`P=(${sliderX.toFixed(3)}, ${sliderX.toFixed(3)}, ${sliderX.toFixed(3)})`);
+        }
+      }
+    }
+
+    // スライダー情報
+    const info = document.getElementById("sliderInfo");
+    if (mode === "slider") {
+      const region = sliderX < 1/3 ? "赤 (0 ≤ x < 1/3)" : (sliderX < 2/3 ? "青 (1/3 ≤ x < 2/3)" : "緑 (2/3 ≤ x ≤ 1)");
+      info.innerHTML = `x = ${sliderX.toFixed(3)}, s = X+Y+Z = ${(3*sliderX).toFixed(3)} → ${region}`;
+    } else {
+      info.innerHTML = "";
+    }
+
+    // 頂点マーク
+    if (document.getElementById("showVerts").checked) {
+      vertices.forEach(v => {
+        const p = project(v);
+        if (!p) return;
+        cubeG.append("circle").attr("cx", p[0]).attr("cy", p[1]).attr("r", 4)
+          .attr("fill", "#fff").attr("stroke", "#000").attr("stroke-width", 1.2);
+        cubeG.append("text")
+          .attr("x", p[0] + 7).attr("y", p[1] - 5)
+          .attr("font-size", 10)
+          .attr("font-family", "monospace")
+          .attr("fill", "#444")
+          .text(`(${v.join(",")})`);
+      });
+    }
+
+    writeSnippet(params);
+  }
+
+  function writeSnippet(p) {
+    const fmt = (n) => (Math.round(n * 10000) / 10000).toString();
+    const snippet = `// === Cube projection params ===
+// カメラ（球座標、立方体中心基準）
+const camR     = ${fmt(p.camR)};
+const camTheta = ${fmt(p.camTheta)};  // deg (Z軸まわりの方位)
+const camPhi   = ${fmt(p.camPhi)};    // deg (XY平面からの仰角)
+// 立方体回転 (deg, 順序 Z→Y→X)
+const rotZ     = ${fmt(p.rotZ)};
+const rotY     = ${fmt(p.rotY)};
+const rotX     = ${fmt(p.rotX)};
+// 投影
+const viewVert = [${fmt(p.viewVert[0])}, ${fmt(p.viewVert[1])}, ${fmt(p.viewVert[2])}];
+const scale    = ${fmt(p.scale)};
+const cx       = ${fmt(p.cx)};
+const cy       = ${fmt(p.cy)};
+const cubeCenter = [0.5, 0.5, 0.5];
+
+// 参考：computed eye = [${fmt(p.eye[0])}, ${fmt(p.eye[1])}, ${fmt(p.eye[2])}]
+
+function makeProjector() {
+\tconst d2r = Math.PI / 180;
+\tconst eye = [
+\t\tcubeCenter[0] + camR * Math.cos(camPhi*d2r) * Math.cos(camTheta*d2r),
+\t\tcubeCenter[1] + camR * Math.cos(camPhi*d2r) * Math.sin(camTheta*d2r),
+\t\tcubeCenter[2] + camR * Math.sin(camPhi*d2r)
+\t];
+\tconst sub = (a,b) => [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+\tconst dot = (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+\tconst cross = (a,b) => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+\tconst norm = v => { const l = Math.hypot(v[0],v[1],v[2]); return [v[0]/l, v[1]/l, v[2]/l]; };
+\tconst fwd = norm(sub(cubeCenter, eye));
+\tconst vv = norm(viewVert);
+\tconst pf = dot(vv, fwd);
+\tconst up = norm(sub(vv, [pf*fwd[0], pf*fwd[1], pf*fwd[2]]));
+\tconst right = norm(cross(fwd, up));
+
+\t// 立方体中心まわりの回転 Z→Y→X
+\tconst rotate = (p) => {
+\t\tlet x = p[0]-cubeCenter[0], y = p[1]-cubeCenter[1], z = p[2]-cubeCenter[2];
+\t\tconst cz=Math.cos(rotZ*d2r), sz=Math.sin(rotZ*d2r);
+\t\t[x, y] = [x*cz - y*sz, x*sz + y*cz];
+\t\tconst cy_=Math.cos(rotY*d2r), sy=Math.sin(rotY*d2r);
+\t\t[x, z] = [x*cy_ + z*sy, -x*sy + z*cy_];
+\t\tconst cx_=Math.cos(rotX*d2r), sx=Math.sin(rotX*d2r);
+\t\t[y, z] = [y*cx_ - z*sx, y*sx + z*cx_];
+\t\treturn [x+cubeCenter[0], y+cubeCenter[1], z+cubeCenter[2]];
+\t};
+
+\treturn (p) => {
+\t\tconst r = rotate(p);
+\t\tconst we = [r[0]-eye[0], r[1]-eye[1], r[2]-eye[2]];
+\t\tconst vsx = dot(right, we);
+\t\tconst vsy = dot(up, we);
+\t\tconst vsz = dot(fwd, we);
+\t\treturn [cx + (vsx/vsz)*scale, cy - (vsy/vsz)*scale];
+\t};
+}`;
+    document.getElementById("snippet").innerText = snippet;
+  }
+
+  update();
+})();
+</script>
+</body>
+</html>

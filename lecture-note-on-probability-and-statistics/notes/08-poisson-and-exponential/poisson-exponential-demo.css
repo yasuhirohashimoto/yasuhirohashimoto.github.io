@@ -1,0 +1,47 @@
+.pe-demo {
+	margin: 1.5em auto;
+	max-width: 760px;
+}
+.pe-demo .controls {
+	display: grid;
+	grid-template-columns: max-content 1fr max-content;
+	gap: .55em .7em;
+	align-items: center;
+	max-width: 420px;
+	margin: 0 auto .8em;
+	font-size: .92rem;
+}
+/* スライダー・num-input の見た目は assets/demo-controls.css の共有定義を使う */
+.pe-demo .controls input[type=range] {
+	width: 100%;
+}
+.pe-panels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	justify-content: center;
+}
+.pe-panel {
+	flex: 1 1 320px;
+	max-width: 360px;
+	margin: 0;
+	text-align: center;
+}
+.pe-panel svg {
+	width: 100%;
+	display: block;
+}
+/* figcaption は assets/style.css の figure figcaption 共通規格に任せる */
+
+/* 雑談のツイート引用（widgets.js は読み込まず静的表示） */
+.tweet-quote {
+	max-width: 480px;
+	margin: 1.2em auto;
+	padding: .5em 1em;
+	border-left: 3px solid var(--rule);
+	color: #555;
+	font-size: .95rem;
+}
+.tweet-quote p {
+	margin: 0 0 .4em;
+}

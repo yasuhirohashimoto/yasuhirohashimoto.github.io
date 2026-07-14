@@ -1,0 +1,126 @@
+/* スライダー・数値入力・ボタン・トグルの見た目は assets/demo-controls.css の共有定義を使用。
+   ここにはレイアウト（グリッド・幅）とこのノート固有のチップ類だけを残す。 */
+
+.regression-demo {
+	margin: 1.5em auto;
+	max-width: 560px;
+}
+.regression-demo .controls {
+	position: relative; /* 正解チップ（オーバーレイ）の配置基準 */
+	margin: 0 auto .6em;
+	display: grid;
+	grid-template-columns: max-content 1fr max-content;
+	gap: .55em .7em;
+	align-items: center;
+	max-width: 480px;
+	font-size: .92rem;
+}
+.regression-demo .controls label {
+	grid-column: 1;
+	text-align: right;
+	white-space: nowrap;
+	margin: 0;
+	font-weight: 500;
+}
+.regression-demo .controls input[type=range] {
+	grid-column: 2;
+	width: 100%;
+}
+.regression-demo .controls .num-input {
+	grid-column: 3;
+}
+/* 正解チップはオーバーレイ（絶対配置）: 表示・非表示でスライダー等の
+   位置や幅が変わらないよう、グリッドのトラック計算に参加させない。
+   絶対配置のグリッド子要素は指定したグリッド領域（3列目=数値入力のセル）を
+   包含ブロックにするので、その右外側に浮かべる */
+.regression-demo .truth-cell {
+	position: absolute;
+	grid-column: 3 / 4; /* 絶対配置のグリッド子は auto の終端がコンテナ端まで広がるため両端を明示 */
+	left: calc(100% + .5em);
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--viz-green-text);
+	background: color-mix(in srgb, var(--viz-green) 10%, transparent);
+	white-space: nowrap;
+	font-size: .83em;
+	padding: 2px 8px;
+	border-radius: 4px;
+}
+#reg-a-true-cell { grid-row: 1 / 2; }
+#reg-b-true-cell { grid-row: 2 / 3; }
+.regression-demo .truth-cell .truth-num {
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.regression-demo .toggle-label {
+	font-size: .92rem;
+}
+.regression-demo .button-row {
+	text-align: center;
+	margin: .5em 0 .6em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: .9em;
+}
+.regression-demo svg {
+	width: 100%;
+	max-width: 520px;
+	display: block;
+	margin: 0 auto;
+	user-select: none;
+}
+.regression-demo .readout {
+	position: relative; /* 正解 RSS チップ（オーバーレイ）の配置基準 */
+	text-align: center;
+	margin-top: .8em;
+	font-size: .92rem;
+	font-variant-numeric: tabular-nums;
+}
+.regression-demo .readout .rss-num {
+	font-weight: 700;
+	color: var(--viz-label);
+}
+/* 正解 RSS チップもオーバーレイ: 表示しても中央寄せの RSS 表示が動かない */
+.regression-demo .truth-rss-cell {
+	position: absolute;
+	left: calc(50% + 7.2em);
+	top: 50%;
+	transform: translateY(-50%);
+	white-space: nowrap;
+	color: var(--viz-green-text);
+	padding: 2px 10px;
+	background: color-mix(in srgb, var(--viz-green) 10%, transparent);
+	border-radius: 4px;
+}
+.regression-demo .truth-rss-cell .truth-rss {
+	font-weight: 700;
+	color: var(--viz-green-text);
+}
+@media (max-width: 480px) {
+	.regression-demo .controls {
+		grid-template-columns: max-content 1fr;
+		grid-auto-flow: row dense;
+	}
+	.regression-demo .controls .num-input {
+		grid-column: 2;
+	}
+	.regression-demo .controls input[type=range] {
+		grid-column: 1 / -1;
+	}
+	/* 狭幅ではオーバーレイの右余白がないため、通常フローの行として表示する
+	   （display は指定しない: hidden 属性の display:none を上書きしないため） */
+	.regression-demo .controls .truth-cell {
+		position: static;
+		grid-column: 1 / -1;
+		transform: none;
+		justify-self: center;
+	}
+	#reg-a-true-cell { grid-row: auto; }
+	#reg-b-true-cell { grid-row: auto; }
+	.regression-demo .truth-rss-cell {
+		position: static;
+		transform: none;
+		margin-left: .5em;
+	}
+}

@@ -1,0 +1,46 @@
+.distribution-map {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.1em auto 1.5em;
+	font-size: .92rem;
+}
+.distribution-map th,
+.distribution-map td {
+	border: 1px solid var(--viz-grid);
+	padding: .65em .8em;
+	vertical-align: middle;
+	text-align: center;
+}
+/* 外枠のみ濃いめの罫線にして内部格子と階層をつける */
+.distribution-map tr:first-child th {
+	border-top-color: var(--rule);
+}
+.distribution-map tr:last-child td {
+	border-bottom-color: var(--rule);
+}
+.distribution-map th:first-child,
+.distribution-map td:first-child {
+	border-left-color: var(--rule);
+}
+.distribution-map th:last-child,
+.distribution-map td:last-child {
+	border-right-color: var(--rule);
+}
+.distribution-map th {
+	font-weight: normal;
+}
+.distribution-map th:first-child,
+.distribution-map td:first-child {
+	width: 32%;
+}
+.distribution-map td:first-child {
+	background: var(--ui-chip-bg);
+	white-space: nowrap;
+}
+@media (max-width: 720px) {
+	.distribution-map {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+}

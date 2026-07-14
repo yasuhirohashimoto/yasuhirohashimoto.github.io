@@ -1,0 +1,47 @@
+.ht-figure {
+	margin: 1.4em auto;
+	max-width: 820px;
+	text-align: center;
+}
+
+.ht-figure img,
+.ht-figure svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* 左=α・右=p値 の2枚のSVGを並べ、狭幅では縦積みにする（ノート15の .ci-diagram 方式） */
+.ht-panels {
+	display: flex;
+	justify-content: center;
+	gap: .4em;
+	flex-wrap: wrap;
+}
+
+.ht-panels svg {
+	flex: 1 1 300px;
+	min-width: 0;
+	max-width: 410px;
+}
+
+/* このノートの図キャプションは左寄せ（共通規格は中央寄せ）。他の指定は共通規格に任せる */
+.ht-figure figcaption {
+	text-align: left;
+}
+
+.ht-figure--center-caption figcaption {
+	text-align: center;
+}
+
+@media (max-width: 540px) {
+	.ht-panels {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.ht-panels svg {
+		flex: 0 0 auto;
+		width: 100%;
+	}
+}

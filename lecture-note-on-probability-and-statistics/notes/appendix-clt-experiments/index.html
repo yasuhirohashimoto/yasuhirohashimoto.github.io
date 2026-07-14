@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="中心極限定理の実験（ベキ分布）── 裾の重いベキ分布のもとで標本平均はどこまで正規分布に近づくのか。分散の発散と収束の遅さを実験で観察する読み物。">
+	<title>中心極限定理の実験 ── ベキ分布 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="./clt-experiments.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="./clt-experiments-data.js" defer></script>
+	<script src="./clt-experiments.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>中心極限定理の実験 ── ベキ分布</h1>
+
+		<p>
+			確率密度が \(f(x)\propto x^{-\gamma}\) のように \(x\) のベキ関数に比例して減っていく分布を <strong>ベキ分布</strong> (power-law distribution) と呼ぶ ── 正の定数 \(\gamma\) を <strong>ベキ指数</strong> (power exponent) という。指数分布と同じように確率密度が単調に減少する分布だが，\(e^{-\lambda x}\) で急激に減衰する指数分布に比べ，ベキ関数の減衰はずっと緩やかで，大きな値が出る確率がなかなか 0 にならない。
+		</p>
+
+		<p>
+			この違いは両対数グラフ（横軸・縦軸ともに対数目盛）で見ると明らかである。ベキ分布は \(\log f = -\gamma\log x + \text{const}\) なので <strong>傾き \(-\gamma\) の直線</strong> になり，指数分布は急激に下へ折れ曲がる。裾（\(x\) の大きな側）でベキ分布のほうがずっと上にあること ── これが「減衰が緩やか＝裾が重い」ということである。こうした裾は <a href="#misc"><strong>重い裾</strong> (heavy tail) あるいは <strong>太い裾</strong> (fat tail)</a> と呼ばれる。なお，次の図では縦軸を \(f(x)/f(1)\) とし，どの曲線も \(x=1\) で高さを 1 に揃えている。
+		</p>
+
+		<div class="clt-figure clt-figure--loglog">
+			<svg id="clt-loglog" viewBox="0 0 540 300" role="img" aria-label="横軸を x，縦軸を f(x)/f(1) とした両対数グラフで，どの曲線も x equals 1 で高さを 1 に揃え，青いベキ分布の直線と橙の指数分布の曲線の減衰を比較する図"></svg>
+		</div>
+
+		<p>
+			本ノートでは，ベキ指数 \(\gamma\) をもつベキ分布に従う \(n\) 個の独立な確率変数を \(X_1, X_2, \ldots, X_n \sim \mathrm{Power}(\gamma, x_{\min}, x_{\max})\) とおき，その標本平均 \(\bar{X}_n=\frac{1}{n}\sum_{i=1}^nX_i\) がどこまで正規分布に近づくか ── <a href="../12-central-limit-theorem/">中心極限定理</a>の効き具合を実験する。ベキ分布の確率密度関数は
+		</p>
+
+		\[
+		f(x;\gamma, x_{\min}, x_{\max})=\frac{x^{-\gamma}}{\int_{x_{\min}}^{x_{\max}}x^{-\gamma}dx}\qquad(0&lt;x_{\min}\leq x\leq x_{\max})
+		\]
+
+		<p>
+			で与えられる。減衰が緩やかであることの帰結として，\(X\) が上限をもたない場合，\(2&lt;\gamma\leq 3\) で分散が，\(1&lt;\gamma\leq 2\) で平均が発散する（\(\gamma\leq 1\) では分布自体が定義できない）。これは期待値の定義
+		</p>
+
+		\[
+		\begin{aligned}
+		E[X;\gamma=2,x_{\min}=1,x_{\max}=\infty]&=\int_1^{\infty}x\cdot f(x;2,1,\infty)dx=\int_1^{\infty}\frac{x^{-1}}{\int_1^{\infty}x^{-2}dx}dx=\left[\frac{\ln|x|}{1}\right]_1^{\infty}=\infty,\\
+		E[X^2;\gamma=2,x_{\min}=1,x_{\max}=\infty]&=\int_1^{\infty}x^2\cdot f(x;2,1,\infty)dx=\int_1^{\infty}\frac{1}{\int_1^{\infty}x^{-2}dx}dx=\left[\frac{x}{1}\right]_1^{\infty}=\infty
+		\end{aligned}
+		\]
+
+		<p>
+			からも明らかである。こうした分散が発散する分布ではそもそも中心極限定理が成り立たない。しかし，実世界において観測される量は一般に有限であり，確率変数の値に上限を設けることにも合理性があるだろう。ここでは \(X\) の最大値 \(x_{\max}=10^3\)，\(X\) の最小値 \(x_{\min}=1\)，サンプル数 \(m=10^6\) に固定し，\(\gamma\) と \(n\) の条件を変えながら，\(\bar{X}_n\) の分布が正規分布にどこまで近づくかを見ていこう。
+		</p>
+
+		<h2 id="gamma-2">\(\gamma=2\) の場合</h2>
+
+		<p>
+			\(X\) の上限を設けない場合，期待値は発散し，期待値が発散するので分散はそもそも定義できない。上限を \(x_{\max}=10^3\) にした場合の期待値と分散は以下：
+		</p>
+
+		\[
+		\begin{aligned}
+		E[X]&=\int_1^{1000}x\cdot\frac{x^{-2}}{\int_1^{1000}x^{-2}dx}dx=\frac{\left[\ln|x|\right]_1^{1000}}{0.999}=6.91\ldots,\\
+		V[X]&=\int_1^{1000}x^2\cdot\frac{x^{-2}}{\int_1^{1000}x^{-2}dx}dx-E[X]^2=\frac{\left[x\right]_1^{1000}}{0.999}-E[X]^2=1000-(6.91\ldots)^2=952.18\ldots.
+		\end{aligned}
+		\]
+
+		<figure class="clt-figure clt-figure-wide">
+			<svg id="clt-grid-p2" viewBox="0 0 880 454" role="img" aria-label="横軸を標本平均，縦軸を度数とし，ベキ指数 gamma equals 2 について n equals 1，10，100，10 の 4 乗の青いヒストグラムと灰色の正規分布曲線を比較する図"></svg>
+			<figcaption>各パネルの右端のビンは，表示範囲より大きな値の度数の累積。</figcaption>
+		</figure>
+
+		<p>
+			各パネルでヒストグラムの右端が高いのは，表示範囲より大きな値の度数をまとめて累積しているため。たとえば \(n=1\) のパネル（\(\bar{X}_1=X\) そのもの）では，目視では 20 あたりを超えると度数はほぼ 0 に見えるが，累積すると結構大きな値になるのである。これは，ベキ分布では確率の減衰が緩やかで，極端に大きな値をとる事象の確率を無視できない事実を表している。
+		</p>
+
+		<p>
+			また，ノート「<a href="../12-central-limit-theorem/">中心極限定理</a>」で見た一様分布の実験では \(n=100\) の時点でほぼ正規分布に見えたが，分散の大きなベキ分布ではまだ正規分布からは遠い。 \(n=10^4\) まで増やすと，ようやくグレーの曲線に乗ってくる。
+		</p>
+
+		<h2 id="gamma-3">\(\gamma=3\) の場合</h2>
+
+		<p>
+			\(X\) の上限を設けない場合，期待値は有限値 \((=2)\) をとるが，分散は発散する。上限を \(x_{\max}=10^3\) にした場合の期待値と分散は以下：
+		</p>
+
+		\[
+		\begin{aligned}
+		E[X]&=\int_1^{1000}x\cdot\frac{x^{-3}}{\int_1^{1000}x^{-3}dx}dx=\frac{\left[-x^{-1}\right]_1^{1000}}{\frac{1}{2}(1-10^{-6})}\approx 2,\\
+		V[X]&=\int_1^{1000}x^2\cdot\frac{x^{-3}}{\int_1^{1000}x^{-3}dx}dx-E[X]^2=\frac{\left[\ln|x|\right]_1^{1000}}{\frac{1}{2}(1-10^{-6})}-E[X]^2\approx 9.8.
+		\end{aligned}
+		\]
+
+		<figure class="clt-figure clt-figure-wide">
+			<svg id="clt-grid-p3" viewBox="0 0 880 454" role="img" aria-label="横軸を標本平均，縦軸を度数とし，ベキ指数 gamma equals 3 について n equals 1，10，100，10 の 4 乗の青いヒストグラムと灰色の正規分布曲線を比較する図"></svg>
+			<figcaption>各パネルの右端のビンは，表示範囲より大きな値の度数の累積。</figcaption>
+		</figure>
+
+		<p>
+			\(\gamma=2\) のときより裾は軽いのに，正規分布への近づき方はむしろ遅い。標準偏差が小さくなったぶん，それを物差しとして測った歪み（標準化歪度）はかえって大きくなるためである。 \(n=10^4\) でもまだ右への歪みがわずかに残っている。
+		</p>
+
+		<h2 id="gamma-4">\(\gamma=4\) の場合</h2>
+
+		<p>
+			\(\gamma > 3\) では \(X\) の上限を設けなくても期待値と分散は有限値をとる。ここで扱う \(\gamma = 4\) では，上限を \(x_{\max}=10^3\) に区切った場合でも，期待値と分散は上限を設けない場合の値 \(\frac{3}{2}\) と \(\frac{3}{4}\) にそれぞれほぼ一致する：
+		</p>
+
+		\[
+		\begin{aligned}
+		E[X]&=\int_1^{1000}x\cdot\frac{x^{-4}}{\int_1^{1000}x^{-4}dx}dx=\frac{\left[-\frac{1}{2}x^{-2}\right]_1^{1000}}{\frac{1}{3}(1-10^{-9})}\approx \frac{3}{2},\\
+		V[X]&=\int_1^{1000}x^2\cdot\frac{x^{-4}}{\int_1^{1000}x^{-4}dx}dx-E[X]^2=\frac{\left[-x^{-1}\right]_1^{1000}}{\frac{1}{3}(1-10^{-9})}-E[X]^2\approx\frac{3}{4}.
+		\end{aligned}
+		\]
+
+		<figure class="clt-figure clt-figure-wide">
+			<svg id="clt-grid-p4" viewBox="0 0 880 454" role="img" aria-label="横軸を標本平均，縦軸を度数とし，ベキ指数 gamma equals 4 について n equals 1，10，100，10 の 4 乗の青いヒストグラムと灰色の正規分布曲線を比較する図"></svg>
+			<figcaption>各パネルの右端のビンは，表示範囲より大きな値の度数の累積。</figcaption>
+		</figure>
+
+		<p>
+			期待値も分散も有限になったが，それでも正規分布への近づき方が特段に速くなるわけではない。結局，\(\gamma\) を \(2\to3\to4\) と変えても，グレーの曲線に乗り始めるのは \(n=10^4\) あたりから ── 裾の重い分布では，中心極限定理の「十分大きな \(n\)」が桁違いに大きくなるのである。
+		</p>
+
+		<hr>
+
+		<h2 id="misc">雑談</h2>
+
+		<h3 id="heavy-tail-long-tail">heavy tail と long tail</h3>
+
+		<p>
+			<strong>heavy tail</strong>（<strong>fat tail</strong> とも呼ばれる）は，確率分布の裾が長く伸びる現象 ── 多くは物理や社会における集団現象・創発現象 ── を議論する際によく出てくる用語だが，これとは別に <strong>long tail</strong>（ロングテール）という用語が存在する。後者は主にマーケティングで用いられ，やはり長く伸びた分布の裾を意味する。両者は似ているが，縦軸と横軸の取り方がちょうど逆になっているので注意が必要。
+		</p>
+
+		<p>
+			前者，heavy tail は横軸に確率変数として事象の規模（たとえば地震のマグニチュード），縦軸にその発生確率（頻度）をとる。この用語には「大規模な事象が無視できない確率で発生し得る」という含みがある。一方，後者，long tail は横軸にランク（たとえば商品を売り上げの降順で並べた順位），縦軸に事象の規模（たとえば商品の売り上げ）をとる。この用語には「売れない商品でも幅広く揃えると全体としては売れる商品と同じくらい販売に貢献する」という含みがある。
+		</p>
+
+		<p>
+			つまり，前者が確率の低い大規模な事象の無視できない寄与に着目するのに対して，後者は大量に存在する小規模な事象の無視できない寄与に着目するものである。
+		</p>
+
+		<h3 id="rank-as-ccdf">ランク = 補累積確率</h3>
+
+		<p>
+			前述の long tail の説明に「ランク（順位）」という概念が出てきた。なんとなく物理っぽくない概念で，確率とは関係がないように思えるかもしれない（私も長くそう思っていた）が，実はランクとは補累積確率のことである。
+		</p>
+
+		<p>
+			手元に \(N\) 個の観測値があるとして，横軸に事象の規模 \(x\)，縦軸にその規模を超える値が観測される確率 \(P(X>x)\) をとったものが，ノート「<a href="../03-random-variables/">確率変数</a>」で見た補累積分布関数である。この補累積確率は，\(X>x\) となる観測値の個数 \(N_{X>x}\) を \(N\) で割った値である：
+		</p>
+
+		\[
+		P(X>x)=\frac{N_{X>x}}{N}.
+		\]
+
+		<p>
+			ここで，売り上げ \(x\) の商品の順位（降順）は，自分より売り上げが大きい商品の個数 \(N_{X>x}\) に自分自身の 1 を足したものである。商品数が多ければこの \(+1\) は効かないので，順位は実質 \(N_{X>x}\) ── すなわち正規化定数 \(1/N\) を取っ払った補累積確率である。つまり，横軸にランク，縦軸に事象の規模をとった long tail の図は，縦横軸を入れ替えると（正規化されていない）補累積分布を見ていることに等しい。
+		</p>
+
+		<p>
+			この対応を両対数グラフで描くと以下のようになる ── 左（heavy tail の見方）の縦軸は補累積確率 \(P(X>x)\) をとっている。ベキ分布ゆえどちらも直線になり，左と右（long tail の見方）は，同じ直線を縦横入れ替えて眺めているだけだと分かる。
+		</p>
+
+		<div class="clt-figure">
+			<svg id="clt-tail-views" viewBox="0 0 880 316" role="img" aria-label="青いベキ分布について，左は横軸を規模 x，縦軸を補累積確率とする heavy tail，右は横軸をランク，縦軸を規模 x とする long tail として，縦横を入れ替えた見方を示す図"></svg>
+		</div>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+</body>
+</html>

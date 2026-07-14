@@ -34,22 +34,22 @@
 			{ label: "B", tex: "B", set: B },
 			{ label: "C", tex: "C", set: C },
 		]},
-		{ label: "和集合", items: [
+		{ label: "和事象", items: [
 			{ label: "A ∪ B", tex: "(A \\cup B)", set: union(A, B) },
 			{ label: "A ∪ C", tex: "(A \\cup C)", set: union(A, C) },
 			{ label: "B ∪ C", tex: "(B \\cup C)", set: union(B, C) },
 		]},
-		{ label: "積集合", items: [
+		{ label: "積事象", items: [
 			{ label: "A ∩ B", tex: "(A \\cap B)", set: inter(A, B) },
 			{ label: "A ∩ C", tex: "(A \\cap C)", set: inter(A, C) },
 			{ label: "B ∩ C", tex: "(B \\cap C)", set: inter(B, C) },
 		]},
-		{ label: "補集合", items: [
+		{ label: "補事象", items: [
 			{ label: "Aᶜ", tex: "A^c", set: comp(A) },
 			{ label: "Bᶜ", tex: "B^c", set: comp(B) },
 			{ label: "Cᶜ", tex: "C^c", set: comp(C) },
 		]},
-		{ label: "差集合", items: [
+		{ label: "差事象", items: [
 			{ label: "A ∖ B", tex: "(A \\setminus B)", set: diff(A, B) },
 			{ label: "B ∖ A", tex: "(B \\setminus A)", set: diff(B, A) },
 			{ label: "A ∖ C", tex: "(A \\setminus C)", set: diff(A, C) },
@@ -106,21 +106,22 @@
 	svg.append("rect")
 		.attr("x", 20).attr("y", 20)
 		.attr("width", 460).attr("height", 260)
-		.attr("fill", "#fafafa")
-		.attr("stroke", "#bbb")
+		.attr("fill", PROB_COLORS.node)
+		.attr("stroke", PROB_COLORS.grid)
 		.attr("stroke-dasharray", "3 3")
 		.attr("rx", 4);
-	texFO(svg, 460, 37, 24, 22, "\\(\\Omega\\)", { color: "#777", size: "16px", anchor: "center" });
+	texFO(svg, 460, 37, 24, 22, "\\(\\Omega\\)", { color: PROB_COLORS.sub, size: "16px", anchor: "center" });
 
 	const circles = [
-		{ name: "B", cx: 150, cy: 170, r: 85, fill: "rgba(96,144,210,0.18)", stroke: "#5b8ad0", labelPos: [150, 102] },
-		{ name: "C", cx: 350, cy: 170, r: 85, fill: "rgba(82,178,108,0.18)", stroke: "#52b26c", labelPos: [350, 102] },
-		{ name: "A", cx: 250, cy: 170, r: 70, fill: "rgba(228,140,90,0.20)", stroke: "#d97a52", labelPos: [250, 120] },
+		{ name: "B", cx: 150, cy: 170, r: 85, fill: PROB_COLORS.DC, opacity: 0.18, stroke: PROB_COLORS.DCText, labelPos: [150, 102] },
+		{ name: "C", cx: 350, cy: 170, r: 85, fill: PROB_COLORS.green, opacity: 0.18, stroke: PROB_COLORS.greenText, labelPos: [350, 102] },
+		{ name: "A", cx: 250, cy: 170, r: 70, fill: PROB_COLORS.D, opacity: 0.20, stroke: PROB_COLORS.DText, labelPos: [250, 120] },
 	];
 	circles.forEach(c => {
 		svg.append("circle")
 			.attr("cx", c.cx).attr("cy", c.cy).attr("r", c.r)
-			.attr("fill", c.fill).attr("stroke", c.stroke).attr("stroke-width", 1.5);
+			.attr("fill", c.fill).attr("fill-opacity", c.opacity)
+			.attr("stroke", c.stroke).attr("stroke-width", 1.5);
 		texFO(svg, c.labelPos[0], c.labelPos[1], 24, 22, `\\(${c.name}\\)`, { color: c.stroke, size: "18px", anchor: "center" });
 	});
 
@@ -133,15 +134,15 @@
 
 	dots.append("circle")
 		.attr("r", 13)
-		.attr("fill", "white")
-		.attr("stroke", "#888")
+		.attr("fill", PROB_COLORS.node)
+		.attr("stroke", PROB_COLORS.line)
 		.attr("stroke-width", 1.5);
 	dots.append("text")
 		.attr("text-anchor", "middle")
 		.attr("dy", "0.35em")
 		.style("font-weight", "bold")
-		.style("font-size", "13px")
-		.attr("fill", "#444")
+		.style("font-size", "14px")
+		.attr("fill", PROB_COLORS.text)
 		.text(n => n);
 
 	const resultDiv = document.getElementById("venn-result");
@@ -159,14 +160,14 @@
 			.transition().duration(250)
 			.attr("opacity", n => cond.set.has(n) ? 1 : 0.45)
 			.attr("fill", n => {
-				if (!cond.set.has(n)) return "white";
-				if (target.set.has(n)) return "#f0a500";
-				return "white";
+				if (!cond.set.has(n)) return PROB_COLORS.node;
+				if (target.set.has(n)) return PROB_COLORS.D;
+				return PROB_COLORS.node;
 			})
 			.attr("stroke", n => {
-				if (!cond.set.has(n)) return "#bbb";
-				if (target.set.has(n)) return "#a06800";
-				return "#888";
+				if (!cond.set.has(n)) return PROB_COLORS.grid;
+				if (target.set.has(n)) return PROB_COLORS.DText;
+				return PROB_COLORS.line;
 			})
 			.attr("r", n => {
 				if (!cond.set.has(n)) return 9;
@@ -178,9 +179,9 @@
 			.transition().duration(250)
 			.attr("opacity", n => cond.set.has(n) ? 1 : 0.65)
 			.attr("fill", n => {
-				if (!cond.set.has(n)) return "#888";
-				if (target.set.has(n)) return "white";
-				return "#444";
+				if (!cond.set.has(n)) return PROB_COLORS.line;
+				if (target.set.has(n)) return PROB_COLORS.node;
+				return PROB_COLORS.text;
 			});
 
 		const condElems = condSize === 0 ? "\\varnothing" : `\\{${condArr.join(", ")}\\}`;
@@ -188,9 +189,11 @@
 
 		let html;
 		if (condSize === 0) {
-			html = `<p>条件 \\(${cond.tex} = \\varnothing\\) なので， \\(P(${target.tex}\\mid ${cond.tex})\\) は<strong>定義されない</strong>．</p>`;
+			html = `<p>条件 \\(${cond.tex} = \\varnothing\\) なので，\\(P(${target.tex}\\mid ${cond.tex})\\) は <strong>定義されない</strong>。</p>`;
 		} else {
-			html = `\\[ P(${target.tex}\\mid ${cond.tex}) \\;=\\; \\frac{|${target.tex}\\cap ${cond.tex}|}{|${cond.tex}|} \\;=\\; \\frac{|${interElems}|}{|${condElems}|} \\;=\\; \\frac{${interSize}}{${condSize}} \\]`;
+			// 分子（着目∩条件）を図の強調点と同系の濃橙で色付けして対応を示す
+			const HL = PROB_COLORS.DText;
+			html = `\\[ P(${target.tex}\\mid ${cond.tex}) \\;=\\; \\frac{\\color{${HL}}{|${target.tex}\\cap ${cond.tex}|}}{|${cond.tex}|} \\;=\\; \\frac{\\color{${HL}}{|${interElems}|}}{|${condElems}|} \\;=\\; \\frac{\\color{${HL}}{${interSize}}}{${condSize}} \\]`;
 		}
 
 		resultDiv.innerHTML = html;

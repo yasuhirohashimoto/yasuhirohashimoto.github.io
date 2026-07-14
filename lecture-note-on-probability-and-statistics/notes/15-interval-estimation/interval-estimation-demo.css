@@ -1,0 +1,45 @@
+.ci-diagram {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .4em;
+	margin: 1.5em auto;
+	max-width: 660px;
+	flex-wrap: wrap;
+}
+
+.ci-panel {
+	flex: 1 1 240px;
+	max-width: 300px;
+	margin: 0;
+	text-align: center;
+}
+
+.ci-panel svg {
+	width: 100%;
+	display: block;
+}
+
+/* figcaption は assets/style.css の figure figcaption 共通規格に任せる */
+
+.ci-arrow {
+	flex: 0 0 auto;
+	color: var(--viz-axis); /* パネル内の軸線（PROB_COLORS.line）と同一グレー */
+}
+
+.ci-arrow svg {
+	display: block;
+	width: 50px;
+	height: 30px;
+}
+
+@media (max-width: 540px) {
+	.ci-diagram {
+		flex-direction: column;
+	}
+
+	.ci-arrow svg {
+		transform: rotate(90deg);
+		margin: .3em auto;
+	}
+}

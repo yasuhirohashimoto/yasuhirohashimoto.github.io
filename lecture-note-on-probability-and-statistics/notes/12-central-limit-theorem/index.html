@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="中心極限定理 ── 標本平均のゆらぎが正規分布に近づく様子をデモで体感する。">
+	<title>中心極限定理 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="clt-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="clt-demo-data.js" defer></script>
+	<script src="clt-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../11-law-of-large-numbers/">← 前へ：大数の法則</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../13-unbiased-variance/">次へ：母分散，標本分散，不偏分散 →</a>
+	</nav>
+
+	<main>
+		<h1>中心極限定理</h1>
+
+		<p>
+			ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」では，独立同分布な確率変数の列 \(X_1, X_2, \ldots, X_n\) から作った標本平均 \(\bar{X}_n\) が，サンプルサイズ \(n\) を大きくすると期待値 \(\mu_X\) に近づいていくことを見た。では，その近づき方にはどのような形があるのだろうか。平均値のまわりに残るゆらぎの形を教えてくれるのが <strong>中心極限定理</strong> (Central Limit Theorem; <strong>CLT</strong>) である。
+		</p>
+
+		<h2 id="statement">中心極限定理の主張</h2>
+
+		<p>
+			厳密さをひとまず置くならば，中心極限定理とは「独立同分布な確率変数の列 \(X_1, X_2, \ldots, X_n\) から作った標本平均 \(\bar{X}_n\) の分布は，サンプルサイズ \(n\) を大きくすると正規分布でよく近似できる」という定理である。ここで <strong>正規分布</strong> (normal distribution) とは，平均を中心に左右対称な釣鐘型の確率密度をもつ連続分布のことで，平均と分散の 2 つの母数だけで形が決まる。確率変数 \(X\) が平均 \(\mu\)，分散 \(\sigma^2\) の正規分布に従うことを
+		</p>
+
+		\[
+		X \sim \mathcal{N}(\mu, \sigma^2)
+		\]
+
+		<p>
+			と表記する。その確率密度関数は
+		</p>
+
+		\[
+		f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right)
+		\]
+
+		<p>
+			である。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			式の読み方のポイントは 3 つある。第一に，指数の中身は「\(\mu\) からのズレの二乗にマイナスを付けたもの」なので，\(x = \mu\) で \(f(x)\) は最大となり，\(\mu\) から離れるほど左右対称に減衰して \(x \to \pm\infty\) で 0 に漸近する。第二に，ズレの二乗は \(2\sigma^2\) で割られてから効くので，\(\sigma\) が山の横幅のスケールを決める ── \(\sigma\) が大きいほど幅広で低い山に，小さいほど細く尖った山になる。第三に，指数関数の外の係数は，全体を積分すると 1 になるように調整する規格化定数である。幅が広がると山が低くなるのは，この「面積は常に 1」の制約のためだ。
+		</div>
+
+		<div class="clt-figure">
+			<svg id="clt-normal-schematic" viewBox="0 0 720 300" role="img" aria-label="正規分布の密度関数の模式図。横軸は x，縦軸は密度 f(x)。青い曲線は標準偏差 sigma，橙の曲線は標準偏差 2 sigma の正規分布の密度で，灰色の両矢印が幅の目安 sigma を示す。どちらの曲線下の面積も 1"></svg>
+		</div>
+
+		<p>
+			ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」では，標本平均の期待値 \(E[\bar{X}_n]\) と分散 \(V[\bar{X}_n]\) は，それぞれ \(\mu_X\) と \(\sigma_X^2/n\) に等しいことを見た。これを用いると，大きな \(n\) で \(\bar{X}_n\) が従う確率分布は以下のような正規分布でよく近似できる：
+		</p>
+
+		\[
+		\bar{X}_n
+		\overset{\text{approx.}}{\sim}
+		\mathcal{N}\left(\mu_X,\frac{\sigma_X^2}{n}\right).
+		\]
+
+		<p>
+			たとえば，偏りのないサイコロ 1 個をふって出る目の確率分布は 1 から 6 までの一様分布である。仮に 100 個のサイコロをふれば，その標本平均は期待値である 3.5 のまわりに集まることは容易に想像がつく。その 3.5 周辺でのゆらぎ方，すなわち標本平均の確率分布の形が，<strong>他のどのような分布でもなく正規分布に近づく</strong> ということである。これはサイコロのような一様分布に限らず，指数分布でも，ベルヌーイ分布でも，足し合わせる確率変数たちが独立同分布で，その分散が有限であるという条件さえ満たされていれば常に成り立つ強力な定理である。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			中心極限定理は，実際には独立同分布という条件を少し緩めても成り立つ場合がある。だが，まずは「独立同分布で分散が有限なら，和や平均は正規分布のようにばらつく」と覚えておけばよい。
+		</div>
+
+		<h2 id="increasing-n">サンプルサイズ \(n\) を大きくすると何が起こるか</h2>
+
+		<p>
+			まずサンプルサイズ \(n\) とサンプル数 \(m\) の区別を確認しておこう ── ノート「<a href="../04-population-and-sample/">母集団と標本</a>」で触れた標本サイズと標本数の区別である。 \(n\) は 1 回の標本平均 \(\bar{X}_n\) を作るために足し合わせる確率変数の個数。一方，\(m\) はヒストグラムを作るために用意する標本平均 \(\bar{X}_n\) の個数である。
+		</p>
+
+		<p>
+			では，\([0,1)\) の一様分布に従う確率変数から作成した標本平均 \(\bar{X}_n\) のヒストグラムを見てみよう。ここでは \(m=10^6\)，ビン数 50 とした。 \(n=1\) ならば \(\bar{X}_1=X_1\) なので元の一様分布がそのまま見えているが，\(n=2\) では三角形，\(n=3\) ではもうかなり山っぽい形に見え始める。 \(n=10\)，\(n=100\)，\(n=1000\) と増やすと正規分布の曲線が自然に重なり，大きな \(n\) では期待値のまわりに狭く集中していく様子が分かる。
+		</p>
+
+		<figure class="clt-figure clt-figure-wide">
+			<div id="clt-sum-grid" class="clt-panel-grid" role="img" aria-label="横軸を標本平均，縦軸を度数とした一様分布の標本平均。サンプルサイズ n ごとに青いヒストグラムとグレーの正規曲線を並べる"></div>
+			<figcaption>\(m = 10^6\), bins\(\ = 50\)　グレーの曲線は対応する正規分布</figcaption>
+		</figure>
+
+		<h2 id="increasing-m">サンプル数 \(m\) を増やすと何が起こるか</h2>
+
+		<p>
+			今度は \(n=100\) に固定し，\(m\) を増やしてみよう。分布の基本的な形は変わらないが，乱数から生じるノイズが減り，ヒストグラムがだんだん滑らかになっていく様子が分かる。
+		</p>
+
+		<figure class="clt-figure clt-figure-wide">
+			<div id="clt-m-grid" class="clt-panel-grid" role="img" aria-label="横軸を標本平均，縦軸を度数としたヒストグラム。標本サイズ n を 100 に固定し，サンプル数 m を増やしたときの青い棒の変化をグレーの正規曲線と比較する"></div>
+			<figcaption>\(n = 100\), bins\(\ = 50\)　グレーの曲線は対応する正規分布</figcaption>
+		</figure>
+
+		<h2 id="demo">動かして体感しよう</h2>
+
+		<p>
+			元となる確率変数の分布の形とサンプルサイズ \(n\)，サンプル数 \(m\) を指定して，シミュレーションを行ってみよう。横軸は標本平均 \(\bar{X}_n\)，青いヒストグラムがシミュレーション結果，グレーの曲線が正規分布 \(\mathcal{N}(\mu_X,\sigma_X^2/n)\) による近似である。 \(n\) を大きくすると，もとの分布が正規分布でなくても，青い山がグレーの曲線に近づいていく様子を確認できるだろう。<sup>※</sup>
+		</p>
+
+		<div class="clt-demo">
+			<div class="clt-controls">
+				<select id="clt-dist" aria-label="分布">
+					<option value="uniform">一様分布 U(0,1)</option>
+					<option value="exponential">指数分布 Exp(1)</option>
+					<option value="mixture">二峰性混合分布</option>
+				</select>
+
+				<select id="clt-n" aria-label="サンプルサイズ n">
+					<option value="1" selected>n = 1</option>
+					<option value="2">n = 2</option>
+					<option value="3">n = 3</option>
+					<option value="5">n = 5</option>
+					<option value="10">n = 10</option>
+					<option value="100">n = 100</option>
+					<option value="1000">n = 1000</option>
+				</select>
+
+				<select id="clt-m" aria-label="サンプル数 m">
+					<option value="100">m = 100</option>
+					<option value="1000">m = 1,000</option>
+					<option value="10000" selected>m = 10,000</option>
+					<option value="100000">m = 100,000</option>
+					<option value="1000000">m = 1,000,000</option>
+				</select>
+
+				<button id="clt-reroll" type="button" class="icon-btn" aria-label="更新" title="更新">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="23 4 23 10 17 10"></polyline>
+						<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+					</svg>
+				</button>
+			</div>
+
+			<div class="clt-chart-wrap">
+				<svg id="clt-svg" viewBox="0 0 620 283" role="img" aria-label="横軸を標本平均，縦軸を度数とした中心極限定理のシミュレーション。青いヒストグラムがシミュレーション結果，グレーの曲線が対応する正規分布"></svg>
+			</div>
+			<p id="clt-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+		</div>
+
+		<div class="note-side">
+			デモで指数分布を選ぶと，小さな \(n\) では左右非対称な山が見える。この形は<a href="../09-event-counts-and-waiting-times-distributions/">ガンマ分布</a>である。導出は付録「<a href="../appendix-sum-of-random-variables-and-convolution/">確率変数の和が従う確率分布と畳み込み</a>」を参照。また，こうした左右非対称な分布は，一様分布に比べて正規分布への収束が遅い。裾がさらに重いベキ分布ではどうなるかは，読み物「<a href="../appendix-clt-experiments/">中心極限定理の実験 ── ベキ分布</a>」を参照。
+		</div>
+
+		<h2 id="standard-error">標本平均のゆらぎを測る</h2>
+
+		<p>
+			標本平均の<a href="../05-standard-deviation-and-standardization/">標準偏差</a>
+		</p>
+
+		\[
+		\frac{\sigma_X}{\sqrt{n}}
+		\]
+
+		<p>
+			を <strong>標準誤差</strong> (standard error; <strong>SE</strong>) と呼ぶ。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			標本平均の期待値と分散については，ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」を参照。詳しい式変形は，付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」で確認できる。
+		</div>
+
+		<p>
+			標準誤差は，標本平均という推定量が母平均 \(\mu_X\) のまわりでどれくらいゆらぐかを表す量である。サンプルサイズを 4 倍にすると標準誤差は半分になるので，平均を 2 倍正確に推定したければ，ざっくり 4 倍のデータが必要になるということだ。
+		</p>
+
+		<p>
+			たとえば，ある集団から男性 100 人と女性 100 人を抜き出して，何かしらの測定を行ったとする（テストの得点でも体重でも）。そして横軸に性別，縦軸に測定値の平均をとったグラフを描くことがあるだろう。このとき，男性と女性の平均値の差を統計的に判断するために，点の上下に「\(\pm\) 標準誤差」の長さの線 ── <strong>誤差範囲</strong> (error bar) を描くことがある。この線は，男性と女性の平均値の差が偶然のゆらぎの範囲内にあるかどうかを判断するための目安になる。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			ただし，2 つの誤差範囲が重なるかどうかは，差があるかどうかの正式な判定にはならない。きちんとした判定の方法はノート「<a href="../15-interval-estimation/">区間推定</a>」とノート「<a href="../16-hypothesis-testing/">仮説検定の初歩</a>」で扱う。
+		</div>
+
+		<p>
+			大数の法則が「平均すれば期待値に近づく」という方向を示す定理だとすれば，中心極限定理は「その平均のゆらぎは，標準化すると正規分布の形に近づく」という形を示す定理である。言い換えれば，<strong>標本平均はどの程度の誤差を含みうるのか</strong> を示している。平均値を扱う多くの統計手法で正規分布が登場するのは，もとのデータが正規分布だからなのではなく，<strong>たくさんの小さな偶然を足し合わせたり平均したりすると，正規分布が自然に現れてくる</strong> からなのだ。この考え方は，ノート「<a href="../15-interval-estimation/">区間推定</a>」やノート「<a href="../16-hypothesis-testing/">仮説検定の初歩</a>」の土台になる。
+		</p>
+
+		<hr>
+
+		<h2 id="advanced">発展的な内容</h2>
+
+		<h3 id="convergence-modes">確率収束と分布収束</h3>
+
+		<p>
+			中心極限定理は「標本平均 \(\bar{X}_n\) そのものが正規分布に収束する」と言っているわけではない。 \(\bar{X}_n\) は \(n\) が大きくなるほど母平均 \(\mu_X\) の近くに集まり，最終的には確率収束によって一点 \(\mu_X\) に潰れていく。つまり，\(n\to\infty\) の極限で分散は \(0\) となり，ばらつきは消えてしまう。
+		</p>
+
+		<p>
+			一方，中心極限定理が見ているのは，標本平均の母平均からのズレを標準化した量
+		</p>
+
+		\[
+		Z_n = \frac{\bar{X}_n-\mu_X}{\sigma_X/\sqrt{n}}
+		\]
+
+		<p>
+			である。 \(\bar{X}_n-\mu_X\) は \(n\) が大きくなるほど小さくなっていくが，それを標準誤差 \(\sigma_X/\sqrt{n}\) で割ることで，同じスケールでゆらぎの形を比べられるようになる。この標準化された量 \(Z_n\) の分布が，\(n\) を大きくすると <strong>標準正規分布</strong> (standard normal distribution) \(\mathcal{N}(0,1)\)（平均 0，分散 1 の正規分布）に近づいていく。この振る舞いを <strong>分布収束</strong> (convergence in distribution) と呼び，
+		</p>
+
+		\[
+		Z_n \xrightarrow{d} \mathcal{N}(0,1)
+		\]
+
+		<p>
+			と表記する。「\(\xrightarrow{d}\)」は「分布収束」を表す記法である。ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」で登場した「確率収束」に対し，分布収束は確率分布の形が特定の分布に近づくことを表している。
+		</p>
+
+		<h3 id="three-theorems">標本平均をめぐる 3 つの漸近原理 ── 行き先・ゆらぎ・大きなズレ</h3>
+
+		<p>
+			大数の法則と中心極限定理には，実はもう一人兄弟がいる：
+		</p>
+
+		<ul>
+			<li><strong>大数の法則</strong> は，<strong>平均の行き先</strong> を教えてくれる ── 標本平均 \(\bar{X}_n\) は，\(n\) を大きくすると母平均 \(\mu_X\) に近づいていく。</li>
+			<li><strong>中心極限定理</strong> は，<strong>通常のゆらぎの大きさと形</strong> を教えてくれる ── 母平均のまわりの典型的なゆらぎは \(\sigma_X/\sqrt{n}\) のスケールで縮んでいき，標準化したズレの分布は標準正規分布に近づいていく。</li>
+			<li><strong>大偏差原理</strong> (large deviation principle) は，<strong>大きなズレの稀さ</strong> を教えてくれる ── 標本平均が母平均から，決まった幅 \(a\) 以上外れる確率 \(P(|\bar{X}_n-\mu_X|\geq a)\) は，裾が十分軽い分布なら，\(n\) とともにおおよそ \(e^{-nJ(a)}\) の形で指数関数的に小さくなっていく。\(J(a)\) は，幅 \(a\) 以上のズレが起こる確率の指数的な減少率を表す。</li>
+		</ul>
+
+		<p>
+			大偏差原理のポイントは，幅 \(a\) が \(n\) によらず固定されていることである。中心極限定理が扱う典型的なゆらぎは \(\sigma_X/\sqrt{n}\) の大きさなので，\(n\) が大きくなるにつれて縮んでいく。それに対して，固定幅 \(a\) のズレは縮まないので，\(n\) が大きくなるほど，ますます起こりにくい大きなズレになる。大まかに言えば，中心極限定理は \(1/\sqrt{n}\) のスケールの小さなゆらぎを拡大してその形を見るのに対して，大偏差原理は固定幅の大きなズレをそのままにして，その確率が \(n\) とともに消える速さを見ているのだ。
+		</p>
+
+		<p>
+			標本平均の漸近的な振る舞いは，この 3 つを押さえると大まかに見通すことができる。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			<p>
+				「法則」「定理」「原理」という呼び名の違いは，数学的な格付けを表すものではない。ただし，三者の形式がまったく同じというわけでもない。大数の法則と中心極限定理は，仮定や収束の意味によってさまざまな版をもつ定理群の名前である。一方，大偏差原理は，「まれな事象の確率が，ある尺度に対して指数関数的に減少する」という評価形式・性質の名前である。特定の確率モデルがこの性質を満たすことは，個別の定理（たとえばクラメールの定理）によって証明される。
+			</p>
+			<p>
+				なお，大偏差理論はこの 3 つの中ではかなり専門的で，本格的に扱うのは大学院レベルの確率論である。また，\(e^{-nJ(a)}\) というクラメール型の減衰が成り立つのは，裾が十分軽い場合である。ベキ分布のように裾が重い場合には，分散が有限で中心極限定理が成り立っていても，大きなズレの確率が指数関数よりもはるかにゆっくり減ることがある（読み物「<a href="../appendix-clt-experiments/">中心極限定理の実験 ── ベキ分布</a>」も参照）。ここでは，「通常のゆらぎの範囲をはるかに超える，めったに起きない大きなズレについても，その確率の減り方を調べる理論がある」ことだけ知っておけば十分である。
+			</p>
+		</div>
+
+		<hr>
+
+		<h2 id="misc">雑談</h2>
+
+		<p>
+			「サンプルサイズ \(n\) を大きくすると何が起こるか」の \(n=3\) の図を見てほしい。急に正規分布っぽくなったと感じるかもしれないが，実はこれは 3 つの二次関数を切り貼りした形になっている ── だまされた気分だ！
+		</p>
+
+		\[
+		f_{\bar{X}_3}(x)=
+		\begin{cases}
+		{\color{#df8077}\frac{27}{2}x^2} &{\color{#df8077}(0\leq x<\frac{1}{3}),}\\[6pt]
+		{\color{#7c91ca}-27\left(x-\frac{1}{2}\right)^2+\frac{9}{4}} &{\color{#7c91ca}(\frac{1}{3}\leq x<\frac{2}{3}),}\\[6pt]
+		{\color{#6ab5ae}\frac{27}{2}(1-x)^2} &{\color{#6ab5ae}(\frac{2}{3}\leq x\leq 1).}
+		\end{cases}
+		\]
+
+		<div class="clt-figure clt-n3-static-figure">
+			<svg id="clt-n3-static-svg" viewBox="0 0 416 190" role="img" aria-label="横軸を標本平均 x，縦軸を密度とした n イコール 3 の分布。青いヒストグラムに，区間ごとの赤・青・緑の 3 つの放物線を重ねる"></svg>
+		</div>
+
+		<p>
+			種明かしをしよう。話を簡単にするために，平均 \(\bar{X}_3\) ではなく和 \(Y_3=X_1+X_2+X_3\) を考える。
+		</p>
+		<p>
+			\(X_1, X_2, X_3\) をそれぞれ \(x,y,z\) 軸にとると，3 つの値の可能な組み合わせは一辺の長さが 1 の立方体の内部の点に対応する。たとえば，3 つの和が最小の 0 となるのは原点 \((0,0,0)\) で，最大の 3 となるのは頂点 \((1,1,1)\) である。下の図（右）では一番奥の頂点が原点 \((0,0,0)\)，原点から点線を引いた一番手前の頂点が \((1,1,1)\) である。和の値を \(s\) とすると，\(Y_3=s\) はベクトル \((1,1,1)\) を法線とする平面で立方体を切った断面に対応する。
+		</p>
+
+
+		<p>
+			スライダーを \(x=0\) から \(x=1\) へ動かしてみよう。対応する断面は赤（三角形）から青（六角形），緑（逆三角形）へと移っていく。これは \(s=3x\) を最小値 0 から最大値 3 へと増やしていくことに対応している。連続分布では \(Y_3=s\) となる確率そのものは 0 なので，ここで見ているのは「\(s\) 付近に入る確率の濃さ」，つまり確率密度である。
+		</p>
+
+		<div class="clt-n3-demo">
+			<div class="clt-n3-panels" role="group" aria-label="一様分布を 3 個足した和の密度と，その密度を生む立方体の断面を対応させる図">
+				<div class="clt-n3-panel">
+					<svg id="clt-n3-density-svg" viewBox="0 0 840 560" role="img" aria-label="横軸を和 s，縦軸を密度 f Y3(s) としたグラフ。区間 0 から 1 を赤，1 から 2 を青，2 から 3 を緑の二次関数で示す"></svg>
+				</div>
+				<div class="clt-n3-panel">
+					<svg id="clt-n3-cube-svg" viewBox="0 0 700 700" role="img" aria-label="X1，X2，X3 を 3 つの軸とする単位立方体。和 s が一定となる断面を，s の範囲に応じて赤・青・緑で示す"></svg>
+				</div>
+			</div>
+			<div class="clt-n3-controls">
+				<label for="clt-n3-slider">\(x =\) <output id="clt-n3-x-out" for="clt-n3-slider">0.0</output></label>
+				<input type="range" id="clt-n3-slider" min="0" max="1" step="0.005" value="0.0" aria-label="スライダー x">
+			</div>
+			<div class="clt-n3-readout">
+				<span class="readout-chip">\(s = X_1+X_2+X_3 = 3x =\) <strong id="clt-n3-s-out">0.000</strong></span>
+				<span class="readout-chip">\(Y_3\leq s\) となる確率（体積）\(V(s) =\) <strong id="clt-n3-vol-out">0.0000</strong></span>
+				<span class="readout-chip">確率密度 \(f_{Y_3}(s) = dV/ds =\) <strong id="clt-n3-fy-out">0.000</strong></span>
+			</div>
+			<p id="clt-n3-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+		</div>
+
+		<p>
+			これを計算しよう。 \(X_1,X_2,X_3\) は立方体の中に一様に散らばっているので，ある領域に点が入る確率は，その領域の体積に等しい。 \(0\leq s<1\) で出現する赤の三角錐に着目すると，その体積は \(V(s)=s^3/6\) である。したがって，\(s\) を変化させたときの体積の増え方，すなわち確率密度は
+		</p>
+
+		\[
+		f_{Y_3}(s)=\frac{dV}{ds}=\frac{s^2}{2}
+		\]
+
+		<p>
+			となる。最後に \(\bar{X}_3\) に戻そう。 \(\bar{X}_3=Y_3/3\) なので，\(\bar{X}_3=x\) は \(Y_3=3x\) と同じである。密度は横軸を 3 倍に縮めたぶん高さが 3 倍になるため，
+		</p>
+
+		\[
+		f_{\bar{X}_3}(x)=3f_{Y_3}(3x)
+		\]
+
+		<p>
+			である。たとえば赤の区間では
+		</p>
+
+		\[
+		f_{\bar{X}_3}(x)=3\cdot\frac{(3x)^2}{2}
+		=\frac{27}{2}x^2
+		\]
+
+		<p>
+			となり，赤い放物線が得られる。青と緑の部分も同じように，和 \(Y_3\) の密度を求めてから \(\bar{X}_3\) の密度へ変換すればよい。
+		</p>
+
+		<p>
+			ここまで見たように，一様分布を 2 個足すと直線，3 個足すと放物線が現れる。実は，一様分布を \(n\) 個足した和の密度は区間ごとに \(n-1\) 次の多項式を貼り合わせた形になる。つまり，\(n\) を増やすたびに断面の形は少しずつ複雑になっていく。しかし，その複雑な貼り合わせは，\(n\) が大きくなるほど全体としてなめらかな釣鐘型に近づいていく。たくさんの一様乱数を足し合わせるうちに，直線や放物線やさらに高次の曲線が重なり合って，いつの間にか正規分布の形が浮かび上がってくるというのは，なんとも不思議な話だ。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../11-law-of-large-numbers/">← 前へ：大数の法則</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../13-unbiased-variance/">次へ：母分散，標本分散，不偏分散 →</a>
+		</nav>
+	</main>
+</body>
+</html>

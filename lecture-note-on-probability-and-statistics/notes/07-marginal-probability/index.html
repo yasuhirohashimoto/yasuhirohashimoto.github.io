@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="同時確率と周辺確率，周辺化の考え方を二変量正規分布のデモで学ぶ。">
+	<title>同時確率と周辺確率 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="marginal-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="marginal-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../06-correlation-and-independence/">← 前へ：相関と独立</a>
+		<a href="../../">↑ 目次</a>
+		<a href="../08-poisson-and-exponential/">次へ：ポアソン分布と指数分布 →</a>
+	</nav>
+
+	<main>
+		<h1>同時確率と周辺確率</h1>
+
+		<p>
+			ノート「<a href="../06-correlation-and-independence/">相関と独立</a>」では，離散型確率変数について同時確率 \(P(X = x, Y = y)\) と条件付き確率 \(P(X = x \mid Y = y)\) を導入した。本ノートでは，同時確率を記した表の行和・列和として <strong>周辺確率</strong> を理解する。そして，同じ操作を連続型の確率変数に拡張する。
+		</p>
+
+		<h2 id="joint-probability">同時確率</h2>
+
+		<p>
+			離散型確率変数の場合，可能な \((x, y)\) の組すべてについて同時確率を足し合わせると \(1\) になる：
+		</p>
+
+		\[
+		\sum_{x} \sum_{y} P(X = x, Y = y) = 1.
+		\]
+
+		<p>
+			連続型確率変数の場合，<strong>同時確率密度関数</strong> (joint probability density function) を \(f_{X,Y}(x, y)\) と表記する。同時確率密度関数は全平面で積分すると \(1\) になる：
+		</p>
+
+		\[
+		\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f_{X,Y}(x, y)\, dx\, dy = 1.
+		\]
+
+		<p>
+			\(X, Y\) のペアがある領域 \(A\) に入る確率は，その領域上の積分で計算できる：
+		</p>
+
+		\[
+		P\bigl((X, Y) \in A\bigr) = \iint_A f_{X,Y}(x, y)\, dx\, dy.
+		\]
+
+		<h2 id="marginal-probability">周辺確率</h2>
+
+		<p>
+			<strong>周辺確率</strong> (marginal probability) とは，同時確率に対して特定の確率変数のみに着目して得られる確率である。
+		</p>
+
+		<p>
+			たとえばコーヒー好き・紅茶好きの例で考えよう。確率変数 \(X\) を「コーヒー好き \((X=1)\)，好きではない \((X=0)\)」，\(Y\) を「紅茶好き \((Y=1)\)，好きではない \((Y=0)\)」とし，集団全体での同時確率が次のように分かっているとする：
+		</p>
+
+		<table class="data-table">
+			<caption class="visually-hidden">コーヒー好き・紅茶好きの同時確率表</caption>
+			<thead>
+				<tr>
+					<th></th>
+					<th scope="col">\(Y=1\) （紅茶好き）</th>
+					<th scope="col">\(Y=0\) （好きではない）</th>
+					<th scope="col">行の和</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><th scope="row">\(X=1\) （コーヒー好き）</th><td>\(0.30\)</td><td>\(0.25\)</td><td>\(0.55\)</td></tr>
+				<tr><th scope="row">\(X=0\) （好きではない）</th><td>\(0.25\)</td><td>\(0.20\)</td><td>\(0.45\)</td></tr>
+				<tr><th scope="row">列の和</th><td>\(0.55\)</td><td>\(0.45\)</td><td>\(1.00\)</td></tr>
+			</tbody>
+		</table>
+
+		<p>
+			「紅茶のことはいったん置いておいて，コーヒー好きの確率」は，同じ行にある同時確率を横方向に足し合わせれば求まる：
+		</p>
+
+		\[
+		P(X = 1) \;=\; P(X = 1, Y = 1) + P(X = 1, Y = 0) \;=\; 0.30 + 0.25 \;=\; 0.55.
+		\]
+
+		<p>
+			「\(Y\) を考慮しない」という言い方は，操作としては「\(Y\) について全部足す」ことに他ならない。一般に離散型では，もう一方の変数についてすべて足し合わせることで周辺確率が得られる：
+		</p>
+
+		\[
+		P(X = x) = \sum_y P(X = x, Y = y).
+		\]
+
+		<p>
+			これを連続型確率変数に拡張すると，足し算は積分に置き換わり，二次元の同時確率密度関数 \(f_{X,Y}(x, y)\) を無視したい変数で積分することで <strong>周辺確率密度関数</strong> (marginal probability density function) \(f_X(x)\) が得られる：
+		</p>
+
+		\[
+		f_X(x) \;=\; \int_{-\infty}^{\infty} f_{X,Y}(x, y)\, dy.
+		\]
+
+		<p>
+			この同時確率から周辺確率を得る操作を <strong>周辺化</strong> (marginalization) と呼ぶ。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			直訳すれば「周辺に押しやる」「取るに足りないものとみなす」という意味だが，歴史的には，（上の表のように）着目する変数の行や列の和を欄外 (margin) に記載したことからこの呼び方になったようだ。
+		</div>
+
+		<p>
+			周辺確率密度関数を使えば，<strong>条件付き確率密度関数</strong> (conditional probability density function) は
+		</p>
+
+		\[
+		f_{Y \mid X}(y \mid x) = \frac{f_{X,Y}(x, y)}{f_X(x)}
+		\]
+
+		<p>
+			と書ける。
+		</p>
+
+		<p>
+			ここで，連続型では，\(Y\) の確率密度関数が \(X\) の値を知っても変わらないこと，すなわち \(f_{Y \mid X}(y \mid x) = f_Y(y)\) が成り立つことを独立の定義とする。このとき，両辺に \(f_X(x)\) をかければ \(f_{X,Y}(x, y) = f_X(x)f_Y(y)\) となり，同時確率密度を周辺確率密度の積に分解できる。これはノート「<a href="../06-correlation-and-independence/">相関と独立</a>」で扱った「独立な確率変数の同時確率は個々の確率の積に等しい」の連続版だ。
+		</p>
+
+		<h2 id="demo">動かして体感しよう</h2>
+
+		<p>
+			以下の散布図は，平均 \(0\)，指定した母標準偏差 \(\sigma_X, \sigma_Y\) と母共分散 \(\sigma_{X,Y}\) をもつ二変量正規分布（正規分布を 2 つの変数の組に拡張した分布）に従う \(N\) 個の標本点 \((X_i, Y_i)\) を描いたものである。上側と右側の青のヒストグラムは標本の \(X, Y\) 値をビンに集計した度数分布で，等高線は二次元のビンに集計した点の密度を示している。 \(N\) を大きくしていくと，これらは元の周辺確率密度 \(f_X(x), f_Y(y)\) や同時確率密度 \(f_{X,Y}(x, y)\) の形に近づいていく。
+		</p>
+
+		<div class="marginal-demo">
+			<div class="marginal-controls">
+				<label for="sigmaX-num">\(\sigma_X = \)</label>
+				<input type="number" class="num-input" id="sigmaX-num" min="0.1" max="2" step="0.01" value="1.00">
+				<input type="range" id="sigmaX" min="0.1" max="2" step="0.01" value="1" aria-label="sigma X スライダー">
+
+				<label for="sigmaY-num">\(\sigma_Y = \)</label>
+				<input type="number" class="num-input" id="sigmaY-num" min="0.1" max="2" step="0.01" value="1.00">
+				<input type="range" id="sigmaY" min="0.1" max="2" step="0.01" value="1" aria-label="sigma Y スライダー">
+
+				<label for="cov-num">\(\sigma_{X,Y} = \)</label>
+				<input type="number" class="num-input" id="cov-num" min="-1" max="1" step="0.001" value="0.000">
+				<input type="range" id="cov" min="-1" max="1" step="0.001" value="0" aria-label="sigma X Y スライダー">
+
+				<label for="n-num">\(N = \)</label>
+				<input type="number" class="num-input" id="n-num" min="10000" max="1000000" step="1000" value="10000">
+				<!-- log-scale slider: the value is the exponent log10(N) -->
+				<input type="range" id="n" min="4" max="6" step="0.01" value="4" aria-label="N スライダー">
+			</div>
+			<p id="marginal-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+			<div class="marginal-viz" role="group" aria-label="二変量正規分布を操作するデモ。散布図と周辺分布を表示し，ヒストグラムにポインタを合わせるか図をキーボードで操作すると条件付き分布を橙で表示する">
+				<canvas id="marginal-canvas" aria-hidden="true">二変量正規分布の標本点を描画する領域（WebGL 2 が必要）</canvas>
+				<svg id="marginal-svg" viewBox="0 0 480 480" role="img" tabindex="0" aria-label="横軸 X，縦軸 Y の散布図。黒い点は標本，灰色の等高線は同時密度，青い上側と右側のヒストグラムは周辺分布，橙のヒストグラムは選んだ区間での条件付き分布を表す。左右の矢印キーで上側，上下の矢印キーで右側のヒストグラムを操作できる"></svg>
+			</div>
+		</div>
+
+		<p>
+			ヒストグラムにマウスを置くと，対応する標本点と，それらが作るもう一方の確率変数のヒストグラムが橙でハイライトされる。キーボードでは図にフォーカスし，左右の矢印キーで上側，上下の矢印キーで右側のヒストグラムを動かせる。この橙のヒストグラムは，一方の確率変数の値を固定した（選んだビンに入る）部分標本をもう一方の確率変数について集計したもので，条件付き確率密度の形に対応する。
+		</p>
+
+		<p>
+			共分散 \(\sigma_{X,Y}\) の値を変化させて，条件付き確率密度の変化を確かめてみよう。共分散が \(0\) のとき，上側のヒストグラムでどの \(x\) を選んでも，右側の橙のヒストグラム \(f_{Y \mid X}(y \mid x)\) は ── ノイズはあるものの ── 青のヒストグラム \(f_Y(y)\) に近い形をしていることが分かるだろう。つまり \(f_{Y \mid X}(y \mid x) = f_Y(y)\) であり，これは \(X\) と \(Y\) が互いに <strong>独立</strong> であることを意味する。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			ノート「<a href="../06-correlation-and-independence/">相関と独立</a>」で詳しく説明したように，共分散が \(0\) であっても \(X\) と \(Y\) が独立でない場合もある。このデモでは，共分散が \(0\) のときに独立となる特別な場合として，二変量正規分布を用いている。
+		</div>
+
+		<p>
+			一方，共分散を正の方向に大きくした場合，\(x\) を大きくすると \(f_{Y \mid X}(y \mid x)\) の分布は上にシフトするだろう。すなわち \(f_{Y \mid X}(y \mid x) \neq f_Y(y)\) で，このとき \(X\) と \(Y\) は互いに独立ではないということになる。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../06-correlation-and-independence/">← 前へ：相関と独立</a>
+			<a href="../../">↑ 目次</a>
+			<a href="../08-poisson-and-exponential/">次へ：ポアソン分布と指数分布 →</a>
+		</nav>
+	</main>
+</body>
+</html>
