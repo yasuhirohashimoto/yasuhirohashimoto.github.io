@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="相関がゼロでも独立とはかぎらないことを，単位円周のまわりに散らばる標本点のデモで確かめる付録。">
+	<title>無相関だが独立ではない 2 つの確率変数の周辺確率 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<link rel="stylesheet" href="../../assets/demo-controls.css">
+	<link rel="stylesheet" href="circle-demo.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
+	<script src="circle-demo.js" defer></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>無相関だが独立ではない 2 つの確率変数の周辺確率</h1>
+
+		<p>
+			ノート「<a href="../07-marginal-probability/">同時確率と周辺確率</a>」のデモでは，共分散を \(0\) にすると条件付き分布が周辺分布に一致し，\(X\) と \(Y\) が独立になった。あのデモの脚注で触れたように，これは二変量正規分布という特別な分布を使っていたからで，一般には <strong>共分散が \(0\)（無相関）でも独立とはかぎらない</strong>。本付録では，その反例を同じ種類のデモで体感する。
+		</p>
+
+		<h2 id="circle-distribution">円周上に散らばる標本点</h2>
+
+		<p>
+			標本点を，原点を中心とする半径 \(1\) の円周のまわりに散らばらせてみよう。角度 \(\theta\) は \(0\) から \(2\pi\) まで一様に選び，中心からの距離 \(r\) は平均 \(1\)，標準偏差 \(\sigma_r\) でばらつくものとする。この \((r, \theta)\) から，直交座標を
+		</p>
+
+		\[
+		X = r\cos\theta, \qquad Y = r\sin\theta
+		\]
+
+		<p>
+			で定める。\(\sigma_r = 0\) なら，すべての点はちょうど単位円周上に載る。\(\sigma_r\) を大きくするほど，円周は太いドーナツ状ににじんでいく。
+		</p>
+
+		<h2 id="uncorrelated">まず，無相関であること</h2>
+
+		<p>
+			角度 \(\theta\) が一様なので \(E[\cos\theta] = E[\sin\theta] = 0\)，したがって \(E[X] = E[r]\,E[\cos\theta] = 0\) となる（\(Y\) も同様に \(E[Y] = 0\)）。共分散を計算すると，
+		</p>
+
+		\[
+		\begin{aligned}
+		\mathrm{Cov}(X, Y)
+		&= E[XY] - E[X]\,E[Y] \\[4pt]
+		&= E[\,r^2\cos\theta\sin\theta\,] && \text{※} E[X] = E[Y] = 0 \\[4pt]
+		&= E[r^2]\,E[\cos\theta\sin\theta] && \text{※} r \text{ と } \theta \text{ は独立} \\[4pt]
+		&= E[r^2] \cdot 0 = 0.
+		\end{aligned}
+		\]
+
+		<p>
+			最後の \(E[\cos\theta\sin\theta] = \tfrac{1}{2}E[\sin 2\theta] = 0\) は，\(\sin 2\theta\) を一周ぶん平均すれば消えることから分かる。というわけで，この \(X\) と \(Y\) は共分散が \(0\) ── 相関係数も \(0\)，つまり <strong>無相関</strong> である。
+		</p>
+
+		<h2 id="not-independent">しかし，独立ではないこと</h2>
+
+		<p>
+			では独立だろうか？ そうではない。\(\sigma_r = 0\) の場合を考えると，\(X = x\) と分かった瞬間に \(Y\) の値は \(\pm\sqrt{1 - x^2}\) の 2 つに限られてしまう。<sup>※</sup> \(X\) の値を知ると \(Y\) について分かることが変わるのだから，条件付き分布は周辺分布と等しくならない ── \(f_{Y \mid X}(y \mid x) \neq f_Y(y)\) ── のであり，\(X\) と \(Y\) は独立ではない。無相関は「直線的な関係の強さ」しか測らないので，円周上のように曲がった依存関係は共分散にはまったく現れないのである。
+		</p>
+
+		<div class="note-side">
+			\(\sigma_r > 0\) のときも事情は同じで，\(X = x\) を固定するごとに \(Y\) の散らばり方（分布の形）が変わる。\(\sigma_r = 0\) は，それが \(2\) 点に退化した極端な場合というだけだ。
+		</div>
+
+		<h2 id="demo">動かして体感しよう</h2>
+
+		<p>
+			下の散布図は，上のルールで生成した \(N\) 個の標本点 \((X_i, Y_i)\) を描いたものである。操作はノート「<a href="../07-marginal-probability/">同時確率と周辺確率</a>」のデモと同じで，上側と右側の青いヒストグラムが周辺分布 \(f_X, f_Y\)，等高線が同時密度を表す。ヒストグラムにポインタを合わせる（または図にフォーカスして矢印キーを押す）と，その区間に入る点だけを集めた条件付き分布が橙で重なる。
+		</p>
+
+		<div class="circle-demo">
+			<div class="circle-controls">
+				<label for="sigmaR-num">\(\sigma_r = \)</label>
+				<input type="number" class="num-input" id="sigmaR-num" min="0" max="1" step="0.01" value="0.10">
+				<input type="range" id="sigmaR" min="0" max="1" step="0.01" value="0.1" aria-label="sigma r スライダー">
+
+				<label for="n-num">\(N = \)</label>
+				<input type="number" class="num-input" id="n-num" min="1" max="1000000" step="1" value="10000">
+				<!-- log-scale slider: the value is the exponent log10(N) -->
+				<input type="range" id="n" min="0" max="6" step="0.01" value="4" aria-label="N スライダー">
+			</div>
+			<p id="circle-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+			<div class="circle-viz" role="group" aria-label="単位円周のまわりに散らばる標本点の散布図と周辺分布を表示し，ヒストグラムにポインタを合わせるか図をキーボードで操作すると条件付き分布を橙で表示するデモ">
+				<canvas id="circle-canvas" aria-hidden="true">円周上に散らばる標本点を描画する領域（WebGL 2 が必要）</canvas>
+				<svg id="circle-svg" viewBox="0 0 480 480" role="img" tabindex="0" aria-label="横軸 X，縦軸 Y の散布図。黒い点は標本，灰色の等高線は同時密度，青い上側と右側のヒストグラムは周辺分布，橙のヒストグラムは選んだ区間での条件付き分布を表す。左右の矢印キーで上側，上下の矢印キーで右側のヒストグラムを操作できる"></svg>
+			</div>
+		</div>
+
+		<p>
+			\(\sigma_r\) を \(0\) に近づけると，標本点は細い円周に収束する。このとき上側のヒストグラムで中央（\(x \approx 0\)）のビンを選ぶと，右側の橙のヒストグラムは \(y \approx +1\) と \(y \approx -1\) の 2 か所に山をもつ ── 青い周辺分布 \(f_Y\) とはまるで違う形だ。いっぽう端（\(x \approx 1\)）のビンを選ぶと，橙は \(y \approx 0\) の 1 か所に集まる。選ぶ \(x\) によって条件付き分布の形ががらりと変わること，これが \(X\) と \(Y\) が独立でない証拠である。それでも，散布図の上下左右の対称性ゆえに共分散はゼロのままなのだ。
+		</p>
+
+		<p>
+			ちなみに \(\sigma_r = 0\) では，周辺分布 \(f_X, f_Y\) は両端（\(\pm 1\)）で高くなる U 字型になる（逆正弦分布と呼ばれる）。円周を真上から見下ろすと，左右の端のあたりで点が密に重なって見えることに対応している。
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+
+	<script src="/logger.js"></script>
+</body>
+</html>

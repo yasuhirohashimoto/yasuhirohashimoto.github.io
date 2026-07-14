@@ -1,0 +1,61 @@
+/* Uncorrelated-but-not-independent demo: points scattered on a unit circle.
+	   Layout mirrors the marginal-probability demo (scatter + marginal
+	   histograms + conditional overlay). Base control / table styling lives in
+	   assets/style.css and assets/demo-controls.css. */
+	.circle-demo {
+		margin: 1.2em 0 1.5em;
+	}
+	.circle-controls {
+		margin: .8em auto .6em;
+		display: grid;
+		grid-template-columns: max-content max-content 1fr;
+		gap: .25em .35em;
+		align-items: center;
+		max-width: 340px;
+		font-size: .9rem;
+	}
+	.circle-controls label {
+		text-align: right;
+		white-space: nowrap;
+		margin: 0;
+	}
+	/* width only; the shared look lives in assets/demo-controls.css */
+	.circle-controls .num-input {
+		width: 5em;
+	}
+	.circle-controls input[type=range] {
+		width: 100%;
+		max-width: 180px;
+		margin: 0;
+	}
+	.circle-viz {
+		position: relative;
+		width: 100%;
+		max-width: 640px;
+		aspect-ratio: 1 / 1;
+		margin: 0 auto;
+		user-select: none;
+	}
+	.circle-viz canvas {
+		position: absolute;
+		display: block;
+		z-index: 1;
+		background: transparent;
+	}
+	.circle-viz svg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		pointer-events: none;
+	}
+	.circle-viz svg .hist-hit {
+		pointer-events: auto;
+		cursor: pointer;
+	}
+	.circle-viz svg:focus-visible {
+		outline: 2px solid var(--viz-orange-text);
+		outline-offset: 2px;
+	}

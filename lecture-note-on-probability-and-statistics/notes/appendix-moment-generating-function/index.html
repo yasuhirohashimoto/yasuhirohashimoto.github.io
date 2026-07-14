@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+	<meta name="description" content="モーメント母関数の定義と，微分が k 次のモーメントを取り出すしくみ。応用として指数分布の期待値と分散を部分積分なしで導出する付録。">
+	<title>モーメント母関数 — 確率統計学 講義ノート</title>
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/mathjax-config.js"></script>
+	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script defer src="../../assets/term-highlight.js"></script>
+</head>
+<body>
+	<nav class="note-nav">
+		<a href="../../">↑ 目次</a>
+	</nav>
+
+	<main>
+		<h1>モーメント母関数</h1>
+
+		<p>
+			<strong>モーメント母関数</strong> (moment generating function) とは，\(E[e^{tX}]\) で定義される関数である。 \(X\) について期待値をとるので \(X\) は消え，\(t\) についての関数となる。 \(t\) って何？と思うかもしれないが，0 に近い，後で消えてもらう仮の変数程度に思っておこう。確率変数 \(X\) についてのモーメント母関数を，ここでは \(M_X(t)\) と表記する。
+		</p>
+
+		<h2 id="moments-from-derivatives">微分でモーメントを取り出す</h2>
+
+		<p>
+			いま，期待値の中の指数関数を，付録「<a href="../appendix-exponential-function/">指数関数の定義</a>」で見たような無限に続く和に展開してみよう。<sup>※</sup>
+		</p>
+
+		<div class="note-side">
+			期待値と無限に続く和の順序を入れ替えるところは，本当は収束の条件を確かめる必要があるが，ここでは気にせず進もう。
+		</div>
+
+		\[
+		\begin{aligned}
+		M_X(t) = E[e^{tX}] &= E\left[1+\frac{tX}{1!}+\frac{(tX)^2}{2!}+\frac{(tX)^3}{3!}+\ldots\right]\\[4pt]
+		&= 1+\frac{t}{1!}E[X]+\frac{t^2}{2!}E[X^2]+\frac{t^3}{3!}E[X^3]+\ldots && \text{※期待値の線形性}
+		\end{aligned}
+		\]
+
+		<p>
+			これを \(t\) で 1 回微分すると
+		</p>
+
+		\[
+		\frac{dM_X(t)}{dt} = E[X]+tE[X^2]+\frac{t^2}{2!}E[X^3]+\ldots
+		\]
+
+		<p>
+			となり，\(t=0\) とすることで \(E[X]\) だけが残る。同様に，2 回微分すると
+		</p>
+
+		\[
+		\frac{d^2M_X(t)}{dt^2} = E[X^2]+tE[X^3]+\frac{t^2}{2!}E[X^4]+\ldots
+		\]
+
+		<p>
+			となり，\(t=0\) とすることで \(E[X^2]\) だけが残る。3 次以上についても同様で，これが，モーメント母関数が \(k\) 回の微分によって \(k\) 次の <strong>モーメント</strong> (moment) ── 確率変数の \(k\) 乗の期待値 \(E[X^k]\) ── を生み出すしくみである。
+		</p>
+
+		<h2 id="exponential-distribution">指数分布への応用</h2>
+
+		<p>
+			このモーメント母関数を用いて，指数分布の期待値と分散を求めてみよう。指数分布の確率密度関数は \(f(x; \lambda) = \lambda e^{-\lambda x}\)（\(x \geq 0\)）であった（ノート「<a href="../08-poisson-and-exponential/">ポアソン分布と指数分布</a>」）。定義どおり計算すると
+		</p>
+
+		\[
+		\begin{aligned}
+		M_X(t) = E[e^{tX}]
+		&= \int_0^\infty e^{tx}\cdot\lambda e^{-\lambda x}\, dx = \lambda\int_0^\infty e^{(t-\lambda)x}\, dx\\[6pt]
+		&= \lambda\left[\frac{e^{(t-\lambda)x}}{t-\lambda}\right]_0^\infty.
+		\end{aligned}
+		\]
+
+		<p>
+			定義より \(\lambda>0\)，\(t\) は最終的に 0 とするので \(\lambda>t\) とみなせば，\(e^{(t-\lambda)x}\) は \(x\to\infty\) で 0 になる。よって，
+		</p>
+
+		\[
+		M_X(t) = \frac{\lambda}{t-\lambda}(0-1) = \frac{\lambda}{\lambda-t}.
+		\]
+
+		<p>
+			ここから \(t\) についての微分を計算するのは容易で，
+		</p>
+
+		\[
+		\begin{aligned}
+		E[X]
+		&=\left.\frac{dM_X(t)}{dt}\right|_{t=0}
+		=\left.\frac{d\left(\lambda(\lambda-t)^{-1}\right)}{dt}\right|_{t=0}
+		=\left.\lambda(\lambda-t)^{-2}\right|_{t=0}
+		=\frac{1}{\lambda},\\[6pt]
+		E[X^2]
+		&=\left.\frac{d^2M_X(t)}{dt^2}\right|_{t=0}
+		=\left.\frac{d\left(\lambda(\lambda-t)^{-2}\right)}{dt}\right|_{t=0}
+		=\left.2\lambda(\lambda-t)^{-3}\right|_{t=0}
+		=\frac{2}{\lambda^2}
+		\end{aligned}
+		\]
+
+		<p>
+			を得る。分散は \(V[X] = E[X^2] - E[X]^2\) の関係（付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」で導出）から
+		</p>
+
+		\[
+		V[X] = \frac{2}{\lambda^2} - \left(\frac{1}{\lambda}\right)^2 = \frac{1}{\lambda^2}.
+		\]
+
+		<p>
+			付録「<a href="../appendix-exponential-distribution/">指数分布の期待値と分散</a>」で愚直に部分積分を繰り返した計算と比べて，ずいぶん楽になったと感じないだろうか？
+		</p>
+
+		<hr>
+
+		<nav class="note-nav">
+			<a href="../../">↑ 目次</a>
+		</nav>
+	</main>
+	<script src="/logger.js"></script>
+</body>
+</html>
