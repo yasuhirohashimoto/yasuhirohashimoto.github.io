@@ -93,7 +93,10 @@
 		</p>
 
 		\[
-		\bar{X} \;=\; \frac{1}{n} \sum_{i=1}^n X_i \quad \text{(標本平均)}, \qquad S_X^2 \;=\; \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \quad \text{(標本分散)}
+		\begin{aligned}
+		\bar{X} \;&=\; \frac{1}{n} \sum_{i=1}^n X_i \quad \text{(標本平均)},\\[6pt]
+		S_X^2 \;&=\; \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \quad \text{(標本分散)}
+		\end{aligned}
 		\]
 
 		<p>
@@ -138,12 +141,19 @@
 		<ul>
 			<li>\(E[X]\) の定義式について，たとえばサイコロをふって出た目の値を得点とした場合，得点の期待値は
 			\[
-			E[X] = 1\times \frac{1}{6} + 2\times \frac{1}{6} + \cdots + 6\times \frac{1}{6} = 3.5
+			\begin{aligned}
+			E[X] &= 1\times \frac{1}{6} + 2\times \frac{1}{6} + \cdots + 6\times \frac{1}{6}\\[4pt]
+			&= 3.5
+			\end{aligned}
 			\]
 			となる。つまり，確率変数の値 \(x\) を，それが出る確率 \(P(X=x)\) で重み付けをして，起こりうるすべての \(x\) について平均したものだ。</li>
 			<li>ではサイコロをふって出た目の二乗の値を得点とする場合は？ 確率変数の二乗の期待値を求めたいので，表記は \(E[X^2]\) となる。計算式は
 			\[
-			E[X^2] = \sum_x x^2\, P(X=x) = 1^2\times \frac{1}{6} + 2^2\times \frac{1}{6} + \cdots + 6^2\times \frac{1}{6} \approx 15.17
+			\begin{aligned}
+			E[X^2] &= \sum_x x^2\, P(X=x)\\[4pt]
+			&= 1^2\times \frac{1}{6} + 2^2\times \frac{1}{6} + \cdots + 6^2\times \frac{1}{6}\\[4pt]
+			&\approx 15.17
+			\end{aligned}
 			\]
 			だ。確率分布は同じ \(P(X=x)\) で，掛け合わせる値が \(x^2\) になっている点に注目。</li>
 			<li>\(V[X]\) は \(X\) のばらつき具合で，「\(X\) と期待値の差の二乗」の期待値だ。期待値の中に期待値の記号があると混乱するかもしれないが，ただ定義を理解して粛々と計算すればよい。付録「<a href="../appendix-expected-value-and-variance/">確率変数の期待値と分散の式変形いろいろ</a>」も参照してほしい。</li>

@@ -193,7 +193,12 @@
 		} else {
 			// 分子（着目∩条件）を図の強調点と同系の濃橙で色付けして対応を示す
 			const HL = PROB_COLORS.DText;
-			html = `\\[ P(${target.tex}\\mid ${cond.tex}) \\;=\\; \\frac{\\color{${HL}}{|${target.tex}\\cap ${cond.tex}|}}{|${cond.tex}|} \\;=\\; \\frac{\\color{${HL}}{|${interElems}|}}{|${condElems}|} \\;=\\; \\frac{\\color{${HL}}{${interSize}}}{${condSize}} \\]`;
+			// モバイル幅で収まるよう，記号の分数と要素列挙の分数の間で折る
+			html = `\\[ \\begin{aligned}
+				P(${target.tex}\\mid ${cond.tex})
+				&\\;=\\; \\frac{\\color{${HL}}{|${target.tex}\\cap ${cond.tex}|}}{|${cond.tex}|}\\\\[4pt]
+				&\\;=\\; \\frac{\\color{${HL}}{|${interElems}|}}{|${condElems}|} \\;=\\; \\frac{\\color{${HL}}{${interSize}}}{${condSize}}
+			\\end{aligned} \\]`;
 		}
 
 		resultDiv.innerHTML = html;

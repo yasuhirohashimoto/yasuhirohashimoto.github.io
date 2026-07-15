@@ -246,12 +246,13 @@
 		} else {
 			const pHD = (pDH * pH) / pD;
 			announce(`陽性的中率 P(H|D) はおよそ ${pHD.toFixed(3)}`);
-			resultDiv.innerHTML = `\\[
-				P(H \\mid D)
-				\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)}}{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)} + \\textcolor{${TEXT_NHD}}{P(D \\mid H^c)\\,P(H^c)}}
-				\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\textcolor{${TEXT_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
+			// モバイル幅で収まるよう，記号の分数と数値の分数を行頭 & の左寄せで別行に
+			resultDiv.innerHTML = `\\[ \\begin{aligned}
+				&P(H \\mid D)\\\\
+				&\\quad\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)}}{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)} + \\textcolor{${TEXT_NHD}}{P(D \\mid H^c)\\,P(H^c)}}\\\\[6pt]
+				&\\quad\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\textcolor{${TEXT_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
 				\\;\\approx\\; ${pHD.toFixed(3)}
-			\\]`;
+			\\end{aligned} \\]`;
 		}
 
 		typesetSvg(resultDiv);

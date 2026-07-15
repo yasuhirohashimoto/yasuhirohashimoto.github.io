@@ -94,7 +94,8 @@
 		\[
 		\begin{aligned}
 		M_X(t) = E[e^{tX}]
-		&= \int_0^\infty e^{tx}\cdot\lambda e^{-\lambda x}\, dx = \lambda\int_0^\infty e^{(t-\lambda)x}\, dx\\[6pt]
+		&= \int_0^\infty e^{tx}\cdot\lambda e^{-\lambda x}\, dx \\[6pt]
+		&= \lambda\int_0^\infty e^{(t-\lambda)x}\, dx\\[6pt]
 		&= \lambda\left[\frac{e^{(t-\lambda)x}}{t-\lambda}\right]_0^\infty.
 		\end{aligned}
 		\]
@@ -115,13 +116,13 @@
 		\begin{aligned}
 		E[X]
 		&=\left.\frac{dM_X(t)}{dt}\right|_{t=0}
-		=\left.\frac{d\left(\lambda(\lambda-t)^{-1}\right)}{dt}\right|_{t=0}
-		=\left.\lambda(\lambda-t)^{-2}\right|_{t=0}
+		=\left.\frac{d\left(\lambda(\lambda-t)^{-1}\right)}{dt}\right|_{t=0}\\[4pt]
+		&=\left.\lambda(\lambda-t)^{-2}\right|_{t=0}
 		=\frac{1}{\lambda},\\[6pt]
 		E[X^2]
 		&=\left.\frac{d^2M_X(t)}{dt^2}\right|_{t=0}
-		=\left.\frac{d\left(\lambda(\lambda-t)^{-2}\right)}{dt}\right|_{t=0}
-		=\left.2\lambda(\lambda-t)^{-3}\right|_{t=0}
+		=\left.\frac{d\left(\lambda(\lambda-t)^{-2}\right)}{dt}\right|_{t=0}\\[4pt]
+		&=\left.2\lambda(\lambda-t)^{-3}\right|_{t=0}
 		=\frac{2}{\lambda^2}
 		\end{aligned}
 		\]

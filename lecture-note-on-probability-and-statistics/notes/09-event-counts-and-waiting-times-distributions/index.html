@@ -292,11 +292,13 @@
 		</p>
 
 		\[
+		\begin{aligned}
 		P(T > s + t \mid T > s)
-		= \frac{P(T > s + t)}{P(T > s)}
-		= \frac{e^{-\lambda (s + t)}}{e^{-\lambda s}}
-		= e^{-\lambda t}
-		= P(T > t)
+		&= \frac{P(T > s + t)}{P(T > s)} \\[4pt]
+		&= \frac{e^{-\lambda (s + t)}}{e^{-\lambda s}}
+		= e^{-\lambda t} \\[4pt]
+		&= P(T > t)
+		\end{aligned}
 		\]
 
 		<p>
@@ -378,7 +380,10 @@
 		</p>
 
 		\[
-		P(T_r \leq n) = P(X_n \geq r) = \sum_{k=r}^{n} \binom{n}{k} p^k (1-p)^{n-k}
+		\begin{aligned}
+		P(T_r \leq n) &= P(X_n \geq r) \\[4pt]
+		&= \sum_{k=r}^{n} \binom{n}{k} p^k (1-p)^{n-k}
+		\end{aligned}
 		\]
 
 		<p>
@@ -386,9 +391,11 @@
 		</p>
 
 		\[
-		P(T_r \leq t) = P(N(t) \geq r)
-		= 1 - P(N(t) \leq r-1)
-		= 1 - \sum_{k=0}^{r-1} e^{-\lambda t} \frac{(\lambda t)^k}{k!}.
+		\begin{aligned}
+		P(T_r \leq t) &= P(N(t) \geq r) \\[4pt]
+		&= 1 - P(N(t) \leq r-1) \\[4pt]
+		&= 1 - \sum_{k=0}^{r-1} e^{-\lambda t} \frac{(\lambda t)^k}{k!}.
+		\end{aligned}
 		\]
 
 		<p>

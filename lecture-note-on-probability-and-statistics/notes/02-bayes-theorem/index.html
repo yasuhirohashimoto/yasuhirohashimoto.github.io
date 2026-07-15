@@ -208,9 +208,9 @@
 
 		\[
 		\begin{aligned}
-		P(H^c) &= 1 - P(H) = 1 - 10^{-6}, && \text{……④}\\
-		P(D^c \mid H) &= 1 - P(D \mid H) = 0.01, && \text{……⑤}\\
-		P(D \mid H^c) &= 1 - P(D^c \mid H^c) = 0.1. && \text{……⑥}
+		P(H^c) &= 1 - P(H) = 1 - 10^{-6}, \;\text{……④}\\
+		P(D^c \mid H) &= 1 - P(D \mid H) = 0.01, \;\text{……⑤}\\
+		P(D \mid H^c) &= 1 - P(D^c \mid H^c) = 0.1. \;\text{……⑥}
 		\end{aligned}
 		\]
 
@@ -241,7 +241,11 @@
 				<p>⑧を⑦に代入すると：</p>
 
 			\[
-			P(H^c \mid D) = \frac{0.1 \times (1 - 10^{-6})}{0.99 \times 10^{-6} + 0.1 \times (1 - 10^{-6})} \approx 0.99999.
+			\begin{aligned}
+			&P(H^c \mid D) \\[4pt]
+			&\quad= \frac{0.1 \times (1 - 10^{-6})}{0.99 \times 10^{-6} + 0.1 \times (1 - 10^{-6})} \\[6pt]
+			&\quad\approx 0.99999.
+			\end{aligned}
 			\]
 
 				<p>つまり <strong>陽性が出ても，それでもなお病気でない確率は 0.99999</strong>。裏返すと陽性的中率は</p>
@@ -262,8 +266,9 @@
 
 			\[
 			\begin{aligned}
-			P(H \mid D^c) &= \frac{P(H \cap D^c)}{P(D^c)} = \frac{P(D^c \mid H)\, P(H)}{P(D^c)}\\
-			&= \frac{0.01 \times 10^{-6}}{1 - \{0.99 \times 10^{-6} + 0.1 \times (1 - 10^{-6})\}}\\
+			&P(H \mid D^c) = \frac{P(H \cap D^c)}{P(D^c)}\\[4pt]
+			&= \frac{P(D^c \mid H)\, P(H)}{P(D^c)}\\[4pt]
+			&= \frac{0.01 \times 10^{-6}}{1 - \{0.99 \times 10^{-6} + 0.1 \times (1 - 10^{-6})\}}\\[4pt]
 			&\approx 1.1 \times 10^{-8}.
 			\end{aligned}
 			\]

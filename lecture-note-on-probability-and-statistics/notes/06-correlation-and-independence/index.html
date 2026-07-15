@@ -132,7 +132,10 @@
 		</p>
 
 		\[
-		\langle \widetilde{X},\, \widetilde{Y} \rangle \;=\; \sum_{i=1}^{n} \frac{(X_i - \bar{X})(Y_i - \bar{Y})}{S_X S_Y} \;=\; \frac{n S_{X,Y}}{S_X S_Y} \;=\; n\, r_{X,Y}
+		\begin{aligned}
+		\langle \widetilde{X},\, \widetilde{Y} \rangle &= \sum_{i=1}^{n} \frac{(X_i - \bar{X})(Y_i - \bar{Y})}{S_X S_Y} \\[6pt]
+		&= \frac{n S_{X,Y}}{S_X S_Y} \;=\; n\, r_{X,Y}
+		\end{aligned}
 		\]
 
 		<p>
@@ -160,11 +163,12 @@
 		<div class="note-side">
 			標準化ベクトル \(\widetilde{X}\) のノルムを計算してみよう（\(\widetilde{Y}\) も同様）：
 		\[
-		\|\widetilde{X}\|
-		= \sqrt{\sum_{i=1}^{n} \left(\frac{X_i - \bar{X}}{S_X}\right)^2}
-		= \frac{1}{S_X}\sqrt{\sum_{i=1}^{n} (X_i - \bar{X})^2}
-		= \frac{1}{S_X}\sqrt{n S_X^2}
+		\begin{aligned}
+		\|\widetilde{X}\| &= \sqrt{\sum_{i=1}^{n} \left(\frac{X_i - \bar{X}}{S_X}\right)^2} \\[6pt]
+		&= \frac{1}{S_X}\sqrt{\sum_{i=1}^{n} (X_i - \bar{X})^2} \\[6pt]
+		&= \frac{1}{S_X}\sqrt{n S_X^2}
 		= \sqrt{n}.
+		\end{aligned}
 		\]
 		</div>
 
@@ -215,7 +219,10 @@
 		</p>
 
 		\[
-		P(X_1 = x_1, X_2 = x_2, \ldots, X_n = x_n) \;=\; P(X_1 = x_1)P(X_2 = x_2) \cdots P(X_n = x_n)
+		\begin{aligned}
+		&P(X_1 = x_1, X_2 = x_2, \ldots, X_n = x_n) \\[4pt]
+		&\quad \;=\; P(X_1 = x_1)P(X_2 = x_2) \cdots P(X_n = x_n)
+		\end{aligned}
 		\]
 
 		<p>
@@ -254,8 +261,10 @@
 		</p>
 
 		\[
-		\bar{X} \;=\; \frac{-2 - 1 + 1 + 2}{4} \;=\; 0, \qquad
-		\bar{Y} \;=\; \frac{4 + 1 + 1 + 4}{4} \;=\; 2.5
+		\begin{aligned}
+		\bar{X} \;&=\; \frac{-2 - 1 + 1 + 2}{4} \;=\; 0, \\[6pt]
+		\bar{Y} \;&=\; \frac{4 + 1 + 1 + 4}{4} \;=\; 2.5
+		\end{aligned}
 		\]
 
 		<p>これらを用いて標本共分散を計算すると</p>
@@ -315,9 +324,11 @@
 		</p>
 
 		\[
-		S_{f(X),g(Y)} \;=\; \frac{1}{4} \sum_{i=1}^{4} (X_i^2 - 2.5)(Y_i - 2.5)
-		\;=\; \frac{1.5^2 + 1.5^2 + 1.5^2 + 1.5^2}{4}
-		\;=\; 2.25
+		\begin{aligned}
+		S_{f(X),g(Y)} &= \frac{1}{4} \sum_{i=1}^{4} (X_i^2 - 2.5)(Y_i - 2.5) \\[6pt]
+		&= \frac{1.5^2 + 1.5^2 + 1.5^2 + 1.5^2}{4} \\[6pt]
+		&= 2.25
+		\end{aligned}
 		\]
 
 		<p>
