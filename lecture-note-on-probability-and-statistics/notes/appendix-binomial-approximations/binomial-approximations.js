@@ -219,17 +219,17 @@
 		const midPN = arrow("pois", "norm", "arrow-n");
 
 		// Bin → ポアソン のキャプション（矢印の左外側・中央揃え）
-		texFO(svg, 148, 106, 162, 20, "\\(\\lambda=np\\,\\) を固定して \\(\\,n\\to\\infty\\)", { anchor: "topcenter", color: PROB_COLORS.DText, size: "12px", align: "center" });
-		texFO(svg, 148, 128, 162, 18, "（少数の法則）", { anchor: "topcenter", color: PROB_COLORS.DText, size: "12px", align: "center" });
+		texFO(svg, 148, 106, 162, 20, "\\(\\lambda=np\\,\\) を固定して \\(\\,n\\to\\infty\\)", { anchor: "topcenter", color: PROB_COLORS.DText, size: "14px", align: "center" });
+		texFO(svg, 148, 128, 162, 18, "（少数の法則）", { anchor: "topcenter", color: PROB_COLORS.DText, size: "14px", align: "center" });
 
 		// Bin → 正規 のキャプション（矢印の右外側・中央揃え）
-		texFO(svg, 476, 106, 170, 20, "\\(p\\,\\) を固定して \\(\\,n\\to\\infty\\)", { anchor: "topcenter", color: GRAY, size: "12px", align: "center" });
-		texFO(svg, 476, 128, 170, 18, "（ド・モアブル＝ラプラス）", { anchor: "topcenter", color: GRAY, size: "12px", align: "center" });
+		texFO(svg, 476, 106, 170, 20, "\\(p\\,\\) を固定して \\(\\,n\\to\\infty\\)", { anchor: "topcenter", color: GRAY, size: "14px", align: "center" });
+		texFO(svg, 476, 128, 170, 18, "（ド・モアブル＝ラプラス）", { anchor: "topcenter", color: GRAY, size: "14px", align: "center" });
 
 		// ポアソン → 正規（λ→∞）。矢印の中点で水平中央・線の少し上。
-		texFO(svg, midPN[0], midPN[1] - 26, 80, 18, "\\(\\lambda\\to\\infty\\)", { anchor: "topcenter", color: GRAY, size: "12px", align: "center" });
+		texFO(svg, midPN[0], midPN[1] - 26, 80, 18, "\\(\\lambda\\to\\infty\\)", { anchor: "topcenter", color: GRAY, size: "14px", align: "center" });
 		// この経路の到達点は N(λ,λ)。正規ボックスの式は Bin 側パラメータなので，矢印の下に補足する。
-		texFO(svg, midPN[0], midPN[1] + 6, 120, 18, "\\(\\approx\\mathcal{N}(\\lambda,\\lambda)\\)", { anchor: "topcenter", color: GRAY, size: "11px", align: "center" });
+		texFO(svg, midPN[0], midPN[1] + 6, 120, 18, "\\(\\approx\\mathcal{N}(\\lambda,\\lambda)\\)", { anchor: "topcenter", color: GRAY, size: "14px", align: "center" });
 
 		// ボックスを最後に描く（矢印の上）。特徴色で塗り，式は白抜き，分布名はボックス外に置く。
 		boxes.forEach((b) => {
@@ -243,7 +243,7 @@
 			g.append("text")
 				.attr("x", b.cx).attr("y", ly)
 				.attr("text-anchor", "middle")
-				.attr("font-size", 13)
+				.attr("font-size", 14)
 				.attr("fill", b.textColor)
 				.attr("font-weight", "bold")
 				.text(b.label);
