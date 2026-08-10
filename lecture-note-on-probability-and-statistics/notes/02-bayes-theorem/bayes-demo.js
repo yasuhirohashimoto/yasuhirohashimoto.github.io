@@ -218,9 +218,11 @@
 		const pDH = parseFloat(pdhSlider.value);
 		const pDnH = parseFloat(pdnhSlider.value);
 
-		phVal.textContent = pH.toFixed(2);
-		pdhVal.textContent = pDH.toFixed(2);
-		pdnhVal.textContent = pDnH.toFixed(2);
+		// 編集中のボックスは上書きしない（タイプ途中の文字列が消えるため）
+		const setVal = (el, v) => { if (document.activeElement !== el) el.value = v.toFixed(2); };
+		setVal(phVal, pH);
+		setVal(pdhVal, pDH);
+		setVal(pdnhVal, pDnH);
 
 		const wL = chartW * pH;
 		const wR = chartW - wL;
@@ -272,6 +274,28 @@
 	phSlider.addEventListener("input", update);
 	pdhSlider.addEventListener("input", update);
 	pdnhSlider.addEventListener("input", update);
+
+	// 数値ボックスからの直接入力。入力途中は有効な値のときだけ反映し，確定時に [0,1] へクランプして表示を整える
+	function bindNumber(numEl, slider) {
+		numEl.addEventListener("input", () => {
+			const v = parseFloat(numEl.value);
+			if (Number.isFinite(v) && v >= 0 && v <= 1) {
+				slider.value = v;
+				update();
+			}
+		});
+		numEl.addEventListener("change", () => {
+			let v = parseFloat(numEl.value);
+			if (!Number.isFinite(v)) v = parseFloat(slider.value);
+			v = Math.min(1, Math.max(0, v));
+			slider.value = v;
+			numEl.value = v.toFixed(2);
+			update();
+		});
+	}
+	bindNumber(phVal, phSlider);
+	bindNumber(pdhVal, pdhSlider);
+	bindNumber(pdnhVal, pdnhSlider);
 
 	await typesetSvg(svg);
 	update();

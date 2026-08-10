@@ -66,7 +66,7 @@
 		</p>
 
 		<div class="note-side">
-			両辺に \(P(D)\) を掛けると，左辺は \(P(H \mid D)\, P(D) = P(H\cap D)\)，右辺は \(P(D \mid H)\, P(H) = P(D\cap H)\) となり，両者が等しいことはすぐにわかるはずだ。
+			両辺に \(P(D)\) を掛けると，左辺は \(P(H \mid D)\, P(D) = P(H\cap D)\)，右辺は \(P(D \mid H)\, P(H) = P(D\cap H)\) となり，両者が等しいことはすぐにわかる。
 		</div>
 
 		<p>
@@ -146,7 +146,11 @@
 		<h2 id="demo">事後確率の変化を体感する</h2>
 
 		<p>
-			より診断に近い例として，\(D\) を「インフルエンザの検査キットで陽性が出た」としてみよう。医療分野では，尤度を条件の違いで <strong>感度</strong> \(P(D \mid H)\) (sensitivity) と <strong>偽陽性率</strong> \(P(D \mid H^c)\) (false positive rate; <strong>FPR</strong>) と読み分けるのが慣例である。なお，偽陽性率の補数にあたる \(P(D^c \mid H^c) = 1 - P(D \mid H^c)\) を <strong>特異度</strong> (specificity) と呼ぶ。感度は「罹患している人が正しく陽性となる確率」，偽陽性率は「罹患していないのに陽性となる確率」，特異度は「罹患していない人が正しく陰性となる確率」と読み替えられる。このとき事後確率 \(P(H \mid D)\) は「陽性の人が実際に罹患している確率」 ── 医療統計でいう <strong>陽性的中率</strong> (positive predictive value; <strong>PPV</strong>) ── を表すことになる。事前確率 \(P(H)\) は「罹患している人の割合」で，<strong>有病率</strong> (prevalence) と呼ばれる。
+			より診断に近い例として，\(D\) を「インフルエンザの検査キットで陽性が出た」としてみよう。医療分野では，尤度を条件の違いで <strong>感度</strong> \(P(D \mid H)\) (sensitivity) と <strong>偽陽性率</strong> \(P(D \mid H^c)\) (false positive rate; <strong>FPR</strong>) と読み分けるのが慣例である。なお，偽陽性率の補数にあたる \(P(D^c \mid H^c) = 1 - P(D \mid H^c)\) を <strong>特異度</strong> (specificity) と呼ぶ。感度は「罹患している人が正しく陽性となる確率」，偽陽性率は「罹患していないのに陽性となる確率」，特異度は「罹患していない人が正しく陰性となる確率」と読み替えられる。いずれも検査キットの性能を表す指標だ。
+		</p>
+
+		<p>
+			このとき事後確率 \(P(H \mid D)\) は「陽性の人が実際に罹患している確率」 ── 医療統計でいう <strong>陽性的中率</strong> (positive predictive value; <strong>PPV</strong>) ── を表すことになる。事前確率 \(P(H)\) は「罹患している人の割合」で，<strong>有病率</strong> (prevalence) と呼ばれる。感度や特異度と違い，陽性的中率は有病率に左右される。同じ検査キットでも，どのような集団に用いるかによって値が変わるのである。
 		</p>
 
 		<p>
@@ -159,9 +163,18 @@
 
 		<div class="bayes-viz">
 			<div class="bayes-controls">
-				<label>\(P(H) =\)<span class="readout-chip" id="bayes-ph-val">0.05</span><input type="range" id="bayes-ph" min="0" max="1" step="0.01" value="0.05"></label>
-				<label>\(P(D \mid H) =\)<span class="readout-chip" id="bayes-pdh-val">0.70</span><input type="range" id="bayes-pdh" min="0" max="1" step="0.01" value="0.70"></label>
-				<label>\(P(D \mid H^c) =\)<span class="readout-chip" id="bayes-pdnh-val">0.02</span><input type="range" id="bayes-pdnh" min="0" max="1" step="0.01" value="0.02"></label>
+				<label class="ctrl-name" for="bayes-ph">有病率</label>
+				<span class="ctrl-prob">\(P(H)\)</span>
+				<span class="ctrl-val">\(=\)<input type="number" class="readout-chip" id="bayes-ph-val" min="0" max="1" step="0.01" value="0.05" aria-label="有病率の値を入力"></span>
+				<input type="range" id="bayes-ph" min="0" max="1" step="0.01" value="0.05">
+				<label class="ctrl-name" for="bayes-pdh">感度</label>
+				<span class="ctrl-prob">\(P(D \mid H)\)</span>
+				<span class="ctrl-val">\(=\)<input type="number" class="readout-chip" id="bayes-pdh-val" min="0" max="1" step="0.01" value="0.70" aria-label="感度の値を入力"></span>
+				<input type="range" id="bayes-pdh" min="0" max="1" step="0.01" value="0.70">
+				<label class="ctrl-name" for="bayes-pdnh">偽陽性率</label>
+				<span class="ctrl-prob">\(P(D \mid H^c)\)</span>
+				<span class="ctrl-val">\(=\)<input type="number" class="readout-chip" id="bayes-pdnh-val" min="0" max="1" step="0.01" value="0.02" aria-label="偽陽性率の値を入力"></span>
+				<input type="range" id="bayes-pdnh" min="0" max="1" step="0.01" value="0.02">
 			</div>
 			<svg id="bayes-svg" viewBox="0 0 240 240" role="img" aria-label="横幅を仮説 H とその補事象の事前確率，縦方向を観測 D とその補事象の条件付き確率とし，橙を D，青を D の補事象としてベイズ更新を面積で示す図"></svg>
 			<div id="bayes-result" class="venn-result"></div>

@@ -19,31 +19,57 @@
 
 .bayes-controls {
 	margin: .8em 0 .4em;
-	display: flex;
-	gap: 1.1em;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(4, max-content);
 	justify-content: center;
-	font-size: .9rem;
 	align-items: center;
+	column-gap: .6em;
+	row-gap: .55em;
+	font-size: .9rem;
 }
 
-.bayes-controls label {
+.bayes-controls .ctrl-name {
+	justify-self: end;
+}
+
+.bayes-controls .ctrl-prob,
+.bayes-controls .ctrl-val {
+	justify-self: start;
+}
+
+.bayes-controls .ctrl-val {
 	display: inline-flex;
 	align-items: center;
-	gap: 0;
+	gap: .35em;
+}
+
+.bayes-controls input[type=number] {
+	width: 3.6em;
+	border: none;
+	font: inherit;
+	text-align: right;
+	appearance: textfield;
+	-moz-appearance: textfield;
+}
+
+.bayes-controls input[type=number]::-webkit-outer-spin-button,
+.bayes-controls input[type=number]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 .bayes-controls input[type=range] {
 	width: 124px;
-	margin-left: .4em;
 }
 
-.bayes-controls .readout-chip {
-	display: inline-block;
-	min-width: 2.6em;
-	text-align: right;
-	font-variant-numeric: tabular-nums;
-	margin-left: .15em;
+@media (max-width: 480px) {
+	.bayes-controls {
+		column-gap: .45em;
+	}
+
+	.bayes-controls input[type=range] {
+		width: 92px;
+	}
 }
 
 #bayes-svg {
