@@ -521,12 +521,17 @@ fn main(@builtin(global_invocation_id) globalId: vec3<u32>) {
 		}
 
 		if (opts.note) {
-			g.append("text")
+			const note = g.append("text")
 				.attr("class", "clt-panel-note")
 				.attr("x", width - 12)
 				.attr("y", 19)
 				.attr("text-anchor", "end")
 				.text(opts.note);
+			if (opts.noteStrong) {
+				note.append("tspan")
+					.attr("font-weight", "bold")
+					.text(opts.noteStrong);
+			}
 		}
 
 		g.append("g")
@@ -650,7 +655,7 @@ fn main(@builtin(global_invocation_id) globalId: vec3<u32>) {
 		texFO(svg, x(1.8), ay - 10, 180, 18, "② 幅の目安は \\(\\,\\sigma\\)", {
 			anchor: "topcenter", color: PROB_COLORS.text, size: "12px"
 		});
-		texFO(svg, x(2.4), y(0.12), 210, 20, "\\(\\sigma\\,\\) が大きいと幅広で低い山に", {
+		texFO(svg, x(2.7), y(0.12), 210, 20, "\\(\\sigma\\,\\) が大きいと幅広で低い山に", {
 			anchor: "topleft", align: "left", color: ORANGE, size: "13px"
 		});
 
@@ -696,13 +701,14 @@ fn main(@builtin(global_invocation_id) globalId: vec3<u32>) {
 			3: "おやおや？",
 			10: "正規分布が見えてくる",
 			100: "期待値の近くに集中",
-			1000: "さらに細く集中。横軸の範囲に注目",
+			1000: "さらに細く集中。",
 		};
 		const panels = CLT_MEAN_HISTOGRAMS.map((panel) => ({
 			...panel,
 			titleTex: `\\(n = ${panel.n}\\)`,
 			note: notes[panel.n],
-			normal: panel.n >= 10
+			noteStrong: panel.n === 1000 ? "横軸の範囲に注目" : null,
+			normal: true
 		}));
 
 		panels.forEach((panel) => {
@@ -716,6 +722,7 @@ fn main(@builtin(global_invocation_id) globalId: vec3<u32>) {
 				xDomain: panel.xDomain,
 				titleTex: panel.titleTex,
 				note: panel.note,
+				noteStrong: panel.noteStrong,
 				xLabelTex: "\\(\\bar{X}_n\\)",
 				frame: false,
 				normal: panel.normal ? { mean, sd } : null

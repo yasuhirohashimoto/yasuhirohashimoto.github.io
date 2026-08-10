@@ -146,6 +146,7 @@
 		.text(n => n);
 
 	const resultDiv = document.getElementById("venn-result");
+	let mathRenderRevision = 0;
 
 	function update() {
 		const cond = condEvents.find(e => e.label === condSelect.value);
@@ -201,8 +202,14 @@
 			\\end{aligned} \\]`;
 		}
 
-		resultDiv.innerHTML = html;
-		typesetSvg(resultDiv);
+		const renderRevision = ++mathRenderRevision;
+		typesetSvg(resultDiv, {
+			clear: true,
+			shouldTypeset: () => renderRevision === mathRenderRevision,
+			beforeTypeset: () => {
+				resultDiv.innerHTML = html;
+			},
+		});
 	}
 
 	condSelect.addEventListener("change", update);

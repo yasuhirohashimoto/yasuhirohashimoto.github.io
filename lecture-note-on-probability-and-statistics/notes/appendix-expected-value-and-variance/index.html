@@ -37,13 +37,13 @@
 			\[
 			\begin{aligned}
 			E[X\pm Y]
-			&= \sum_x\sum_y (x\pm y)P(X=x,Y=y)\\[6pt]
+			&= \sum_x\sum_y (x\pm y)P(X=x,Y=y)\\[4pt]
 			&= \sum_x\sum_y xP(X=x,Y=y)
-			\pm \sum_x\sum_y yP(X=x,Y=y)\\[6pt]
+			\pm \sum_x\sum_y yP(X=x,Y=y)\\[4pt]
 			&= \sum_x x\sum_y P(X=x,Y=y)
-			\pm \sum_y y\sum_x P(X=x,Y=y)\\[6pt]
+			\pm \sum_y y\sum_x P(X=x,Y=y)\\[4pt]
 			&= \sum_x xP(X=x)
-			\pm \sum_y yP(Y=y)\\[6pt]
+			\pm \sum_y yP(Y=y)\\[4pt]
 			&= E[X]\pm E[Y].
 			\end{aligned}
 			\]
@@ -57,9 +57,9 @@
 			\[
 			\begin{aligned}
 			V[X]
-			&= E\left[(X-E[X])^2\right]\\[6pt]
-			&= E\left[X^2-2XE[X]+E[X]^2\right]\\[6pt]
-			&= E[X^2]-2E[X]E[X]+E[X]^2\\[6pt]
+			&= E\left[(X-E[X])^2\right]\\[4pt]
+			&= E\left[X^2-2XE[X]+E[X]^2\right]\\[4pt]
+			&= E[X^2]-2E[X]E[X]+E[X]^2\\[4pt]
 			&= E[X^2]-E[X]^2.
 			\end{aligned}
 			\]
@@ -80,8 +80,8 @@
 			\[
 			\begin{aligned}
 			E[aX]
-			&= \sum_x (ax)P(X=x)\\[6pt]
-			&= a\sum_x xP(X=x)\\[6pt]
+			&= \sum_x (ax)P(X=x)\\[4pt]
+			&= a\sum_x xP(X=x)\\[4pt]
 			&= aE[X].
 			\end{aligned}
 			\]
@@ -93,12 +93,12 @@
 			\[
 			\begin{aligned}
 			V[aX]
-			&= \sum_x \bigl(ax-E[aX]\bigr)^2P(X=x)\\[6pt]
-			&= \sum_x \bigl(a^2x^2-2axE[aX]+E[aX]^2\bigr)P(X=x)\\[6pt]
-			&= a^2\sum_x x^2P(X=x)-2aE[aX]\sum_x xP(X=x)+E[aX]^2\sum_x P(X=x)\\[6pt]
-			&= a^2E[X^2]-2aE[aX]E[X]+E[aX]^2\\[6pt]
-			&= a^2E[X^2]-2a^2E[X]^2+a^2E[X]^2\\[6pt]
-			&= a^2\bigl(E[X^2]-E[X]^2\bigr)\\[6pt]
+			&= \sum_x \bigl(ax-E[aX]\bigr)^2P(X=x)\\[4pt]
+			&= \sum_x \bigl(a^2x^2-2axE[aX]+E[aX]^2\bigr)P(X=x)\\[4pt]
+			&= a^2\sum_x x^2P(X=x)-2aE[aX]\sum_x xP(X=x)+E[aX]^2\sum_x P(X=x)\\[4pt]
+			&= a^2E[X^2]-2aE[aX]E[X]+E[aX]^2\\[4pt]
+			&= a^2E[X^2]-2a^2E[X]^2+a^2E[X]^2\\[4pt]
+			&= a^2\bigl(E[X^2]-E[X]^2\bigr)\\[4pt]
 			&= a^2V[X].
 			\end{aligned}
 			\]
@@ -106,8 +106,8 @@
 			\[
 			\begin{aligned}
 			V[aX]
-			&= E[(aX)^2]-E[aX]^2\\[6pt]
-			&= a^2E[X^2]-a^2E[X]^2\\[6pt]
+			&= E[(aX)^2]-E[aX]^2\\[4pt]
+			&= a^2E[X^2]-a^2E[X]^2\\[4pt]
 			&= a^2V[X].
 			\end{aligned}
 			\]
@@ -122,9 +122,9 @@
 			\[
 			\begin{aligned}
 			V[X+b]
-			&= E\left[\bigl((X+b)-E[X+b]\bigr)^2\right]\\[6pt]
-			&= E\left[\bigl(X+b-E[X]-b\bigr)^2\right]\\[6pt]
-			&= E\left[(X-E[X])^2\right]\\[6pt]
+			&= E\left[\bigl((X+b)-E[X+b]\bigr)^2\right]\\[4pt]
+			&= E\left[\bigl(X+b-E[X]-b\bigr)^2\right]\\[4pt]
+			&= E\left[(X-E[X])^2\right]\\[4pt]
 			&= V[X].
 			\end{aligned}
 			\]
@@ -142,9 +142,9 @@
 			\[
 			\begin{aligned}
 			\mathrm{Cov}[X,Y]
-			&= E\left[(X-E[X])(Y-E[Y])\right]\\[6pt]
-			&= E\left[XY+E[X]E[Y]-XE[Y]-YE[X]\right]\\[6pt]
-			&= E[XY]+E[X]E[Y]-E[X]E[Y]-E[Y]E[X]\\[6pt]
+			&= E\left[(X-E[X])(Y-E[Y])\right]\\[4pt]
+			&= E\left[XY+E[X]E[Y]-XE[Y]-YE[X]\right]\\[4pt]
+			&= E[XY]+E[X]E[Y]-E[X]E[Y]-E[Y]E[X]\\[4pt]
 			&= E[XY]-E[X]E[Y].
 			\end{aligned}
 			\]
@@ -174,11 +174,11 @@
 			\[
 			\begin{aligned}
 			V[X\pm Y]
-			&= E[(X\pm Y)^2]-E[X\pm Y]^2\\[6pt]
-			&= E[X^2+Y^2\pm 2XY]-(E[X]\pm E[Y])^2\\[6pt]
-			&= E[X^2]+E[Y^2]\pm 2E[XY]-E[X]^2-E[Y]^2\mp 2E[X]E[Y]\\[6pt]
+			&= E[(X\pm Y)^2]-E[X\pm Y]^2\\[4pt]
+			&= E[X^2+Y^2\pm 2XY]-(E[X]\pm E[Y])^2\\[4pt]
+			&= E[X^2]+E[Y^2]\pm 2E[XY]-E[X]^2-E[Y]^2\mp 2E[X]E[Y]\\[4pt]
 			&= (E[X^2]-E[X]^2)+(E[Y^2]-E[Y]^2)
-			\pm 2(E[XY]-E[X]E[Y])\\[6pt]
+			\pm 2(E[XY]-E[X]E[Y])\\[4pt]
 			&= V[X]+V[Y]\pm 2\mathrm{Cov}[X,Y].
 			\end{aligned}
 			\]
@@ -200,9 +200,9 @@
 			\[
 			\begin{aligned}
 			E[XY]
-			&= \sum_x\sum_y (xy)P(X=x,Y=y)\\[6pt]
-			&= \sum_x\sum_y (xy)P(X=x)P(Y=y)\\[6pt]
-			&= \sum_x xP(X=x)\sum_y yP(Y=y)\\[6pt]
+			&= \sum_x\sum_y (xy)P(X=x,Y=y)\\[4pt]
+			&= \sum_x\sum_y (xy)P(X=x)P(Y=y)\\[4pt]
+			&= \sum_x xP(X=x)\sum_y yP(Y=y)\\[4pt]
 			&= E[X]E[Y].
 			\end{aligned}
 			\]
@@ -229,8 +229,8 @@
 			\[
 			\begin{aligned}
 			V[XY]
-			&= E[(XY)^2]-E[XY]^2\\[6pt]
-			&= E[X^2Y^2]-E[X]^2E[Y]^2\\[6pt]
+			&= E[(XY)^2]-E[XY]^2\\[4pt]
+			&= E[X^2Y^2]-E[X]^2E[Y]^2\\[4pt]
 			&= E[X^2]E[Y^2]-E[X]^2E[Y]^2.
 			\end{aligned}
 			\]
@@ -271,9 +271,9 @@
 			\[
 			\begin{aligned}
 			E[\bar{X}_n]
-			&= E\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[6pt]
-			&= \frac{1}{n}\{E[X_1]+E[X_2]+\cdots+E[X_n]\}\\[6pt]
-			&= \frac{1}{n}\{\mu+\mu+\cdots+\mu\}\\[6pt]
+			&= E\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[4pt]
+			&= \frac{1}{n}\{E[X_1]+E[X_2]+\cdots+E[X_n]\}\\[4pt]
+			&= \frac{1}{n}\{\mu+\mu+\cdots+\mu\}\\[4pt]
 			&= \mu.
 			\end{aligned}
 			\]
@@ -298,10 +298,10 @@
 			\[
 			\begin{aligned}
 			V[\bar{X}_n]
-			&= V\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[6pt]
-			&= V\left[\frac{X_1}{n}\right]+V\left[\frac{X_2}{n}\right]+\cdots+V\left[\frac{X_n}{n}\right]\\[6pt]
-			&= \frac{V[X_1]}{n^2}+\frac{V[X_2]}{n^2}+\cdots+\frac{V[X_n]}{n^2}\\[6pt]
-			&= \frac{\sigma^2}{n^2}+\frac{\sigma^2}{n^2}+\cdots+\frac{\sigma^2}{n^2}\\[6pt]
+			&= V\left[\frac{X_1+X_2+\cdots+X_n}{n}\right]\\[4pt]
+			&= V\left[\frac{X_1}{n}\right]+V\left[\frac{X_2}{n}\right]+\cdots+V\left[\frac{X_n}{n}\right]\\[4pt]
+			&= \frac{V[X_1]}{n^2}+\frac{V[X_2]}{n^2}+\cdots+\frac{V[X_n]}{n^2}\\[4pt]
+			&= \frac{\sigma^2}{n^2}+\frac{\sigma^2}{n^2}+\cdots+\frac{\sigma^2}{n^2}\\[4pt]
 			&= \frac{\sigma^2}{n}.
 			\end{aligned}
 			\]
@@ -365,7 +365,7 @@
 		\[
 		\begin{aligned}
 		\Sigma
-		&= E\left[(\mathbf{X}-E[\mathbf{X}])(\mathbf{X}-E[\mathbf{X}])^T\right]\\
+		&= E\left[(\mathbf{X}-E[\mathbf{X}])(\mathbf{X}-E[\mathbf{X}])^T\right]\\[4pt]
 		&= E[\mathbf{X}\mathbf{X}^T]-E[\mathbf{X}]E[\mathbf{X}]^T
 		\end{aligned}
 		\]

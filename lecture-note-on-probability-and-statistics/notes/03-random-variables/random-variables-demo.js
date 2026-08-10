@@ -131,6 +131,12 @@
 	const CDF_STROKE = PROB_COLORS.DCText;
 	const CCDF_FILL = d3.color(PROB_COLORS.D).copy({ opacity: 0.30 }).formatRgb();
 	const CCDF_STROKE = PROB_COLORS.DText;
+	const texRgb = color => {
+		const { r, g, b } = d3.rgb(color);
+		return `${r},${g},${b}`;
+	};
+	const CDF_TEX_RGB = texRgb(CDF_STROKE);
+	const CCDF_TEX_RGB = texRgb(CCDF_STROKE);
 
 	const distSelect = document.getElementById("rv-dist-select");
 	const xSlider = document.getElementById("rv-x");
@@ -138,6 +144,7 @@
 	const resultDiv = document.getElementById("rv-result");
 	const liveDiv = document.getElementById("rv-live");
 	let liveTimer = null;
+	let mathRenderRevision = 0;
 	// スクリーンリーダー向けの通知。スライダー連続操作で読み上げが氾濫しないよう，操作が止まってから書き込む
 	function announce(text) {
 		if (!liveDiv) return;
@@ -198,8 +205,6 @@
 			pdfAxisY.call(d3.axisLeft(yPdf).ticks(4).tickSizeOuter(0)).call(styleAxis);
 			cdfAxisY.call(d3.axisLeft(yCdf).ticks(5).tickSizeOuter(0)).call(styleAxis);
 		}
-
-		pdfTitleFO.select("div").html(dist.pdfLabel);
 
 		pdfShade.selectAll("*").remove();
 		pdfDraw.selectAll("*").remove();
@@ -370,13 +375,22 @@
 		}
 
 		// 図の塗り（CDF=青，CCDF=橙）と対応する色を値に付ける
-		resultDiv.innerHTML =
+		const resultHtml =
 			`\\[\\begin{aligned}` +
-			`F_X(${fmt(xValue)}) &= P(X \\leq ${fmt(xValue)}) \\approx \\color{${PROB_COLORS.DCText}}{${F.toFixed(3)}}\\\\` +
-			`\\bar{F}_X(${fmt(xValue)}) &= P(X > ${fmt(xValue)}) \\approx \\color{${PROB_COLORS.DText}}{${Fbar.toFixed(3)}}` +
+			`F_X(${fmt(xValue)}) &= P(X \\leq ${fmt(xValue)}) \\approx \\textcolor[RGB]{${CDF_TEX_RGB}}{${F.toFixed(3)}}\\\\` +
+			`\\bar{F}_X(${fmt(xValue)}) &= P(X > ${fmt(xValue)}) \\approx \\textcolor[RGB]{${CCDF_TEX_RGB}}{${Fbar.toFixed(3)}}` +
 			`\\end{aligned}\\]`;
+		const pdfLabel = dist.pdfLabel;
+		const renderRevision = ++mathRenderRevision;
 		announce(`x = ${fmt(xValue)} のとき，累積確率はおよそ ${F.toFixed(3)}，補累積確率はおよそ ${Fbar.toFixed(3)}`);
-		typesetSvg([resultDiv, pdfTitleFO]);
+		typesetSvg([resultDiv, pdfTitleFO], {
+			clear: true,
+			shouldTypeset: () => renderRevision === mathRenderRevision,
+			beforeTypeset: () => {
+				pdfTitleFO.select("div").html(pdfLabel);
+				resultDiv.innerHTML = resultHtml;
+			},
+		});
 	}
 
 	function setDist(name) {

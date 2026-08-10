@@ -59,7 +59,7 @@
 		\[
 		\begin{aligned}
 		\mathrm{RSS}(a,b)
-		&= \sum_{i=1}^{n}(y_i-ax_i-b)^2\\
+		&= \sum_{i=1}^{n}(y_i-ax_i-b)^2\\[4pt]
 		&= \sum_{i=1}^{n}
 		\left(a^2x_i^2+b^2+y_i^2+2abx_i-2by_i-2ax_iy_i\right).
 		\end{aligned}
@@ -72,11 +72,11 @@
 		\[
 		\begin{aligned}
 		\frac{\partial \mathrm{RSS}}{\partial a}
-		&= \sum_{i=1}^{n}\left(2ax_i^2+2bx_i-2x_iy_i\right)\\
+		&= \sum_{i=1}^{n}\left(2ax_i^2+2bx_i-2x_iy_i\right)\\[4pt]
 		&= 2a\sum_{i=1}^{n}x_i^2+2b\sum_{i=1}^{n}x_i-2\sum_{i=1}^{n}x_iy_i,\\[6pt]
 		\frac{\partial \mathrm{RSS}}{\partial b}
-		&= \sum_{i=1}^{n}\left(2b+2ax_i-2y_i\right)\\
-		&= 2bn+2a\sum_{i=1}^{n}x_i-2\sum_{i=1}^{n}y_i\\
+		&= \sum_{i=1}^{n}\left(2b+2ax_i-2y_i\right)\\[4pt]
+		&= 2bn+2a\sum_{i=1}^{n}x_i-2\sum_{i=1}^{n}y_i\\[4pt]
 		&= 2n(b+a\bar{x}-\bar{y}).
 		\end{aligned}
 		\]
@@ -122,7 +122,7 @@
 		\]
 
 		<p>
-			と求まる。<sup>※</sup>さらに，上で得た \(b=\bar{y}-a\bar{x}\) にこの \(\hat{a}\) を代入すれば，切片の最小二乗解 \(\hat{b}=\bar{y}-\hat{a}\bar{x}\) が求まる。このようにして残差二乗和を最小化する \(a\) と \(b\) を求めるプロセスが最小二乗法である。
+			と求まる。<sup>※</sup> さらに，上で得た \(b=\bar{y}-a\bar{x}\) にこの \(\hat{a}\) を代入すれば，切片の最小二乗解 \(\hat{b}=\bar{y}-\hat{a}\bar{x}\) が求まる。このようにして残差二乗和を最小化する \(a\) と \(b\) を求めるプロセスが最小二乗法である。
 		</p>
 
 		<div class="note-side">
@@ -138,9 +138,9 @@
 		\[
 		\begin{aligned}
 		\sum_{i=1}^{n}(x_i-\bar{x})^2
-		&= \sum_{i=1}^{n}(x_i^2-2x_i\bar{x}+\bar{x}^2)\\
-		&= \sum_{i=1}^{n}x_i^2-2\bar{x}\sum_{i=1}^{n}x_i+n\bar{x}^2\\
-		&= \sum_{i=1}^{n}x_i^2-2n\bar{x}^2+n\bar{x}^2\\
+		&= \sum_{i=1}^{n}(x_i^2-2x_i\bar{x}+\bar{x}^2)\\[4pt]
+		&= \sum_{i=1}^{n}x_i^2-2\bar{x}\sum_{i=1}^{n}x_i+n\bar{x}^2\\[4pt]
+		&= \sum_{i=1}^{n}x_i^2-2n\bar{x}^2+n\bar{x}^2\\[4pt]
 		&= \sum_{i=1}^{n}x_i^2-n\bar{x}^2.
 		\end{aligned}
 		\]
@@ -151,10 +151,10 @@
 
 		\[
 		\begin{aligned}
-		&\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y}) \\
-		&\quad = \sum_{i=1}^{n}(x_iy_i-x_i\bar{y}-\bar{x}y_i+\bar{x}\bar{y})\\
-		&\quad = \sum_{i=1}^{n}x_iy_i-\bar{y}\sum_{i=1}^{n}x_i-\bar{x}\sum_{i=1}^{n}y_i+n\bar{x}\bar{y}\\
-		&\quad = \sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}-n\bar{x}\bar{y}+n\bar{x}\bar{y}\\
+		&\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y}) \\[4pt]
+		&\quad = \sum_{i=1}^{n}(x_iy_i-x_i\bar{y}-\bar{x}y_i+\bar{x}\bar{y})\\[4pt]
+		&\quad = \sum_{i=1}^{n}x_iy_i-\bar{y}\sum_{i=1}^{n}x_i-\bar{x}\sum_{i=1}^{n}y_i+n\bar{x}\bar{y}\\[4pt]
+		&\quad = \sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}-n\bar{x}\bar{y}+n\bar{x}\bar{y}\\[4pt]
 		&\quad = \sum_{i=1}^{n}x_iy_i-n\bar{x}\bar{y}.
 		\end{aligned}
 		\]
@@ -167,9 +167,9 @@
 		\begin{aligned}
 		\hat{a}
 		&= \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}
-		{\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[4pt]
+		{\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[6pt]
 		&= \frac{\frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}
-		{\frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[4pt]
+		{\frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})^2}\\[6pt]
 		&= \frac{S_{X,Y}}{S_X^2}.
 		\end{aligned}
 		\]
@@ -183,7 +183,7 @@
 		\]
 
 		<p>
-			とよく似た形をしていることも分かる。
+			とよく似た形をしていることもわかる。
 		</p>
 
 		<hr>

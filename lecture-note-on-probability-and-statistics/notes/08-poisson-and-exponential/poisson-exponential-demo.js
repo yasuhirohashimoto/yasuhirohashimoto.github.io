@@ -3,7 +3,7 @@
 	const lamNum = document.getElementById("pe-lambda-num");
 
 	const W = 360, H = 240;
-	const m = { top: 16, right: 18, bottom: 36, left: 42 };
+	const m = { top: 16, right: 18, bottom: 36, left: 50 };
 	const iw = W - m.left - m.right;
 	const ih = H - m.top - m.bottom;
 
@@ -23,10 +23,9 @@
 		.attr("x", iw/2).attr("y", ih + 30)
 		.attr("text-anchor", "middle").attr("font-size", "12px").attr("fill", PROB_COLORS.sub)
 		.attr("font-style", "italic").text("k");
-	pg.append("text")
-		.attr("x", -m.left + 2).attr("y", -4)
-		.attr("font-size", "13px").attr("fill", PROB_COLORS.sub)
-		.text("P(X=k)");
+	const pyLabelG = pg.append("g")
+		.attr("transform", `translate(${-m.left + 10}, ${ih / 2}) rotate(-90)`);
+	texFO(pyLabelG, 0, 0, 84, 18, "\\(P(X = k)\\)", { anchor: "center", color: PROB_COLORS.sub, size: "13px" });
 
 	const barsGroup = pg.append("g");
 
@@ -47,15 +46,15 @@
 		.attr("transform", `translate(0, ${ih})`)
 		.call(d3.axisBottom(exScale).ticks(5))
 		.call(styleAxis);
-	eg.append("g").call(d3.axisLeft(eyScale).ticks(5)).call(styleAxis);
+	const eyAxisG = eg.append("g");
+	eyAxisG.call(d3.axisLeft(eyScale).ticks(5)).call(styleAxis);
 	eg.append("text")
 		.attr("x", iw/2).attr("y", ih + 30)
 		.attr("text-anchor", "middle").attr("font-size", "12px").attr("fill", PROB_COLORS.sub)
 		.attr("font-style", "italic").text("x");
-	eg.append("text")
-		.attr("x", -m.left + 2).attr("y", -4)
-		.attr("font-size", "13px").attr("fill", PROB_COLORS.sub)
-		.text("f(x)");
+	const eyLabelG = eg.append("g")
+		.attr("transform", `translate(${-m.left + 10}, ${ih / 2}) rotate(-90)`);
+	texFO(eyLabelG, 0, 0, 56, 18, "\\(f(x)\\)", { anchor: "center", color: PROB_COLORS.sub, size: "13px" });
 
 	const expCurve = eg.append("path")
 		.attr("fill", PROB_COLORS.D).attr("fill-opacity", 0.30)
@@ -85,7 +84,9 @@
 			.attr("width", bw)
 			.attr("height", d => ih - pyScale(Math.min(d.p, 0.7)));
 
-		// Exponential curve
+		// Exponential curve（λ が 5 を超えたら縦軸の上限を λ に追従させる）
+		eyScale.domain([0, Math.max(5, lam) * 1.04]);
+		eyAxisG.call(d3.axisLeft(eyScale).ticks(5)).call(styleAxis);
 		const xs = d3.range(0, xMax + 0.01, 0.04).map(x => ({ x, y: lam * Math.exp(-lam * x) }));
 		expCurve.datum(xs).attr("d", areaGen);
 	}
@@ -95,7 +96,7 @@
 		// 入力中は書き戻さない（toFixed でカーソルが飛ぶのを防ぐ）
 		const v = parseFloat(lamNum.value);
 		if (!isNaN(v)) {
-			const clamped = Math.max(0.5, Math.min(5, v));
+			const clamped = Math.max(0.5, Math.min(10, v));
 			lamSlider.value = clamped;
 			update(false);
 		}
@@ -104,10 +105,11 @@
 		// 確定時（blur / Enter）にのみ表示を正規化する
 		const v = parseFloat(lamNum.value);
 		if (!isNaN(v)) {
-			lamSlider.value = Math.max(0.5, Math.min(5, v));
+			lamSlider.value = Math.max(0.5, Math.min(10, v));
 		}
 		update(true);
 	});
 
+	typesetSvg([psvg, esvg]);
 	update();
 })();

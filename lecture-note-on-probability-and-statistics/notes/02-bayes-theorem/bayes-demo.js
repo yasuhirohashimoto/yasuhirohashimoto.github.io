@@ -6,10 +6,10 @@
 		omega: { x: 40,  y: 105, label: "\\(\\Omega\\)", r: 14, color: C.text },
 		H:     { x: 140, y: 50,  label: "\\(H\\)",       r: 14, color: C.text },
 		Hc:    { x: 140, y: 160, label: "\\(H^c\\)",     r: 14, color: C.text },
-		D1:    { x: 240, y: 24,  label: "\\(D\\)",       r: 14, color: C.D },
-		Dc1:   { x: 240, y: 82,  label: "\\(D^c\\)",     r: 14, color: C.DC },
-		D2:    { x: 240, y: 128, label: "\\(D\\)",       r: 14, color: C.D },
-		Dc2:   { x: 240, y: 186, label: "\\(D^c\\)",     r: 14, color: C.DC },
+		D1:    { x: 240, y: 24,  label: "\\(D\\)",       r: 14, stroke: C.D,  text: C.DText },
+		Dc1:   { x: 240, y: 82,  label: "\\(D^c\\)",     r: 14, stroke: C.DC, text: C.DCText },
+		D2:    { x: 240, y: 128, label: "\\(D\\)",       r: 14, stroke: C.D,  text: C.DText },
+		Dc2:   { x: 240, y: 186, label: "\\(D^c\\)",     r: 14, stroke: C.DC, text: C.DCText },
 	};
 
 	const edges = [
@@ -60,21 +60,21 @@
 			.attr("cy", n.y)
 			.attr("r", n.r)
 			.attr("fill", C.node)
-			.attr("stroke", n.color)
+			.attr("stroke", n.stroke ?? n.color)
 			.attr("stroke-width", 1.4);
 
-		texFO(svg, n.x, n.y, 30, 18, n.label, { anchor: "center", color: n.color, size: "12.5px" });
+		texFO(svg, n.x, n.y, 30, 18, n.label, { anchor: "center", color: n.text ?? n.color, size: "12.5px" });
 	});
 
 	// 各経路の積
 	const pathOpts = { anchor: "center", size: "11.5px", align: "left" };
-	texFO(svg, 370, nodes.D1.y-10,  210, 16, "\\(P(D \\mid H)P(H) = P(D\\cap H)\\)",       { ...pathOpts, color: C.D });
-	texFO(svg, 370, nodes.Dc1.y-10, 210, 16, "\\(P(D^c \\mid H)P(H) = P(D^c\\cap H)\\)",   { ...pathOpts, color: C.DC });
-	texFO(svg, 370, nodes.D2.y-10,  210, 16, "\\(P(D \\mid H^c)P(H^c) = P(D\\cap H^c)\\)", { ...pathOpts, color: C.D });
-	texFO(svg, 370, nodes.Dc2.y-10, 210, 16, "\\(P(D^c \\mid H^c)P(H^c) = P(D^c\\cap H^c)\\)", { ...pathOpts, color: C.DC });
+	texFO(svg, 370, nodes.D1.y-10,  210, 16, "\\(P(D \\mid H)P(H) = P(D\\cap H)\\)",       { ...pathOpts, color: C.DText });
+	texFO(svg, 370, nodes.Dc1.y-10, 210, 16, "\\(P(D^c \\mid H)P(H) = P(D^c\\cap H)\\)",   { ...pathOpts, color: C.DCText });
+	texFO(svg, 370, nodes.D2.y-10,  210, 16, "\\(P(D \\mid H^c)P(H^c) = P(D\\cap H^c)\\)", { ...pathOpts, color: C.DText });
+	texFO(svg, 370, nodes.Dc2.y-10, 210, 16, "\\(P(D^c \\mid H^c)P(H^c) = P(D^c\\cap H^c)\\)", { ...pathOpts, color: C.DCText });
 
 	// 右側のまとめ折れ線
-	function groupLineToNodes(x, nodeTop, nodeBottom, color, label, w = 56) {
+	function groupLineToNodes(x, nodeTop, nodeBottom, color, textColor, label, w = 56) {
 		const y1 = nodeTop.y;
 		const y2 = nodeBottom.y;
 		const mid = (y1 + y2) / 2;
@@ -118,12 +118,12 @@
 			.attr("stroke", color)
 			.attr("stroke-width", 1.5);
 
-		texFO(svg, x + 44, mid, w, 16, label, { anchor: "center", color, size: "12.5px", align: "left" });
+		texFO(svg, x + 44, mid, w, 16, label, { anchor: "center", color: textColor, size: "12.5px", align: "left" });
 	}
 
 	// 括弧 x は経路積ラベル（x=265 起点・左寄せ）の実文字列と交差しないよう右へ逃がす
-	groupLineToNodes(443, nodes.D1,  nodes.D2,  C.D,  "\\(P(D)\\)",   44);
-	groupLineToNodes(453, nodes.Dc1, nodes.Dc2, C.DC, "\\(P(D^c)\\)", 44);
+	groupLineToNodes(443, nodes.D1,  nodes.D2,  C.D,  C.DText,  "\\(P(D)\\)",   44);
+	groupLineToNodes(453, nodes.Dc1, nodes.Dc2, C.DC, C.DCText, "\\(P(D^c)\\)", 44);
 
 	await typesetSvg(svg);
 })();
@@ -138,6 +138,7 @@
 	const resultDiv = document.getElementById("bayes-result");
 	const liveDiv = document.getElementById("bayes-live");
 	let liveTimer = null;
+	let mathRenderRevision = 0;
 	// スクリーンリーダー向けの通知。スライダー連続操作で読み上げが氾濫しないよう，操作が止まってから書き込む
 	function announce(text) {
 		if (!liveDiv) return;
@@ -158,7 +159,9 @@
 	const COLOR_HND  = PROB_COLORS.DC;       // 濃い青: P(H ∩ D^c)
 	const COLOR_NHD  = PROB_COLORS.DLight;   // 薄い橙: P(H^c ∩ D)
 	const COLOR_NHND = PROB_COLORS.DCLight;  // 薄い青: P(H^c ∩ D^c)
-	const TEXT_NHD   = PROB_COLORS.DText;    // 式中の P(H^c ∩ D) 項の文字用（薄橙は可読性不足）
+	// 式中の橙色は，面用色ではなく可読性を確保した文字用トークンを使う。
+	const TEXT_HD    = PROB_COLORS.DText;
+	const TEXT_NHD   = PROB_COLORS.DText;
 
 	const cellHD   = g.append("rect").attr("fill", COLOR_HD);
 	const cellHND  = g.append("rect").attr("fill", COLOR_HND);
@@ -240,22 +243,30 @@
 		labelNH.attr("x", Math.max(0, wL + wR / 2 - 20)).attr("opacity", wR < 24 ? 0 : 1);
 
 		const pD = pDH * pH + pDnH * (1 - pH);
+		let resultHtml;
 		if (pD === 0) {
-			resultDiv.innerHTML = `<p>\\(P(D)=0\\) のため，\\(P(H \\mid D)\\) は定義されない。</p>`;
+			resultHtml = `<p>\\(P(D)=0\\) のため，\\(P(H \\mid D)\\) は定義されない。</p>`;
 			announce("P(D) = 0 のため，陽性的中率 P(H|D) は定義されない");
 		} else {
 			const pHD = (pDH * pH) / pD;
 			announce(`陽性的中率 P(H|D) はおよそ ${pHD.toFixed(3)}`);
 			// モバイル幅で収まるよう，記号の分数と数値の分数を行頭 & の左寄せで別行に
-			resultDiv.innerHTML = `\\[ \\begin{aligned}
-				&P(H \\mid D)\\\\
-				&\\quad\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)}}{\\textcolor{${COLOR_HD}}{P(D \\mid H)\\,P(H)} + \\textcolor{${TEXT_NHD}}{P(D \\mid H^c)\\,P(H^c)}}\\\\[6pt]
-				&\\quad\\;=\\; \\frac{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\textcolor{${COLOR_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\textcolor{${TEXT_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
+			resultHtml = `\\[ \\begin{aligned}
+				P(H \\mid D)
+				&\\;=\\; \\frac{\\textcolor{${TEXT_HD}}{P(D \\mid H)\\,P(H)}}{\\textcolor{${TEXT_HD}}{P(D \\mid H)\\,P(H)} + \\textcolor{${TEXT_NHD}}{P(D \\mid H^c)\\,P(H^c)}}\\\\[6pt]
+				&\\quad\\;=\\; \\frac{\\textcolor{${TEXT_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}}}{\\textcolor{${TEXT_HD}}{${pDH.toFixed(2)} \\times ${pH.toFixed(2)}} + \\textcolor{${TEXT_NHD}}{${pDnH.toFixed(2)} \\times ${(1 - pH).toFixed(2)}}}
 				\\;\\approx\\; ${pHD.toFixed(3)}
 			\\end{aligned} \\]`;
 		}
 
-		typesetSvg(resultDiv);
+		const renderRevision = ++mathRenderRevision;
+		typesetSvg(resultDiv, {
+			clear: true,
+			shouldTypeset: () => renderRevision === mathRenderRevision,
+			beforeTypeset: () => {
+				resultDiv.innerHTML = resultHtml;
+			},
+		});
 	}
 
 	phSlider.addEventListener("input", update);

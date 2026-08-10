@@ -66,7 +66,7 @@
 		&= \int_0^\infty x^2 \cdot \lambda e^{-\lambda x}\, dx = \lambda \int_0^\infty x^2 e^{-\lambda x}\, dx \\[6pt]
 		&= \lambda \left\{ \left[x^2 \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\right]_0^\infty - \int_0^\infty 2x \left(-\frac{1}{\lambda}\right) e^{-\lambda x}\, dx \right\} && \text{※部分積分の公式} \\[6pt]
 		&= \left[-x^2 e^{-\lambda x}\right]_0^\infty + 2 \int_0^\infty x e^{-\lambda x}\, dx && \text{※} \lim_{x \to \infty} x^2 e^{-\lambda x} = 0 \text{ より第一項は消える。} \\[6pt]
-		&= 2 \cdot \frac{E[X]}{\lambda} && \text{※第二項の積分は期待値と同じ形} \\[6pt]
+		&= 2 \cdot \frac{E[X]}{\lambda} && \text{※第二項の積分は期待値と同じ形} \\[4pt]
 		&= \frac{2}{\lambda^2}.
 		\end{aligned}
 		\]
@@ -86,7 +86,7 @@
 		\[
 		\begin{aligned}
 		V[X]
-		&= E\left[(X - E[X])^2\right] \\[6pt]
+		&= E\left[(X - E[X])^2\right] \\[4pt]
 		&= \int_0^\infty (x - E[X])^2 \cdot \lambda e^{-\lambda x}\, dx \\[6pt]
 		&= \int_0^\infty \left(x - \frac{1}{\lambda}\right)^2 \cdot \lambda e^{-\lambda x}\, dx \\[6pt]
 		&= \int_0^\infty x^2 \cdot \lambda e^{-\lambda x}\, dx - \frac{2}{\lambda} \int_0^\infty x \cdot \lambda e^{-\lambda x}\, dx + \frac{1}{\lambda^2} \int_0^\infty \lambda e^{-\lambda x}\, dx \\[6pt]

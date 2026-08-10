@@ -1,10 +1,13 @@
 window.MathJax = {
+	loader: {
+		load: ["[tex]/color"]
+	},
 	tex: {
 		inlineMath: [["\\(", "\\)"], ["$", "$"]],
 		displayMath: [["\\[", "\\]"], ["$$", "$$"]],
 		processEscapes: true,
 		tags: "none",
-		packages: { "[+]": ["ams", "newcommand", "configmacros"] }
+		packages: { "[+]": ["ams", "newcommand", "configmacros", "color"] }
 	},
 	chtml: {
 		scale: 1,

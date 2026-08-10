@@ -14,21 +14,14 @@
 	font-size: .92rem;
 }
 
-.variance-demo-controls label {
-	display: inline-flex;
-	align-items: center;
-	gap: .45em;
-	margin: 0;
+.variance-demo-stats .chip-mu,
+.variance-demo-stats .chip-mu strong {
+	color: var(--viz-orange-text);
 }
 
-.variance-demo-count {
-	color: var(--viz-label);
-}
-
-.variance-demo-count strong {
-	color: var(--viz-label);
-	font-weight: 600;
-	margin-left: 2px;
+.variance-demo-stats .chip-xbar,
+.variance-demo-stats .chip-xbar strong {
+	color: var(--viz-green-text);
 }
 
 #variance-demo-svg {
@@ -38,15 +31,30 @@
 	user-select: none;
 }
 
-.variance-demo-stats {
-	margin: .55em auto 0;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: .42em .9em;
+.variance-demo-readouts {
+	margin: .6em auto 0;
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	column-gap: .9em;
+	row-gap: .5em;
+	align-items: center;
 	font-size: .86rem;
 	color: var(--viz-label);
 	font-variant-numeric: tabular-nums;
+	text-align: left;
+}
+
+/* 行頭ラベルは右揃えで縦に整列させる */
+.variance-demo-readouts .stats-head {
+	justify-self: end;
+	font-weight: 700;
+}
+
+.variance-demo-stats {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .42em .9em;
 }
 
 .variance-demo-stats strong {
@@ -58,5 +66,15 @@
 @media (max-width: 640px) {
 	.variance-demo-controls {
 		justify-content: flex-start;
+	}
+
+	/* 狭幅では行頭ラベルを上に載せる縦積みにする */
+	.variance-demo-readouts {
+		grid-template-columns: 1fr;
+		row-gap: .35em;
+	}
+
+	.variance-demo-readouts .stats-head {
+		justify-self: start;
 	}
 }

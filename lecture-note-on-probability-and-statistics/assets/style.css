@@ -161,6 +161,20 @@ hr {
 	margin: 2em 0;
 }
 
+/* 節を立てるほどではない話題の切れ目に置く，中点による軽い区切り。
+   使い方: <hr class="dinkus"> */
+hr.dinkus {
+	border: none;
+	margin: 2em 0;
+	text-align: center;
+}
+hr.dinkus::after {
+	content: "・・・";
+	color: var(--muted);
+	letter-spacing: .8em;
+	padding-left: .8em; /* letter-spacing が最後の字の右に付ける余白を相殺して中央に */
+}
+
 code, pre {
 	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 	font-size: .88em;
@@ -293,11 +307,14 @@ mjx-container {
 }
 
 mjx-container[display="true"] {
-	margin: 1em 0 !important;
-	/* 本文幅を超える長い数式は，ページ全体ではなく数式の中で横スクロールさせる（モバイル対策） */
+	margin: calc(1em - 4px) 0 !important;
+	/* 本文幅を超える長い数式は，ページ全体ではなく数式の中で横スクロールさせる（モバイル対策）。
+	   overflow-y: hidden のクリップで大きな分数・積分などの上下のインクが欠けないよう，
+	   縦 4px のパディングを逃げ場として確保し，行間は margin で相殺する */
 	overflow-x: auto;
 	overflow-y: hidden;
 	max-width: 100%;
+	padding: 4px 0;
 }
 
 /* MathJax の読み上げ用 MathML（不可視レイヤー）は width:100% で置かれ，

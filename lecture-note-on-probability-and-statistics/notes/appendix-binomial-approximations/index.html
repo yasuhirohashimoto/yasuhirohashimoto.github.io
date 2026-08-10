@@ -34,7 +34,7 @@
 		\]
 
 		<p>
-			で，期待値は \(np\)，分散は \(np(1-p)\) である。ところが \(n\) が大きくなると，二項分布の厳密な計算は多数の組合せや総和を含んで煩雑になる。<sup>※</sup>ちょうどその「\(n\) が大きい」ところで，二項分布は 2 つの有名な分布でよく近似できる：
+			で，期待値は \(np\)，分散は \(np(1-p)\) である。ところが \(n\) が大きくなると，二項分布の厳密な計算は多数の組合せや総和を含んで煩雑になる。<sup>※</sup> ちょうどその「\(n\) が大きい」ところで，二項分布は 2 つの有名な分布でよく近似できる：
 		</p>
 
 		<ul>
@@ -47,7 +47,7 @@
 		</p>
 
 		<div class="note-side">
-			離散的な厳密式より，連続的な近似の方が扱いやすいことも多い。たとえば区間確率を求めたいときなどは，二項分布の場合は
+			離散的な厳密式より，連続的な近似式の方が扱いやすいことも多い。たとえば区間確率を求めたいときなどは，二項分布の場合は
 			\(P(a\leq X\leq b)=\sum_{k=a}^{b}\binom{n}{k}p^k(1-p)^{n-k}\) のように多数の項を足し合わせる必要があるが，連続分布では，積分から得られた累積確率の差 \(F(b)-F(a)\) として表すことができる。
 		</div>
 
@@ -72,11 +72,11 @@
 		</p>
 
 		\[
-		\mathrm{Bin}(n,p)\ \approx\ \mathcal{N}\bigl(np,\, np(1-p)\bigr)
+		\mathrm{Bin}(n,p) \approx \mathcal{N}\bigl(np,\, np(1-p)\bigr)
 		\]
 
 		<p>
-			という正規分布で近似できる。これは <strong>ド・モアブル＝ラプラスの定理</strong> (de Moivre–Laplace theorem) と呼ばれ，中心極限定理が歴史上はじめて証明された特別な場合である。近似がよく効くのは，山が左右の壁（\(k=0\) と \(k=n\)）から十分に離れているとき ── すなわち \(np\) と \(n(1-p)\) がともに大きいときである。
+			という正規分布で近似できる。これは <strong>ド・モアブル＝ラプラスの定理</strong> (de Moivre–Laplace theorem) と呼ばれ，中心極限定理が歴史上初めて証明された特別な場合である。近似がよく効くのは，山が左右の壁（\(k=0\) と \(k=n\)）から十分に離れているとき ── すなわち \(np\) と \(n(1-p)\) がともに大きいときである。
 		</p>
 
 		<h3 id="poisson-approximation">ポアソン近似 ── 少数の法則</h3>
@@ -86,7 +86,7 @@
 		</p>
 
 		\[
-		\mathrm{Bin}\!\left(n,\, \frac{\lambda}{n}\right)\ \to\ \mathrm{Po}(\lambda)\qquad(n\to\infty).
+		\mathrm{Bin}\!\left(n,\, \frac{\lambda}{n}\right) \to \mathrm{Po}(\lambda)\qquad(n\to\infty).
 		\]
 
 		<p>
@@ -128,7 +128,7 @@
 			\[
 			\frac{n!}{(n-k)!\,n^{k}}
 			=\underbrace{\frac{n}{n}\cdot\frac{n-1}{n}\cdot\frac{n-2}{n}\cdots\frac{n-k+1}{n}}_{k\ \text{個}}
-			\ \to\ \underbrace{1\cdot 1\cdot 1\cdots 1}_{k\ \text{個}}=1\qquad(n\to\infty)
+			\to \underbrace{1\cdot 1\cdot 1\cdots 1}_{k\ \text{個}}=1\qquad(n\to\infty)
 			\]
 
 			<p>
@@ -139,7 +139,7 @@
 		<h2 id="when-each-works">どちらがいつ効くか</h2>
 
 		<p>
-			下のデモは，二項分布 \(\mathrm{Bin}(n,p)\)（青の棒），そのポアソン近似 \(\mathrm{Po}(np)\)（橙の線），正規近似 \(\mathcal{N}(np,\,np(1-p))\)（黒の曲線）を重ねて描く。<sup>※</sup>「\(n\) を大きくするとき何を固定するか」を切り替えて，2 つの近似の振る舞いを観察してほしい。
+			下のデモは，二項分布 \(\mathrm{Bin}(n,p)\)（青の棒），そのポアソン近似 \(\mathrm{Po}(np)\)（橙の線），正規近似 \(\mathcal{N}(np,\,np(1-p))\)（黒の曲線）を重ねて描く。<sup>※</sup> 「\(n\) を大きくするとき何を固定するか」を切り替えて，2 つの近似の振る舞いを観察してほしい。
 		</p>
 
 		<div class="note-side">

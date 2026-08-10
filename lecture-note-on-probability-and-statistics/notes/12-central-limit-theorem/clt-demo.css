@@ -9,14 +9,23 @@
 .clt-figure.clt-figure-wide {
 	max-width: var(--default-width);
 }
+.clt-figure.fig-narrow {
+	/* style.css の .fig-narrow は読み込み順で .clt-figure の 720px に負けるため，複合セレクタで再指定 */
+	max-width: 440px;
+}
 .clt-figure.clt-n3-static-figure {
 	width: 60%;
 }
-.clt-figure svg {
+.clt-figure svg,
+.clt-figure img {
 	width: 100%;
 	display: block;
 	margin: 0 auto;
 	user-select: none;
+}
+.clt-figure img {
+	/* width/height 属性は CLS 対策で残すため，縮小時は高さを追従させる */
+	height: auto;
 }
 .clt-panel-grid {
 	display: grid;

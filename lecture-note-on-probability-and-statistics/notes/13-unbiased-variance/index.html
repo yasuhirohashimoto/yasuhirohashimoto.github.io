@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="variance-demo.css">
 	<script src="../../assets/mathjax-config.js"></script>
 	<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+	<script src="../../assets/diagram-helpers.js"></script>
 	<script src="variance-demo.js" defer></script>
 	<script defer src="../../assets/term-highlight.js"></script>
 </head>
@@ -28,12 +29,12 @@
 		<h2 id="sample-mean-unbiased">不偏推定量としての標本平均</h2>
 
 		<p>
-			ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」で，サンプルサイズ \(n\) の標本平均 \(\bar{X}_n\) は母平均 \(\mu_X\) の <strong>一致推定量</strong> ── \(n\) を大きくすると確率的に真の値へ近づいていく推定量 ── であることを見た。実は標本平均にはもうひとつ嬉しい性質がある。有限の \(n\) のままでも，標本平均の期待値<sup>※</sup>はぴったり \(\mu_X\) と一致するのだ：
+			ノート「<a href="../11-law-of-large-numbers/">大数の法則</a>」で，サンプルサイズ \(n\) の標本平均 \(\bar{X}_n\) は母平均 \(\mu_X\) の <strong>一致推定量</strong> ── \(n\) を大きくすると確率的に真の値へ近づいていく推定量 ── であることを見た。実は標本平均にはもうひとつ嬉しい性質がある。有限の \(n\) のままでも，標本平均の期待値<sup>※</sup> はぴったり \(\mu_X\) と一致するのだ：
 		</p>
 
 		\[
 			\begin{aligned}
-			E[\bar{X}_n] &= E\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[4pt]
+			E[\bar{X}_n] &= E\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[6pt]
 			&= \frac{1}{n} \left\{E[X_1] + E[X_2] + \cdots + E[X_n]\right\} \\[4pt]
 			&= \frac{1}{n} \left\{\mu_X + \mu_X + \cdots + \mu_X\right\} \\[4pt]
 			&= \mu_X.
@@ -49,40 +50,39 @@
 		</p>
 
 		<p>
-			では，分散についてはどうだろうか。標本分散 \(S_{X,n}^2\) は，サンプルサイズを大きくすれば母分散 \(\sigma_X^2\) に確かに収束する ── つまり一致推定量である：
+			では，分散についてはどうだろうか？
+		</p>
+
+		<p>
+			以下では添字を省略して，母平均 \(\mu\)，母分散 \(\sigma^2\) をもつ独立同分布な標本 \(X_1, \ldots, X_n\) について，サンプルサイズ \(n\) の標本平均を \(\bar{X}\)，標本分散を \(S^2\)（ノート「<a href="../04-population-and-sample/">母集団と標本</a>」で定義した \(S_X^2\) と同じもの）と表記する。標本分散 \(S^2\) は，サンプルサイズを大きくすれば母分散 \(\sigma^2\) に確かに収束する ── つまり一致推定量である：
 		</p>
 
 		\[
 		\begin{aligned}
-		S_{X,n}^2
-		&= \frac{1}{n}\sum_{i=1}^n (X_i-\bar{X}_n)^2 \\[4pt]
-		&= \frac{1}{n}\sum_{i=1}^n \{(X_i-\mu_X)-(\bar{X}_n-\mu_X)\}^2 \\[4pt]
-		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)^2
-		-2(\bar{X}_n-\mu_X)\frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)
-		+(\bar{X}_n-\mu_X)^2 \\[4pt]
-		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu_X)^2
-		-(\bar{X}_n-\mu_X)^2 \\[4pt]
-		&\xrightarrow[n\to\infty]{}
-		\sigma_X^2 - 0
-		= \sigma_X^2. && \text{※2 つの項にそれぞれ大数の法則を適用}
+		S^2
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\bar{X})^2 \\[6pt]
+		&= \frac{1}{n}\sum_{i=1}^n \left\{(X_i-\mu)-(\bar{X}-\mu)\right\}^2 \\[6pt]
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu)^2-\frac{2}{n}(\bar{X}-\mu)\sum_{i=1}^n (X_i-\mu)+(\bar{X}-\mu)^2 \\[6pt]
+		&= \frac{1}{n}\sum_{i=1}^n (X_i-\mu)^2 - (\bar{X}-\mu)^2 \\[6pt]
+		&\xrightarrow[n\to\infty]{} \sigma^2 - 0 = \sigma^2.\qquad\text{※2 つの項にそれぞれ大数の法則を適用}
 		\end{aligned}
 		\]
 
 		<p>
-			しかし「有限の \(n\) で平均的に正しい」かどうか，つまり不偏推定量であるかどうかは別問題だ。本ノートでは結論として <strong>標本分散は不偏推定量にはなっていない</strong> こと，すなわち \(E[S_{X,n}^2] \neq \sigma_X^2\) を示す。そのうえで，補正を施した不偏分散を導入する。
+			しかし「有限の \(n\) で平均的に正しい」かどうか，つまり不偏推定量であるかどうかは別問題だ。本ノートでは，結論として <strong>標本分散は不偏推定量にはなっていない</strong> こと，すなわち \(E[S^2] \neq \sigma^2\) を示す。そのうえで，補正を施した不偏分散を導入する。
 		</p>
 
 		<h2 id="expectation-of-sample-variance">標本分散の期待値の計算</h2>
 
 		<p>
-			以下では添字を省略して，母平均 \(\mu\)，母分散 \(\sigma^2\) をもつ独立同分布な標本 \(X_1, \ldots, X_n\) について，サンプルサイズ \(n\) の標本平均を \(\bar{X}\)，標本分散を \(S^2\) と表記する。上で用いた式変形をそのまま用いて
+			上で用いた式変形をそのまま用いて
 		</p>
 
 		\[
 		\begin{aligned}
 		E[S^2]
-		&= E\left[\frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2 - (\bar{X} - \mu)^2\right] \\[4pt]
-		&= \frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] - E\left[(\bar{X} - \mu)^2\right] \\[4pt]
+		&= E\left[\frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2 - (\bar{X} - \mu)^2\right] \\[6pt]
+		&= \frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] - E\left[(\bar{X} - \mu)^2\right] \\[6pt]
 		&= \frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] - V[\bar{X}].
 		\end{aligned}
 		\]
@@ -93,21 +93,21 @@
 
 		\[
 		\begin{aligned}
-		\frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right]
-		&= \frac{1}{n} \left\{E[(X_1 - \mu)^2] + E[(X_2 - \mu)^2] + \cdots + E[(X_n - \mu)^2]\right\} \\[4pt]
-		&= \frac{1}{n} \left\{V[X_1] + V[X_2] + \cdots + V[X_n]\right\} \\[4pt]
-		&= \frac{1}{n} \cdot n \sigma^2 = \sigma^2.
+		&\frac{1}{n} E\left[\sum_{i=1}^n (X_i - \mu)^2\right] \\[6pt]
+		&\qquad = \frac{1}{n} \left\{E[(X_1 - \mu)^2] + E[(X_2 - \mu)^2] + \cdots + E[(X_n - \mu)^2]\right\} \\[4pt]
+		&\qquad = \frac{1}{n} \left\{V[X_1] + V[X_2] + \cdots + V[X_n]\right\} \\[4pt]
+		&\qquad = \frac{1}{n} \cdot n \sigma^2 = \sigma^2.
 		\end{aligned}
 		\]
 
 		<p>
-			右辺第二項は，標本平均の分散<sup>※</sup>として
+			右辺第二項は，標本平均の分散<sup>※</sup> として
 		</p>
 
 		\[
 		\begin{aligned}
 		V[\bar{X}]
-		&= V\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[4pt]
+		&= V\left[\frac{X_1 + X_2 + \cdots + X_n}{n}\right] \\[6pt]
 		&= \frac{1}{n^2} \left\{V[X_1] + V[X_2] + \cdots + V[X_n]\right\} \\[4pt]
 		&= \frac{1}{n^2} \cdot n \sigma^2 = \frac{\sigma^2}{n}.
 		\end{aligned}
@@ -146,7 +146,7 @@
 		\[
 		\begin{aligned}
 		E[s^2]
-		&= E\left[\frac{n}{n-1} S^2\right] = \frac{n}{n-1} E[S^2] \\[4pt]
+		&= E\left[\frac{n}{n-1} S^2\right] = \frac{n}{n-1} E[S^2] \\[6pt]
 		&= \frac{n}{n-1} \cdot \frac{n-1}{n} \sigma^2 = \sigma^2
 		\end{aligned}
 		\]
@@ -173,34 +173,34 @@
 			\frac{1}{n}\sum_{i=1}^n (X_i-\bar{X})^2
 			+(\bar{X}-a)^2.
 			\]
-			右辺第二項は \(0\) 以上なので，二乗偏差は \(a=\bar{X}\) のとき最小になる。つまり標本平均は，その標本に対してもっとも都合のよい中心である。そのため，\(\bar{X}\) を中心に測る標本分散は，\(\mu\) を中心に測る場合より小さく出やすい。
+			右辺第二項は \(0\) 以上なので，二乗偏差は \(a=\bar{X}\) のとき最小になる。つまり標本平均は，その標本に対してもっとも都合のよい中心である。そのため，\(\bar{X}\) を中心に測る標本分散が \(\mu\) を中心に測る場合を上回ることはない（等号は \(\bar{X}=\mu\) のときに限る）。
 		</div>
 
 		<p>
-			以下のデモでは，母集団からサンプルを抽出して標本分散と不偏分散を計算する操作を繰り返すことで，標本分散と不偏分散の期待値の違いが体感できる。抽出を重ねるごとに，標本分散の平均が母分散より小さい値に落ち着いていく様子と，不偏分散の平均が母分散に近づいていく様子が見えるはずだ。
+			以下のデモでは，母集団（グレー）からサンプルサイズ \(n=10\) の標本（青）を抽出して標本分散と不偏分散を計算する操作を繰り返すことで，標本分散と不偏分散の期待値の違いが体感できる。標本点から \(\mu\) に伸びる橙の線の二乗和の平均が①，\(\bar{X}\) に伸びる緑の線の二乗和の平均が②の標本分散だ。③の不偏分散は緑の線の二乗和を \(n-1\) で割ったものである。抽出を重ねるごとに，標本分散の平均が母分散より小さい値に落ち着いていく様子（真の値の \((n-1)/n=9/10\) 倍）と，不偏分散の平均が母分散に近づいていく様子が見えるはずだ。①の平均が補正なしで真の値に一致していくことにも注目してほしい。
 		</p>
 
-		<div class="variance-demo" id="variance-demo">
+		<div class="variance-demo" id="variance-demo" role="group" aria-label="母分散，標本分散，不偏分散を比較するシミュレーション">
 			<div class="variance-demo-controls">
-				<label>
-					サンプルサイズ
-					<select id="variance-demo-n" aria-label="サンプルサイズ">
-						<option value="5">n = 5</option>
-						<option value="8" selected>n = 8</option>
-						<option value="12">n = 12</option>
-						<option value="20">n = 20</option>
-					</select>
-				</label>
 				<button type="button" id="variance-demo-reroll">1 回抽出</button>
 				<button type="button" id="variance-demo-batch">100 回まとめて抽出</button>
 				<button type="button" id="variance-demo-reset">リセット</button>
-				<span class="variance-demo-count readout-chip">累積抽出回数：<strong id="variance-demo-count">--</strong></span>
 			</div>
-			<svg id="variance-demo-svg" viewBox="0 0 820 295" role="img" aria-label="横軸を 0 から 1 とした母集団と標本の比較。上段のグレーの線が母集団，中央の青い線が最新の標本。母平均を橙，標本平均を緑の破線で示し，下段で各標本値から平均までの偏差を比較する"></svg>
-			<div class="variance-demo-stats" role="status" aria-live="polite" aria-atomic="true">
-				<span class="readout-chip">母分散 \(\sigma^2\)：<strong id="variance-demo-popvar">--</strong></span>
-				<span class="readout-chip">\(S^2\) の平均：<strong id="variance-demo-avg-s2">--</strong></span>
-				<span class="readout-chip">\(s^2\) の平均：<strong id="variance-demo-avg-u2">--</strong></span>
+			<svg id="variance-demo-svg" viewBox="0 0 820 212" role="img" aria-label="横軸を 0 から 1 とした数直線に，グレーの細い線で母集団，青い太い線で最新の標本を重ねた図。橙の破線が母平均，緑の破線が標本平均。その直下で各標本点から母平均と標本平均の両方へ水平な線分を伸ばし，それぞれを中心とする偏差を比較する"></svg>
+			<div class="variance-demo-readouts" role="status" aria-live="polite" aria-atomic="true">
+				<span class="stats-head">最新の標本</span>
+				<div class="variance-demo-stats">
+					<span class="readout-chip chip-mu">① \(\mu\) 中心の平均二乗偏差：<strong id="variance-demo-qmu">--</strong></span>
+					<span class="readout-chip chip-xbar">② 標本分散 \(S^2\)：<strong id="variance-demo-s2">--</strong></span>
+					<span class="readout-chip">③ 不偏分散 \(s^2\)：<strong id="variance-demo-u2">--</strong></span>
+				</div>
+				<span class="stats-head">累積 <strong id="variance-demo-count">0</strong> 回の平均</span>
+				<div class="variance-demo-stats">
+					<span class="readout-chip chip-mu">①の平均：<strong id="variance-demo-avg-qmu">--</strong></span>
+					<span class="readout-chip chip-xbar">②の平均：<strong id="variance-demo-avg-s2">--</strong></span>
+					<span class="readout-chip">③の平均：<strong id="variance-demo-avg-u2">--</strong></span>
+					<span class="readout-chip">真の値 \(\sigma^2\)：<strong id="variance-demo-popvar">--</strong></span>
+				</div>
 			</div>
 		</div>
 
@@ -212,19 +212,19 @@
 
 		<ul>
 			<li>
-				今，目の前にあるサンプルデータがデータのすべてである場合，つまり <strong>全数調査</strong> (complete enumeration) の場合，あるいは手元のデータそのもののばらつきを記述したい場合は，分散の定義として当然 <strong>\(n\) で割るのが正しい</strong>。たとえばクラスの中でテストの点数の分散を求めて，そこから個々人の偏差値を計算したいときなどはこれに該当する。
+				今，目の前にあるサンプルデータがデータのすべてである場合，つまり <strong>全数調査</strong> (complete enumeration) の場合，あるいは手元のデータそのもののばらつきを記述したい場合は，分散の定義として当然 <strong>\(n\) で割るのが正しい</strong>。たとえばクラスの中でテストの点数の分散を求めて，そこから個々人のクラス内偏差値を計算したいときなどはこれに該当する。
 			</li>
 			<li>
-				一方，目の前にあるサンプルデータが巨大な母集団から抜き出された一部であり，そこから母集団全体の分散を <strong>推定</strong> したい場合は <strong>\(n - 1\) で割るのが正しい</strong>（平均的に偏りのない推定量になる）。たとえば同じテストについて，全国の学生の分散を，あるクラスの学生の点数から推定したい場合などはこれに該当する。
+				一方，目の前にあるサンプルデータが巨大な母集団から抜き出された一部であり，そこから母集団全体の分散を平均的に偏りなく <strong>推定</strong> したい場合は <strong>\(n - 1\) で割るのが正しい</strong>。たとえば，ポテチ工場でその日に製造した大量の袋から数十袋を抜き取り，内容量のばらつきを見積もる場合などはこれにあたる。
 			</li>
 		</ul>
 
 		<p>
-			つまり，標本分散を使うべきか不偏分散を使うべきかは <strong>分析の目的に依存する</strong>。<sup>※</sup>テキストによっては単に「分散」と書いて不偏分散を指している場合があるので，前後の文脈に注意しよう。
+			つまり，標本分散を使うべきか不偏分散を使うべきかは <strong>分析の目的に依存する</strong>。<sup>※</sup> テキストによっては単に「分散」と書いて不偏分散を指している場合があるので，前後の文脈に注意しよう。
 		</p>
 
 		<div class="note-side">
-			「\(n\) が大きければ \(n\) で割ろうが \(n - 1\) で割ろうが大して変わらないから，別に気にしなくてよいのでは？」という考え方もあるだろう。しかし \(n\) で割る操作は記述統計，\(n - 1\) で割る操作は統計的推論を想定しており，両者の態度には本質的な違いがある。
+			「\(n\) が大きければ \(n\) で割ろうが \(n - 1\) で割ろうが大して変わらないから，別に気にしなくてよいのでは？」という考え方もあるだろう。しかし \(n\) で割る操作は記述統計，\(n - 1\) で割る操作は推測統計を想定しており，両者の態度には本質的な違いがある。
 		</div>
 
 		<hr>

@@ -96,24 +96,60 @@ function styleAxis(g) {
 	return g;
 }
 
+let mathJaxReadyPromise = null;
+let mathJaxTypesetQueue = Promise.resolve();
+
 /**
  * Resolve once MathJax has finished its startup. Safe to call before MathJax loads.
  */
-async function whenMathJaxReady() {
-	if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
-		try { await window.MathJax.startup.promise; } catch (e) {}
+function whenMathJaxReady() {
+	if (!mathJaxReadyPromise) {
+		mathJaxReadyPromise = (async () => {
+			// MathJax は async で読み込まれる。startup.promise がまだ作られて
+			// いない場合は，async script の完了を含む window.load まで待つ。
+			if (!(window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) &&
+				document.readyState !== "complete") {
+				await new Promise(resolve => window.addEventListener("load", resolve, { once: true }));
+			}
+			if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+				try { await window.MathJax.startup.promise; } catch (e) {}
+			}
+		})();
 	}
+	return mathJaxReadyPromise;
 }
 
 /**
- * Wait for MathJax to be ready, then typeset the given target(s).
+ * Wait for MathJax to be ready, then typeset the given target(s). MathJax 3
+ * cannot safely run multiple typesetPromise calls at once, so every call is
+ * serialized through one queue.
+ *
  * @param {d3.Selection|Element|Array} target - D3 selection, DOM element, or array of either.
+ * @param {object} [opts]
+ * @param {boolean} [opts.clear=false] - Forget MathItems inside the targets before replacing them.
+ * @param {Function} [opts.beforeTypeset] - DOM update to run after clear and immediately before typesetting.
+ * @param {Function} [opts.shouldTypeset] - Return false to drop a stale queued update.
  */
-async function typesetSvg(target) {
-	await whenMathJaxReady();
-	if (window.MathJax && window.MathJax.typesetPromise) {
-		const targets = Array.isArray(target) ? target : [target];
-		const nodes = targets.map(t => (t && typeof t.node === "function") ? t.node() : t);
-		await window.MathJax.typesetPromise(nodes);
-	}
+function typesetSvg(target, opts = {}) {
+	const targets = Array.isArray(target) ? target : [target];
+	const nodes = targets.map(t => (t && typeof t.node === "function") ? t.node() : t);
+	const { clear = false, beforeTypeset = null, shouldTypeset = null } = opts;
+
+	const operation = mathJaxTypesetQueue.then(async () => {
+		await whenMathJaxReady();
+		if (shouldTypeset && !shouldTypeset()) return;
+		if (clear && window.MathJax && window.MathJax.typesetClear) {
+			window.MathJax.typesetClear(nodes);
+		}
+		if (beforeTypeset) beforeTypeset();
+		if (window.MathJax && window.MathJax.typesetPromise) {
+			await window.MathJax.typesetPromise(nodes);
+		}
+	});
+
+	// 1 回の失敗で後続の再組版まで止めない。
+	mathJaxTypesetQueue = operation.catch(error => {
+		console.error("MathJax typesetting failed:", error);
+	});
+	return mathJaxTypesetQueue;
 }
