@@ -64,7 +64,7 @@
 
 		// A のラベル（人物の下）
 		texFO(timelineSvg, x0 + A_INDEX * step + s / 2, y + s + 5, 34, 22, "\\(\\mathcal{A}\\)", { anchor: "topcenter", size: "17px", color: PROB_COLORS.DText });
-		texFO(timelineSvg, x0 + A_INDEX * step + s / 2, 52, 150, 22, "\\(k\\,\\) 番目：\\(\\mathcal{A}\\)", { anchor: "topcenter", size: "17px", color: PROB_COLORS.DText });
+		texFO(timelineSvg, x0 + A_INDEX * step + s / 2, 52, 150, 22, "\\(k\\,\\) 番目", { anchor: "topcenter", size: "17px", color: PROB_COLORS.DText });
 		timelineSvg.append("path")
 			.attr("d", `M${x0 + A_INDEX * step + s / 2} 76 L${x0 + A_INDEX * step + s / 2} ${y - 6}`)
 			.attr("fill", "none").attr("stroke", ORANGE).attr("stroke-width", 1.7)

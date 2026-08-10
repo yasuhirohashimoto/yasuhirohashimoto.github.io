@@ -338,7 +338,11 @@
 			});
 
 			// この図は .clt-figure（max-width 680px）内なので縮小率 ≈0.77。実効サイズ換算で他図と揃える
-			texFO(g, 10, 4, 240, 22, spec.title, { color: PROB_COLORS.text, size: "19px", align: "left" });
+			texFO(g, (x.range()[0] + x.range()[1]) / 2, 4, 240, 22, spec.title, {
+				anchor: "topcenter",
+				color: PROB_COLORS.text,
+				size: "19px"
+			});
 			texFO(g, (x.range()[0] + x.range()[1]) / 2, PANEL.h - margin.bottom + 10, 190, 20, spec.xLabel, {
 				anchor: "topcenter",
 				color: PROB_COLORS.text,
