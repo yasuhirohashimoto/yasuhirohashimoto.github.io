@@ -100,8 +100,8 @@
 		&= \sum_{k_1 = 0}^{k} \frac{\lambda_1^{k_1} \lambda_2^{k - k_1}}{k_1! (k - k_1)!} e^{-(\lambda_1 + \lambda_2)} \\[6pt]
 		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \frac{k!}{k_1! (k - k_1)!} \lambda_1^{k_1} \lambda_2^{k - k_1} \\[6pt]
 		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} \sum_{k_1 = 0}^{k} \binom{k}{k_1} \lambda_1^{k_1} \lambda_2^{k - k_1} \\[6pt]
-		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} (\lambda_1 + \lambda_2)^k && \text{※二項定理} \\[6pt]
-		&= \frac{\lambda^k}{k!} e^{-\lambda} && (\lambda := \lambda_1 + \lambda_2).
+		&= \frac{e^{-(\lambda_1 + \lambda_2)}}{k!} (\lambda_1 + \lambda_2)^k\qquad\text{※二項定理} \\[6pt]
+		&= \frac{\lambda^k}{k!} e^{-\lambda}\qquad(\lambda := \lambda_1 + \lambda_2).
 		\end{aligned}
 		\]
 
@@ -195,7 +195,7 @@
 		&= \frac{\lambda^{r_1 + r_2}}{(r_1-1)!(r_2-1)!} e^{-\lambda t} \int_0^t t_1^{r_1-1} (t - t_1)^{r_2-1}\, dt_1 \\[6pt]
 		&= \frac{\lambda^{r_1 + r_2}}{(r_1-1)!(r_2-1)!} e^{-\lambda t} \cdot \frac{(r_1-1)!(r_2-1)!}{(r_1 + r_2 - 1)!} t^{r_1 + r_2 - 1} \\[6pt]
 		&= \frac{\lambda^{r_1 + r_2}}{(r_1 + r_2 - 1)!} t^{r_1 + r_2 - 1} e^{-\lambda t} \\[6pt]
-		&= \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t} && (r := r_1 + r_2).
+		&= \frac{\lambda^r}{(r-1)!} t^{r-1} e^{-\lambda t}\qquad(r := r_1 + r_2).
 		\end{aligned}
 		\]
 
@@ -248,7 +248,7 @@
 		</p>
 
 		<div class="note-side">
-			このような「同じ形の式で書ける分布の集まり」を <strong>分布族</strong> (family of distributions) と呼ぶ。再生性は「和が分布族から出ない」性質だと一言でまとめられる。
+			このような「同じ形の式で書ける分布の集まり」を <strong>分布族</strong> (family of distributions) と呼ぶ。再生性とは「和が分布族から出ない」性質である。
 		</div>
 
 		<p>
