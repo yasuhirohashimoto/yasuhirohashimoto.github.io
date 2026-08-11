@@ -25,6 +25,11 @@
 		var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
 			acceptNode: function (node) {
 				if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+				// 未組版の TeX ソースを <mark> で分断すると MathJax がデリミタ対を
+				// 見つけられなくなるため，デリミタを含むノードは対象外にする
+				if (node.nodeValue.indexOf("\\(") >= 0 || node.nodeValue.indexOf("\\[") >= 0) {
+					return NodeFilter.FILTER_REJECT;
+				}
 				var p = node.parentElement;
 				if (!p) return NodeFilter.FILTER_REJECT;
 				if (p.closest("script, style, textarea, svg, mjx-container, .note-nav, mark")) {
@@ -160,7 +165,13 @@
 			decorateNoteLinks();
 		}
 		var term = getParam("hl");
-		if (term) scrollToFirst(highlightTerm(term));
+		if (term) {
+			// MathJax の組版完了を待ってからハイライトする。組版後は数式が
+			// mjx-container（走査対象外）に置き換わっているので安全に印を入れられる
+			waitForMathJax(4000).then(function () {
+				scrollToFirst(highlightTerm(term));
+			});
+		}
 	}
 
 	if (document.readyState === "loading") {
