@@ -107,6 +107,13 @@
 	function scrollToFirst(marks) {
 		if (!marks.length) return;
 		var first = marks[0];
+		// 折りたたまれた <details> 内はスクロールもハイライトも見えないため，先祖をすべて開く。
+		// 開くのはスクロール先の先祖だけ（他の <details> の中身まで一斉に見せない）
+		var d = first.closest("details");
+		while (d) {
+			d.open = true;
+			d = d.parentElement && d.parentElement.closest("details");
+		}
 		first.classList.add("term-hl-first");
 		first.scrollIntoView({ block: "center" });
 		// MathJax typesetting shifts layout; re-center once it settles.
